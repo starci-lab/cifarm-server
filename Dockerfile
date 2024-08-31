@@ -4,7 +4,7 @@ WORKDIR /backend
 COPY typescript-runtime .
 
 RUN npm install
-RUN npx tsc
+RUN npm run build
 
 FROM heroiclabs/nakama-pluginbuilder:3.23.0 AS builder
 

@@ -3,16 +3,29 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c --bundleConfigAsCjs",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@babel/core": "7.25.2",
+    "@babel/plugin-external-helpers": "7.24.7",
+    "@babel/preset-env": "7.25.4",
+    "@rollup/plugin-babel": "6.0.4",
+    "@rollup/plugin-commonjs": "26.0.1",
+    "@rollup/plugin-json": "6.1.0",
+    "@rollup/plugin-node-resolve": "15.2.3",
+    "@rollup/plugin-typescript": "11.1.6",
+    "rollup": "4.21.2",
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "nakama-runtime": "github:heroiclabs/nakama-common"
+    "ethers": "6.13.2",
+    "nakama-runtime": "github:heroiclabs/nakama-common",
+    "tslib": "2.7.0"
   }
 }
