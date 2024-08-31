@@ -1,4 +1,4 @@
-FROM node:alpine AS node-builder
+FROM node:21.4.0-bookworm-slim AS node-builder
 
 WORKDIR /backend
 COPY typescript-runtime .
