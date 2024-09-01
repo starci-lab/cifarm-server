@@ -13,7 +13,7 @@ ENV CGO_ENABLED 1
 
 WORKDIR /backend
 COPY go-runtime .
-COPY /home/ubuntu/config/cifarm-server.yml .
+COPY cifarm-server.yml .
 
 RUN go build --trimpath --buildmode=plugin -o backend.so ./src
 
