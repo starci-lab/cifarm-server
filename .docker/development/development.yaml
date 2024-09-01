@@ -3,7 +3,7 @@ services:
   postgres:
     command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all
     env_file:
-      - .env.local
+      - ../../.env.local
     expose:
       - "8080"
       - "5432"
@@ -15,7 +15,9 @@ services:
       - data:/var/lib/postgresql/data
 
   nakama:
-    build: .
+    build: 
+      context: ../..
+      dockerfile: ./.docker/development/Dockerfile
     depends_on:
       - postgres
     entrypoint:
@@ -42,3 +44,6 @@ services:
     restart: unless-stopped
 volumes:
   data:
+
+# docker compose -f .docker/development/development.yaml -p cifarm-server up --build -d 
+ 

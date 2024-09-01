@@ -11,11 +11,9 @@ FROM heroiclabs/nakama-pluginbuilder:3.23.0 AS builder
 ENV GO111MODULE on
 ENV CGO_ENABLED 1
 
-ENV BLOCKCHAIN_AUTH_SERVER_URL=https://blockchain-auth-service.starci.net/api
-
 WORKDIR /backend
 COPY go-runtime .
-COPY local.yml .
+COPY /home/ubuntu/config/cifarm-server.yml .
 
 RUN go build --trimpath --buildmode=plugin -o backend.so ./src
 

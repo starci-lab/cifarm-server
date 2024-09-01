@@ -4,6 +4,8 @@ console:
   max_message_size_bytes: 409600
 runtime:
   js_entrypoint: "build/index.js"
+  env:
+    - "blockchain_auth_service_url=https://blockchain-auth-service.starci.net/api"
 session:
   token_expiry_sec: 7200 # 2 hours
 socket:

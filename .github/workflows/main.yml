@@ -1,1 +1,27 @@
 
+name: Deploy on self-hosted runner
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker-compose:
+    runs-on: self-hosted
+    environment: docker
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2 
+ 
+    - name: Run `docker compose`
+      env:
+        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+        POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
+        POSTGRES_NAKAMA_DATABASE: ${{ secrets.POSTGRES_NAKAMA_DATABASE }}
+  
+      run: docker compose -f .docker/production/production.yaml -p cifarm-server up --build -d  
+ 
+
