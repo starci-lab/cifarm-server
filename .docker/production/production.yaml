@@ -32,6 +32,6 @@ services:
       - "7351:7351"
     restart: unless-stopped
     volumes:
-      - /home/ubuntu/config/cifarm-server:/nakama/data
+      - /home/ubuntu/docker-data/cifarm-server:/nakama/data
 volumes:
-  data:
+  data: 
