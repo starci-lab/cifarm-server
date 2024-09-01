@@ -19,7 +19,7 @@ services:
         /nakama/nakama migrate up --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE} &&
         exec /nakama/nakama --config /nakama/data/cifarm-server.yml --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE}
     expose:
-      - "7349"
+      - "7349" 
       - "7350"
       - "7351"
     healthcheck:
