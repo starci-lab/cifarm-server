@@ -1,7 +1,7 @@
 package main
 
 import (
-	_avalanche "cifarm-server/src/auth/avalanche"
+	auth "cifarm-server/src/auth"
 	"context"
 	"database/sql"
 
@@ -10,7 +10,7 @@ import (
 
 func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
 	logger.Info("Hello World!")
-	err := initializer.RegisterBeforeAuthenticateCustom(_avalanche.BeforeAvalancheAuth)
+	err := initializer.RegisterBeforeAuthenticateCustom(auth.BeforeAuthenticate)
 	if err != nil {
 		return err
 	}
