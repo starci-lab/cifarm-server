@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USERNAME: ${POSTGRES_USERNAME}
       POSTGRES_NAKAMA_DATABASE: ${POSTGRES_NAKAMA_DATABASE}
-    volumes:
-      - /home/ubuntu/docker/cifarm-server/data:/nakama/data
+    # volumes:
+    #   - /home/ubuntu/docker/cifarm-server/data:/nakama/data
     entrypoint:
       - "/bin/sh"
       - "-ecx"
