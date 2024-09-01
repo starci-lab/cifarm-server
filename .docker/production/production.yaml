@@ -16,7 +16,7 @@ services:
       - "-ecx"
       - >
         /nakama/nakama migrate up --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE} &&
-        exec /nakama/nakama --config /nakama/data/local.yml --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE}
+        exec /nakama/nakama --config /nakama/data/config.yml --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE}
     expose:
       - "7349"
       - "7350"
@@ -32,4 +32,4 @@ services:
       - "7351:7351"
     restart: unless-stopped
 volumes:
-  data:
+  - /home/ubuntu/config/cifarm-server:/nakama/data
