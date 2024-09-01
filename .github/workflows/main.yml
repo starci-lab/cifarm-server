@@ -14,6 +14,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2 
 
+    - name: Copy configuration files
+      run: cp /home/ubuntu/docker/cifarm-server/config/config.yml config.yml
+
     - name: Run `docker compose`
       env:
         POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
