@@ -10,13 +10,14 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USERNAME: ${POSTGRES_USERNAME}
       POSTGRES_NAKAMA_DATABASE: ${POSTGRES_NAKAMA_DATABASE}
-
+    volumes:
+      - /home/ubuntu/docker-data/cifarm-server:/nakama/data
     entrypoint:
       - "/bin/sh"
       - "-ecx"
       - >
         /nakama/nakama migrate up --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE} &&
-        exec /nakama/nakama --config /nakama/data/config.yml --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE}
+        exec /nakama/nakama --config /nakama/data/cifarm-server.yml --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE}
     expose:
       - "7349"
       - "7350"
@@ -31,7 +32,5 @@ services:
       - "7350:7350"
       - "7351:7351"
     restart: unless-stopped
-    volumes:
-      - /home/ubuntu/docker-data/cifarm-server:/nakama/data
 volumes:
   data: 
