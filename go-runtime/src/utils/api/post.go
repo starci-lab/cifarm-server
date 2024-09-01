@@ -9,8 +9,12 @@ import (
 	"time"
 )
 
-func SendPostRequest[TResponseData any](url string, body string) (*TResponseData, error) {
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBufferString(body))
+func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody) (*TResponseData, error) {
+	bodyBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(bodyBytes))
 	if err != nil {
 		return nil, err
 	}

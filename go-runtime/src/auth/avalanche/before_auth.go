@@ -1,39 +1,44 @@
 package avalanche
 
 import (
+	_blockchain_auth_service "cifarm-server/src/services/blockchain_auth_service"
 	"context"
 	"database/sql"
 	"errors"
-
-	_common "cifarm-server/src/auth/common"
-	_constants "cifarm-server/src/constants"
-	_api "cifarm-server/src/utils/api"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func BeforeAvalancheAuth(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, data *api.AuthenticateCustomRequest) (*api.AuthenticateCustomRequest, error) {
-	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
-	if !ok {
-		logger.Error("Cannot get environment variables")
-		return nil, errors.New("cannot get environment variables")
-	}
-	url, ok := vars[_constants.ENV_BLOCKCHAIN_AUTH_SERVER_URL]
-	if !ok {
-		logger.Error("Error getting blockchain auth server URL: %v", url)
-		return nil, errors.New("error getting blockchain auth server URL")
-	} else {
-		logger.Error("Error getting blockchain auth server URL: %v", url)
-	}
-	endpoint := "/v1/verifications"
-	url = url + endpoint
+func BeforeAvalancheAuth(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	data *api.AuthenticateCustomRequest) (*api.AuthenticateCustomRequest, error) {
 
-	response, err := _api.SendPostRequest[_common.VerifyMessageResponseData](url, data.Account.Id)
-	if err != nil {
-		logger.Error("Error sending POST request to blockchain auth server: %v", err)
-		return nil, err
+	if data == nil {
+		return nil, errors.New("data is nil")
 	}
+
+	message := data.Account.Vars["message"]
+	signature := data.Account.Vars["signature"]
+	publicKey := data.Account.Vars["publicKey"]
+	platform := data.Account.Vars["platform"]
+
+	var _platform *string = &platform
+	if platform == "" {
+		_platform = nil
+	}
+
+	body := _blockchain_auth_service.VerifyMessageRequestBody{
+		Message:   message,
+		Signature: signature,
+		PublicKey: publicKey,
+		Platform:  _platform,
+	}
+
+	response, err := _blockchain_auth_service.VerifyMessage(ctx, logger, &body)
 	data.Account.Id = response.Address
 	return data, err
 }
