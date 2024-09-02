@@ -1,4 +1,4 @@
-package authenticator
+package authenticator_api
 
 import (
 	_constants "cifarm-server/src/constants"
