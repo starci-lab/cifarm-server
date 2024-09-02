@@ -16,6 +16,11 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
+	err = initializer.RegisterAfterAuthenticateCustom(auth.AfterAuthenticate)
+	if err != nil {
+		return err
+	}
+
 	err = initializer.RegisterRpc("go_healthcheck", RpcHealthcheck)
 	if err != nil {
 		return err
