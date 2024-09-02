@@ -50,5 +50,5 @@ func BeforeAuthenticate(
 		return nil, err
 	}
 	data.Account.Id = response.AuthenticationId
-	return nil, nil
+	return data, nil
 }

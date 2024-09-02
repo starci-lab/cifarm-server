@@ -30,7 +30,8 @@ func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TReq
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		var message = err.Error()
+		return nil, fmt.Errorf("failed to create HTTP request: %s", message)
 	}
 	defer resp.Body.Close()
 
