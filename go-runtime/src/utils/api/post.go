@@ -10,15 +10,19 @@ import (
 )
 
 func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody) (*TResponseData, error) {
-	bodyBytes, err := json.Marshal(body)
+	var _body *bytes.Buffer = bytes.NewBuffer([]byte{})
+	if body != nil {
+		bodyBytes, err := json.Marshal(body)
+		if err != nil {
+			return nil, err
+		}
+		_body = bytes.NewBuffer(bodyBytes)
+	}
+	req, err := http.NewRequest(http.MethodPost, url, _body)
 	if err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(bodyBytes))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Add("Content-Type", "application/json")
 
 	client := &http.Client{
 		Timeout: 10 * time.Second,
