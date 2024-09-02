@@ -3,6 +3,7 @@ package main
 import (
 	auth "cifarm-server/src/auth"
 	rpcs "cifarm-server/src/rpcs"
+	setup "cifarm-server/src/setup"
 	"context"
 	"database/sql"
 
@@ -10,8 +11,14 @@ import (
 )
 
 func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	logger.Info("Hello World!")
-	err := initializer.RegisterBeforeAuthenticateCustom(auth.BeforeAuthenticate)
+
+	err := setup.Setup(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = initializer.RegisterBeforeAuthenticateCustom(auth.BeforeAuthenticate)
 	if err != nil {
 		return err
 	}

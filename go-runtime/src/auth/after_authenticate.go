@@ -39,7 +39,7 @@ func AfterAuthenticate(
 		return fmt.Errorf("user ID not found")
 	}
 
-	value, err := json.Marshal(_collections.PlayerMetadataValue{
+	value, err := json.Marshal(_collections.PlayerMetadata{
 		Chain:   response.Chain,
 		Address: response.Address,
 	})
@@ -50,8 +50,8 @@ func AfterAuthenticate(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			UserID:          userId,
-			Key:             _constants.PLAYER_METADATA_KEY,
-			Collection:      _constants.CONFIG_COLLECTION,
+			Key:             _constants.KEY_PLAYER_METADATA,
+			Collection:      _constants.COLLECTION_CONFIG,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

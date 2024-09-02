@@ -1,6 +1,14 @@
 package constants
 
 const (
-	CONFIG_COLLECTION   = "config_collection"
-	PLAYER_METADATA_KEY = "player_metadata_key"
+	COLLECTION_CONFIG   = "config"
+	KEY_PLAYER_METADATA = "player_metadata"
 )
+
+const (
+	COLLECTION_ENTITIES = "entities"
+	KEY_ANIMALS         = "animals"
+	KEY_PLANTS          = "plants"
+)
+
+const ()
