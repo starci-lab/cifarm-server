@@ -1,9 +1,13 @@
 package auth
 
 import (
+	_constants "cifarm-server/src/constants"
 	_authenticator_graphql "cifarm-server/src/services/ci_base/authenticator/graphql"
+	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
+	"encoding/json"
+	"fmt"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -29,6 +33,29 @@ func AfterAuthenticate(
 	if err != nil {
 		return err
 	}
-	logger.Info("aaa %s %s", response.Address, response.Chain)
+
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		return fmt.Errorf("user ID not found")
+	}
+
+	value, err := json.Marshal(_collections.PlayerMetadataValue{
+		Chain:   response.Chain,
+		Address: response.Address,
+	})
+	if err != nil {
+		return err
+	}
+
+	nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			UserID:          userId,
+			Key:             _constants.PLAYER_METADATA_KEY,
+			Collection:      _constants.CONFIG_COLLECTION,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
 	return nil
 }

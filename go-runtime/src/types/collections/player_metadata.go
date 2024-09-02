@@ -1,5 +1,6 @@
 package collections
 
 type PlayerMetadataValue struct {
-	Chain int `json:"chain"`
+	Chain   string `json:"chain"`
+	Address string `json:"address"`
 }
