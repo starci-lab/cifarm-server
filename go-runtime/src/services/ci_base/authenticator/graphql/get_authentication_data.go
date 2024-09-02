@@ -11,19 +11,19 @@ import (
 )
 
 type GetAuthenticationInput struct {
-	AuthenticationId string `graphql:"authenticationId"`
+	AuthenticationId string `json:"authenticationId"`
 }
 
-type GetAuthenticationResult struct {
-	Address string `graphql:"address"`
-	Chain   string `graphql:"chain"`
+type AuthenticationData struct {
+	Address string `json:"address"`
+	Chain   string `json:"chain"`
 }
 
 func GetAuthenticationData(
 	ctx context.Context,
 	logger runtime.Logger,
 	input GetAuthenticationInput,
-) (*GetAuthenticationResult, error) {
+) (*AuthenticationData, error) {
 	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
 	if !ok {
 		logger.Error("Cannot get environment variables")
@@ -37,20 +37,28 @@ func GetAuthenticationData(
 	logger.Info("GRAPHPQL %v", url)
 	client := graphql.NewClient(url, nil)
 
+	query := `query Query($input: GetAuthenticationDataInput!) {
+  authenticationData(input: $input) {
+    chain,
+	address
+  }
+}`
 	variables := map[string]interface{}{
 		"input": map[string]interface{}{
 			"authenticationId": input.AuthenticationId,
 		},
 	}
-	var q struct {
-		Query struct {
-			AuthenticationData GetAuthenticationResult `graphql:"authenticationData(input: $input)"`
-		} `graphql:"Query($input: GetAuthenticationDataInput!)"`
-	}
-	err := client.Query(context.Background(), &q, variables)
+	result := struct {
+		AuthenticationData AuthenticationData `json:"authenticationData"`
+	}{}
+
+	err := client.Exec(context.Background(),
+		query,
+		&result,
+		variables,
+	)
 	if err != nil {
-		logger.Error(err.Error())
 		return nil, err
 	}
-	return &q.Query.AuthenticationData, nil
+	return &result.AuthenticationData, nil
 }
