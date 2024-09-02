@@ -47,7 +47,7 @@ func AfterAuthenticate(
 		return err
 	}
 
-	nk.StorageWrite(ctx, []*runtime.StorageWrite{
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			UserID:          userId,
 			Key:             _constants.PLAYER_METADATA_KEY,
@@ -57,5 +57,9 @@ func AfterAuthenticate(
 			PermissionWrite: 0,
 		},
 	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 	return nil
 }
