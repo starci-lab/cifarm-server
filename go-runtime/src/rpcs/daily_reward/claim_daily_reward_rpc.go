@@ -80,7 +80,6 @@ func ReadLatestDailyRewardObject(
 		logger.Error(err.Error())
 		return nil, err
 	}
-	logger.Info(string(len(objects.Objects)))
 
 	if len(objects.Objects) == 0 {
 		return nil, nil
