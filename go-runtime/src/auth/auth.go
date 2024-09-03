@@ -1,27 +1,26 @@
-package setup
+package auth
 
 import (
-	_entities "cifarm-server/src/setup/entities"
 	"context"
 	"database/sql"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeSetup(
+func InitializeAuth(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
+	initializer runtime.Initializer,
 ) error {
-	err := _entities.SetupPlants(ctx, logger, db, nk)
+	err := initializer.RegisterBeforeAuthenticateCustom(BeforeAuthenticate)
 	if err != nil {
-		logger.Error(err.Error())
 		return err
 	}
-	err = _entities.SetupAnimals(ctx, logger, db, nk)
+
+	err = initializer.RegisterAfterAuthenticateCustom(AfterAuthenticate)
 	if err != nil {
-		logger.Error(err.Error())
 		return err
 	}
 	return nil

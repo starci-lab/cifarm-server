@@ -1,11 +1,10 @@
 package entities
 
 import (
-	"cifarm-server/src/constants"
+	_plant_seeds "cifarm-server/src/storage_queries/plant_seeds"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
-	"encoding/json"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -41,24 +40,9 @@ func SetupPlants(
 		},
 	}
 
-	var writes []*runtime.StorageWrite
-	for _, plantSeed := range plantSeeds {
-		value, err := json.Marshal(plantSeed)
-		if err != nil {
-			continue
-		}
-
-		write := &runtime.StorageWrite{
-			Collection:      constants.COLLECTION_PLANT_SEEDS,
-			Key:             plantSeed.Id,
-			Value:           string(value),
-			PermissionRead:  2,
-			PermissionWrite: 0,
-		}
-		writes = append(writes, write)
-	}
-
-	_, err := nk.StorageWrite(ctx, writes)
+	err := _plant_seeds.WritePlantSeedObjects(ctx, logger, db, nk, _plant_seeds.WritePlantSeedObjectsParams{
+		PlantSeeds: plantSeeds,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err

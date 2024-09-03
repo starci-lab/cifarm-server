@@ -1,4 +1,4 @@
-package shop
+package daily_rewards
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -8,22 +8,21 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeStorageIndexPlantSeedObjects(
+func InitializeStorageIndexLatestDailyRewardObject(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := _constants.STORAGE_INDEX_PLANT_SEED_OBJECTS
-	collection := _constants.COLLECTION_PLANT_SEEDS
+	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
+	collection := _constants.COLLECTION_REWARDS
 	key := ""
 	fields := []string{
-		"id",
-		"price",
+		"days",
 	}
 	sortableFields := []string{}
-	maxEntries := 100
+	maxEntries := 1
 	indexOnly := false
 	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
 	if err != nil {

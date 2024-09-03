@@ -1,16 +1,15 @@
 package shop
 
 import (
-	_constants "cifarm-server/src/constants"
+	_inventories "cifarm-server/src/storage_queries/inventories"
+	_plant_seeds "cifarm-server/src/storage_queries/plant_seeds"
 	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/utils/wallets"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
@@ -35,7 +34,6 @@ func BuyPlantSeedRpc(ctx context.Context,
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
-
 	var params *BuyPlantSeedRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
 	if err != nil {
@@ -43,24 +41,15 @@ func BuyPlantSeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	name := _constants.STORAGE_INDEX_PLANT_SEED_OBJECTS
-	query := fmt.Sprintf("+value.id:%s", params.Id)
-	order := []string{}
-
-	plantSeeds, err := nk.StorageIndexList(ctx, userId, name, query, 100, order)
+	plantSeed, err := _plant_seeds.ReadPlantSeedObjectById(
+		ctx, logger, db, nk,
+		_plant_seeds.ReadPlantSeedObjectByIdParams{
+			Id: params.Id,
+		})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-
-	if len(plantSeeds.Objects) == 0 {
-		errMsg := "plant seed not found"
-		logger.Error(errMsg)
-		return "", errors.New(errMsg)
-	}
-
-	var plantSeed = plantSeeds.Objects[0]
-
 	var _plantSeed *_collections.PlantSeed
 	err = json.Unmarshal([]byte(plantSeed.Value), &_plantSeed)
 	if err != nil {
@@ -82,27 +71,16 @@ func BuyPlantSeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	inventory, err := json.Marshal(_collections.Inventory{
-		Id:       _plantSeed.Id,
-		Type:     _collections.TYPE_SEED,
-		Quantity: params.Quantity,
-	})
-
+	err = _inventories.WriteInventoryObject(ctx,
+		logger, db, nk,
+		_inventories.WriteInventoryObjectParams{
+			Id:       _plantSeed.Id,
+			Quantity: params.Quantity,
+		})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-
-	nk.StorageWrite(ctx, []*runtime.StorageWrite{
-		{
-			Collection:      _constants.COLLECTION_INVENTORY,
-			Key:             uuid.NewString(),
-			UserID:          userId,
-			Value:           string(inventory),
-			PermissionRead:  1,
-			PermissionWrite: 0,
-		},
-	})
 
 	_value, err := json.Marshal(BuyPlantSeedRpcResponse{
 		TotalCost: totalCost,

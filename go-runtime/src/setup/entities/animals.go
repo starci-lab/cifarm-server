@@ -1,11 +1,10 @@
 package entities
 
 import (
-	"cifarm-server/src/constants"
+	_animals "cifarm-server/src/storage_queries/animals"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
-	"encoding/json"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -33,28 +32,12 @@ func SetupAnimals(
 		},
 	}
 
-	var writes []*runtime.StorageWrite
-	for _, animal := range animals {
-		value, err := json.Marshal(animal)
-		if err != nil {
-			continue
-		}
-
-		write := &runtime.StorageWrite{
-			Collection:      constants.COLLECTION_ANIMALS,
-			Key:             animal.Id,
-			Value:           string(value),
-			PermissionRead:  2,
-			PermissionWrite: 0,
-		}
-		writes = append(writes, write)
-	}
-
-	_, err := nk.StorageWrite(ctx, writes)
+	err := _animals.WriteAnimalsObjects(ctx, logger, db, nk, _animals.WriteAnimalsObjectsParams{
+		Animals: animals,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-
 	return nil
 }

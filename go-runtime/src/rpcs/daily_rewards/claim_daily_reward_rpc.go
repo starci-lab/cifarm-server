@@ -1,93 +1,17 @@
-package daily_reward
+package daily_rewards
 
 import (
-	_constants "cifarm-server/src/constants"
+	_daily_rewards "cifarm-server/src/storage_queries/daily_rewards"
 	_wallets "cifarm-server/src/utils/wallets"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
-
-type WriteDailyRewardObjectParams struct {
-	Amount int64 `json:"amount"`
-	Days   int   `json:"days"`
-}
-
-func WriteDailyRewardObject(
-	ctx context.Context,
-	logger runtime.Logger,
-	db *sql.DB,
-	nk runtime.NakamaModule,
-	params WriteDailyRewardObjectParams,
-) error {
-	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
-	if !ok {
-		errMsg := "user ID not found"
-		logger.Error(errMsg)
-		return errors.New(errMsg)
-	}
-
-	value, err := json.Marshal(params)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-
-	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
-		{
-			Collection:      _constants.COLLECTION_REWARDS,
-			Key:             uuid.NewString(),
-			UserID:          userId,
-			Value:           string(value),
-			PermissionRead:  1,
-			PermissionWrite: 0,
-		},
-	})
-
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-	return nil
-}
-
-func ReadLatestDailyRewardObject(
-	ctx context.Context,
-	logger runtime.Logger,
-	db *sql.DB,
-	nk runtime.NakamaModule,
-) (*api.StorageObject, error) {
-	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
-	if !ok {
-		errMsg := "user ID not found"
-		logger.Error(errMsg)
-		return nil, errors.New(errMsg)
-	}
-	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
-	query := fmt.Sprintf("+user_id:%s", userId)
-	order := []string{
-		"-create_time",
-	}
-
-	dailyRewards, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
-	if len(dailyRewards.Objects) == 0 {
-		return nil, nil
-	}
-	var latest = dailyRewards.Objects[0]
-	return latest, nil
-}
 
 type CanClaimDailyRewardRpcResponse struct {
 	Amount int64 `json:"amount"`
@@ -136,7 +60,7 @@ func ClaimDailyRewardRpc(
 	nk runtime.NakamaModule,
 	payload string,
 ) (string, error) {
-	object, err := ReadLatestDailyRewardObject(ctx, logger, db, nk)
+	object, err := _daily_rewards.ReadLatestDailyRewardObject(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -156,7 +80,7 @@ func ClaimDailyRewardRpc(
 			logger.Error(err.Error())
 			return "", err
 		}
-		err = WriteDailyRewardObject(ctx, logger, db, nk, WriteDailyRewardObjectParams{
+		err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _daily_rewards.WriteDailyRewardObjectParams{
 			Amount: amount,
 			Days:   days,
 		})
@@ -210,7 +134,7 @@ func ClaimDailyRewardRpc(
 		return "", err
 	}
 
-	err = WriteDailyRewardObject(ctx, logger, db, nk, WriteDailyRewardObjectParams{
+	err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _daily_rewards.WriteDailyRewardObjectParams{
 		Amount: amount,
 		Days:   days,
 	})

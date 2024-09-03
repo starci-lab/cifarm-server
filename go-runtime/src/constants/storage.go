@@ -18,5 +18,5 @@ const (
 )
 
 const (
-	COLLECTION_INVENTORY = "inventory"
+	COLLECTION_INVENTORIES = "inventories"
 )
