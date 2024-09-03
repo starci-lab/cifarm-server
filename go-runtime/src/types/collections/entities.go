@@ -2,7 +2,7 @@ package collections
 
 type Plant struct {
 	Id                          int     `json:"id"`
-	Key                         string  `json:"string"`
+	Key                         string  `json:"-"`
 	GrowthStageDuration         float32 `json:"growthStageDuration"`
 	GrowthStages                int     `json:"growthStages"`
 	SeedPrice                   float32 `json:"price"`
@@ -15,7 +15,7 @@ type Plant struct {
 
 type Animal struct {
 	Id             int     `json:"id"`
-	Key            string  `json:"name"`
+	Key            string  `json:"-"`
 	YieldTime      float32 `json:"yieldTime"`
 	OffspringPrice float32 `json:"offspringPrice"`
 	Premium        bool    `json:"premium"`
