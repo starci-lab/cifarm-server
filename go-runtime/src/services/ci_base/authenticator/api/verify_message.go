@@ -18,7 +18,6 @@ type VerifyMessageRequestBody struct {
 
 type VerifyMessageResponseData struct {
 	Result           bool   `json:"result"`
-	Address          string `json:"address"`
 	AuthenticationId string `json:"authenticationId"`
 }
 

@@ -61,5 +61,16 @@ func AfterAuthenticate(
 		logger.Error(err.Error())
 		return err
 	}
+	err = nk.AccountUpdateId(
+		ctx,
+		userId, "",
+		nil,
+		fmt.Sprintf("%s_%s", response.Chain, response.Address),
+		"", "", "", "")
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	return nil
 }

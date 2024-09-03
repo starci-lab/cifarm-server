@@ -5,8 +5,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -47,11 +47,10 @@ func BeforeAuthenticate(
 
 	response, err := _authenticator_api.VerifyMessage(ctx, logger, &body)
 	if err != nil {
-		logger.Error("Verify message failed: %v", message)
+		logger.Error(err.Error())
 		return nil, err
 	}
 	data.Account.Id = response.AuthenticationId
-	data.Username = fmt.Sprintf("%s_%s", chain, response.Address)
-	data.Create.Value = true
+	data.Username = uuid.NewString()
 	return data, nil
 }
