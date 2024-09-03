@@ -1,8 +1,8 @@
 package daily_rewards
 
 import (
-	_daily_rewards "cifarm-server/src/storage_queries/daily_rewards"
-	_wallets "cifarm-server/src/utils/wallets"
+	_daily_rewards "cifarm-server/src/storage/daily_rewards"
+	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
 	"encoding/json"

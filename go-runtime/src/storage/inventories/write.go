@@ -15,6 +15,7 @@ import (
 type WriteInventoryObjectParams struct {
 	Id       string `json:"id"`
 	Quantity int    `json:"quantity"`
+	Type     int    `json:"int"`
 }
 
 func WriteInventoryObject(
@@ -30,12 +31,26 @@ func WriteInventoryObject(
 		logger.Error(errMsg)
 		return errors.New(errMsg)
 	}
-	inventory, err := json.Marshal(_collections.Inventory{
-		Id:       params.Id,
-		Type:     _collections.TYPE_SEED,
-		Quantity: params.Quantity,
-	})
 
+	inventory, err := ReadInventoryObjectValue(ctx, logger, db, nk, ReadInventoryObjectParams{
+		Id: params.Id,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	if inventory != nil {
+		inventory.Quantity += params.Quantity
+	} else {
+		inventory = &_collections.Inventory{
+			Id:       params.Id,
+			Type:     params.Type,
+			Quantity: params.Quantity,
+		}
+	}
+
+	_inventory, err := json.Marshal(inventory)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -46,7 +61,7 @@ func WriteInventoryObject(
 			Collection:      _constants.COLLECTION_INVENTORIES,
 			Key:             uuid.NewString(),
 			UserID:          userId,
-			Value:           string(inventory),
+			Value:           string(_inventory),
 			PermissionRead:  1,
 			PermissionWrite: 0,
 		},

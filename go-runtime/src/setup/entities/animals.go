@@ -1,7 +1,7 @@
 package entities
 
 import (
-	_animals "cifarm-server/src/storage_queries/animals"
+	_animals "cifarm-server/src/storage/animals"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"

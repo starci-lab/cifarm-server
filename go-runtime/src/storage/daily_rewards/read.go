@@ -2,8 +2,10 @@ package daily_rewards
 
 import (
 	_constants "cifarm-server/src/constants"
+	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -40,4 +42,26 @@ func ReadLatestDailyRewardObject(
 	}
 	var latest = dailyRewards.Objects[0]
 	return latest, nil
+}
+
+func ReadLatestDailyRewardObjectValue(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) (*_collections.DailyReward, error) {
+	object, err := ReadLatestDailyRewardObject(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	var dailyReward *_collections.DailyReward
+	err = json.Unmarshal([]byte(object.Value), &dailyReward)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return dailyReward, nil
 }

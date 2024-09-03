@@ -2,8 +2,10 @@ package inventories
 
 import (
 	_constants "cifarm-server/src/constants"
+	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -44,5 +46,27 @@ func ReadInventoryObject(
 		return nil, errors.New(errMsg)
 	}
 	var inventory = inventories.Objects[0]
+	return inventory, nil
+}
+
+func ReadInventoryObjectValue(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadInventoryObjectParams,
+) (*_collections.Inventory, error) {
+	object, err := ReadInventoryObject(ctx, logger, db, nk, params)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	var inventory *_collections.Inventory
+	err = json.Unmarshal([]byte(object.Value), &inventory)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
 	return inventory, nil
 }

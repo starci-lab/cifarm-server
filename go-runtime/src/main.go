@@ -4,7 +4,7 @@ import (
 	_auth "cifarm-server/src/auth"
 	_rpcs "cifarm-server/src/rpcs"
 	_setup "cifarm-server/src/setup"
-	_storage_queries "cifarm-server/src/storage_queries"
+	_storage "cifarm-server/src/storage"
 	"context"
 	"database/sql"
 
@@ -12,7 +12,7 @@ import (
 )
 
 func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := _storage_queries.InitializeStorageQueries(ctx, logger, db, nk, initializer)
+	err := _storage.InitializeStorage(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

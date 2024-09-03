@@ -2,8 +2,10 @@ package plant_seeds
 
 import (
 	_constants "cifarm-server/src/constants"
+	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -39,5 +41,28 @@ func ReadPlantSeedObjectById(
 	}
 
 	plantSeed := plantSeeds.Objects[0]
+	return plantSeed, nil
+}
+
+func ReadPlantSeedObjectValueById(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadPlantSeedObjectByIdParams,
+) (*_collections.PlantSeed, error) {
+	object, err := ReadPlantSeedObjectById(ctx, logger, db, nk, params)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	var plantSeed *_collections.PlantSeed
+	err = json.Unmarshal([]byte(object.Value), &plantSeed)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
 	return plantSeed, nil
 }

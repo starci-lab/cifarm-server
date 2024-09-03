@@ -1,7 +1,7 @@
 package entities
 
 import (
-	_plant_seeds "cifarm-server/src/storage_queries/plant_seeds"
+	_plant_seeds "cifarm-server/src/storage/plant_seeds"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"

@@ -1,10 +1,9 @@
 package shop
 
 import (
-	_inventories "cifarm-server/src/storage_queries/inventories"
-	_plant_seeds "cifarm-server/src/storage_queries/plant_seeds"
-	_collections "cifarm-server/src/types/collections"
-	_wallets "cifarm-server/src/utils/wallets"
+	_inventories "cifarm-server/src/storage/inventories"
+	_plant_seeds "cifarm-server/src/storage/plant_seeds"
+	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -41,7 +40,7 @@ func BuyPlantSeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	plantSeed, err := _plant_seeds.ReadPlantSeedObjectById(
+	plantSeed, err := _plant_seeds.ReadPlantSeedObjectValueById(
 		ctx, logger, db, nk,
 		_plant_seeds.ReadPlantSeedObjectByIdParams{
 			Id: params.Id,
@@ -50,20 +49,14 @@ func BuyPlantSeedRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
-	var _plantSeed *_collections.PlantSeed
-	err = json.Unmarshal([]byte(plantSeed.Value), &_plantSeed)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
 
-	totalCost := int64(_plantSeed.SeedPrice) * int64(params.Quantity)
+	totalCost := int64(plantSeed.SeedPrice) * int64(params.Quantity)
 	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
 		UserId: userId,
 		Amount: -totalCost,
 		Metadata: map[string]interface{}{
 			"name":   "Buy seeds",
-			"seedId": _plantSeed.Id,
+			"seedId": plantSeed.Id,
 		},
 	})
 	if err != nil {
@@ -74,7 +67,7 @@ func BuyPlantSeedRpc(ctx context.Context,
 	err = _inventories.WriteInventoryObject(ctx,
 		logger, db, nk,
 		_inventories.WriteInventoryObjectParams{
-			Id:       _plantSeed.Id,
+			Id:       plantSeed.Id,
 			Quantity: params.Quantity,
 		})
 	if err != nil {

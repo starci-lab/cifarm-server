@@ -2,8 +2,10 @@ package animals
 
 import (
 	_constants "cifarm-server/src/constants"
+	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -12,7 +14,7 @@ import (
 )
 
 type ReadAnimalObjectByIdParams struct {
-	Id string `json:"Id"`
+	Id string `json:"id"`
 }
 
 func ReadAnimalObjectById(
@@ -39,5 +41,28 @@ func ReadAnimalObjectById(
 	}
 
 	animal := animals.Objects[0]
+	return animal, nil
+}
+
+func ReadAnimalObjectValueById(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadAnimalObjectByIdParams,
+) (*_collections.Animal, error) {
+	object, err := ReadAnimalObjectById(ctx, logger, db, nk, params)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	var animal *_collections.Animal
+	err = json.Unmarshal([]byte(object.Value), &animal)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
 	return animal, nil
 }

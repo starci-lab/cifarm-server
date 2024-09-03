@@ -1,17 +1,17 @@
-package storage_queries
+package storage
 
 import (
-	_animals "cifarm-server/src/storage_queries/animals"
-	_daily_rewards "cifarm-server/src/storage_queries/daily_rewards"
-	_inventories "cifarm-server/src/storage_queries/inventories"
-	_plant_seeds "cifarm-server/src/storage_queries/plant_seeds"
+	_animals "cifarm-server/src/storage/animals"
+	_daily_rewards "cifarm-server/src/storage/daily_rewards"
+	_inventories "cifarm-server/src/storage/inventories"
+	_plant_seeds "cifarm-server/src/storage/plant_seeds"
 	"context"
 	"database/sql"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeStorageQueries(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
+func InitializeStorage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
 	err := _animals.InitializeStorageIndexAnimalsObjects(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
