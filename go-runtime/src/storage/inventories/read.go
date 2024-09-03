@@ -41,9 +41,7 @@ func ReadInventoryObject(
 	}
 
 	if len(inventories.Objects) == 0 {
-		errMsg := "inventory not found"
-		logger.Error(errMsg)
-		return nil, errors.New(errMsg)
+		return nil, nil
 	}
 	var inventory = inventories.Objects[0]
 	return inventory, nil
@@ -60,6 +58,10 @@ func ReadInventoryObjectValue(
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
+	}
+
+	if object == nil {
+		return nil, nil
 	}
 
 	var inventory *_collections.Inventory

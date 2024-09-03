@@ -20,7 +20,7 @@ func InitializeStorageIndexInventoryObjects(
 	key := ""
 	fields := []string{
 		"id",
-		"price",
+		"quantity",
 	}
 	sortableFields := []string{}
 	maxEntries := 100
