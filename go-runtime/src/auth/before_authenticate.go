@@ -52,5 +52,6 @@ func BeforeAuthenticate(
 	}
 	data.Account.Id = response.AuthenticationId
 	data.Username = uuid.NewString()
+	data.Create.Value = true
 	return data, nil
 }
