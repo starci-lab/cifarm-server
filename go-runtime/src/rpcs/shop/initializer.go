@@ -8,7 +8,7 @@ import (
 )
 
 func InitializeShop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := InitializeStorageIndexPlantObjects(ctx, logger, db, nk, initializer)
+	err := InitializeStorageIndexPlantSeedObjects(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}

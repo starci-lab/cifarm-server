@@ -19,7 +19,7 @@ func SetupPlants(
 
 	plantSeeds := []_collections.PlantSeed{
 		{
-			Id:                  "carrot",
+			Id:                  _collections.PLANT_SEED_CARROT_SEED,
 			SeedPrice:           50,
 			GrowthStageDuration: 1000 * 60 * 60, //1 hours
 			GrowthStages:        5,
@@ -29,7 +29,7 @@ func SetupPlants(
 			MaxHarvestQuantity:  20,
 		},
 		{
-			Id:                          "potato",
+			Id:                          _collections.PLANT_SEED_POTATO_SEED,
 			SeedPrice:                   100,
 			GrowthStageDuration:         1000 * 60 * 60 * 2.5, //2.5 hours
 			GrowthStages:                5,

@@ -7,3 +7,8 @@ type Animal struct {
 	Premium        bool    `json:"premium"`
 	GrowthTime     float32 `json:"growthTime"`
 }
+
+const (
+	ANIMAL_CHICKEN = "chicken"
+	ANIMAL_COW     = "cow"
+)

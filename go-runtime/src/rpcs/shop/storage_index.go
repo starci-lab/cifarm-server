@@ -8,7 +8,7 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeStorageIndexPlantObjects(
+func InitializeStorageIndexPlantSeedObjects(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -19,6 +19,7 @@ func InitializeStorageIndexPlantObjects(
 	collection := _constants.COLLECTION_PLANT_SEEDS
 	key := ""
 	fields := []string{
+		"id",
 		"price",
 	}
 	sortableFields := []string{}

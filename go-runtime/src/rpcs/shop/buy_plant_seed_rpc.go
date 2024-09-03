@@ -44,10 +44,10 @@ func BuyPlantSeedRpc(ctx context.Context,
 	}
 
 	name := _constants.STORAGE_INDEX_PLANT_SEED_OBJECTS
-	query := fmt.Sprintf("value.id:%s", params.Id)
+	query := fmt.Sprintf("+value.id:%s", params.Id)
 	order := []string{}
 
-	plantSeeds, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
+	plantSeeds, err := nk.StorageIndexList(ctx, userId, name, query, 100, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
