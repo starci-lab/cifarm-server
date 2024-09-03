@@ -83,8 +83,11 @@ func BuyPlantSeedRpc(ctx context.Context,
 	}
 
 	inventory, err := json.Marshal(_collections.Inventory{
-		Id: _plantSeed.Id,
+		Id:       _plantSeed.Id,
+		Type:     _collections.TYPE_SEED,
+		Quantity: params.Quantity,
 	})
+
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
