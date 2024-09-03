@@ -21,14 +21,14 @@ func SetupAnimals(
 		{
 			Id:             1,
 			OffspringPrice: 1000,
-			Key:            "Chicken",
+			Key:            "chicken",
 			Premium:        false,
 			GrowthTime:     1000 * 60 * 60 * 7, //7 days
 			YieldTime:      1000 * 60 * 60,     //1 days
 		},
 		{
 			Id:         1,
-			Key:        "Cow",
+			Key:        "cow",
 			Premium:    true,
 			GrowthTime: 1000 * 60 * 60 * 14, //14 days
 			YieldTime:  1000 * 60 * 60 * 2,  //2 days

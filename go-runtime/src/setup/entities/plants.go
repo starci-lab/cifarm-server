@@ -21,7 +21,7 @@ func SetupPlants(
 		{
 			Id:                  1,
 			SeedPrice:           50,
-			Key:                 "Carrot",
+			Key:                 "carrot",
 			GrowthStageDuration: 1000 * 60 * 60, //1 hours
 			GrowthStages:        5,
 			Premium:             false,
@@ -32,7 +32,7 @@ func SetupPlants(
 		{
 			Id:                          2,
 			SeedPrice:                   100,
-			Key:                         "Potato",
+			Key:                         "potato",
 			GrowthStageDuration:         1000 * 60 * 60 * 2.5, //2.5 hours
 			GrowthStages:                5,
 			Premium:                     false,
