@@ -8,6 +8,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -40,7 +41,7 @@ func WriteDailyRewardObject(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      _constants.COLLECTION_REWARDS,
-			Key:             _constants.KEY_DAILY,
+			Key:             uuid.NewString(),
 			UserID:          userId,
 			Value:           string(value),
 			PermissionRead:  1,
@@ -70,7 +71,6 @@ func ReadLatestDailyRewardObject(
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{
 			Collection: _constants.COLLECTION_REWARDS,
-			Key:        _constants.KEY_DAILY,
 			UserID:     userId,
 		},
 	})
@@ -121,7 +121,7 @@ func CanUserClaimDailyReward(
 		0,
 		0,
 		time.UTC)
-	startOfTomorrow := startOfToday.Add(24 * time.Hour)
+	startOfTomorrow := startOfToday
 	now := time.Now().UTC().Unix()
 
 	result := now >= startOfTomorrow.Unix()
@@ -201,6 +201,15 @@ func ClaimDailyRewardRpc(
 	}
 	days := value.Days
 	days++
+
+	err = WriteDailyRewardObject(ctx, logger, db, nk, WriteDailyRewardObjectParams{
+		Amount: amount,
+		Days:   days,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
 	_value, err := json.Marshal(CanClaimDailyRewardRpcResponse{
 		Amount: amount,
