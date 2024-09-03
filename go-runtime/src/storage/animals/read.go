@@ -49,16 +49,10 @@ func ReadAnimalObjectValueById(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadAnimalObjectByIdParams,
+	object *api.StorageObject,
 ) (*_collections.Animal, error) {
-	object, err := ReadAnimalObjectById(ctx, logger, db, nk, params)
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
 	var animal *_collections.Animal
-	err = json.Unmarshal([]byte(object.Value), &animal)
+	err := json.Unmarshal([]byte(object.Value), &animal)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

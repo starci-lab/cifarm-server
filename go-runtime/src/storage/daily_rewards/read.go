@@ -49,15 +49,10 @@ func ReadLatestDailyRewardObjectValue(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
+	object *api.StorageObject,
 ) (*_collections.DailyReward, error) {
-	object, err := ReadLatestDailyRewardObject(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
 	var dailyReward *_collections.DailyReward
-	err = json.Unmarshal([]byte(object.Value), &dailyReward)
+	err := json.Unmarshal([]byte(object.Value), &dailyReward)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

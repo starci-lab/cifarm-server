@@ -3,6 +3,7 @@ package shop
 import (
 	_inventories "cifarm-server/src/storage/inventories"
 	_plant_seeds "cifarm-server/src/storage/plant_seeds"
+	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -40,7 +41,7 @@ func BuyPlantSeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	plantSeed, err := _plant_seeds.ReadPlantSeedObjectValueById(
+	object, err := _plant_seeds.ReadPlantSeedObjectById(
 		ctx, logger, db, nk,
 		_plant_seeds.ReadPlantSeedObjectByIdParams{
 			Id: params.Id,
@@ -49,6 +50,12 @@ func BuyPlantSeedRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
+	plantSeed, err := _plant_seeds.ReadPlantSeedObjectValueById(
+		ctx,
+		logger,
+		db,
+		nk,
+		object)
 
 	totalCost := int64(plantSeed.SeedPrice) * int64(params.Quantity)
 	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
@@ -69,6 +76,7 @@ func BuyPlantSeedRpc(ctx context.Context,
 		_inventories.WriteInventoryObjectParams{
 			Id:       plantSeed.Id,
 			Quantity: params.Quantity,
+			Type:     _collections.TYPE_SEED,
 		})
 	if err != nil {
 		logger.Error(err.Error())

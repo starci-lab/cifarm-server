@@ -52,20 +52,14 @@ func ReadInventoryObjectValue(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadInventoryObjectParams,
+	object *api.StorageObject,
 ) (*_collections.Inventory, error) {
-	object, err := ReadInventoryObject(ctx, logger, db, nk, params)
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
 	if object == nil {
 		return nil, nil
 	}
 
 	var inventory *_collections.Inventory
-	err = json.Unmarshal([]byte(object.Value), &inventory)
+	err := json.Unmarshal([]byte(object.Value), &inventory)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

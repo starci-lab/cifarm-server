@@ -48,11 +48,6 @@ func CanUserClaimDailyReward(
 	return result, nil
 }
 
-type DailyRewardObjectValue struct {
-	Amount int64 `json:"amount"`
-	Days   int   `json:"days"`
-}
-
 func ClaimDailyRewardRpc(
 	ctx context.Context,
 	logger runtime.Logger,
@@ -113,13 +108,18 @@ func ClaimDailyRewardRpc(
 	}
 
 	amount := int64(100)
-	var value *DailyRewardObjectValue
-	err = json.Unmarshal([]byte(object.Value), &value)
+	dailyReward, err := _daily_rewards.ReadLatestDailyRewardObjectValue(
+		ctx,
+		logger,
+		db,
+		nk,
+		object,
+	)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	days := value.Days
+	days := dailyReward.Days
 	days++
 
 	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{

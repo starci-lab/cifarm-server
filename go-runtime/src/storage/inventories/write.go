@@ -32,7 +32,7 @@ func WriteInventoryObject(
 		return errors.New(errMsg)
 	}
 
-	inventory, err := ReadInventoryObjectValue(ctx, logger, db, nk, ReadInventoryObjectParams{
+	object, err := ReadInventoryObject(ctx, logger, db, nk, ReadInventoryObjectParams{
 		Id: params.Id,
 	})
 	if err != nil {
@@ -40,35 +40,57 @@ func WriteInventoryObject(
 		return err
 	}
 
-	if inventory != nil {
+	if object != nil {
+		inventory, err := ReadInventoryObjectValue(ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 		inventory.Quantity += params.Quantity
+		_inventory, err := json.Marshal(inventory)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+			{
+				Collection:      _constants.COLLECTION_INVENTORIES,
+				Key:             object.Key,
+				UserID:          userId,
+				Value:           string(_inventory),
+				PermissionRead:  1,
+				PermissionWrite: 0,
+			},
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 	} else {
-		inventory = &_collections.Inventory{
+		_inventory, err := json.Marshal(_collections.Inventory{
 			Id:       params.Id,
 			Type:     params.Type,
 			Quantity: params.Quantity,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+			{
+				Collection:      _constants.COLLECTION_INVENTORIES,
+				Key:             uuid.NewString(),
+				UserID:          userId,
+				Value:           string(_inventory),
+				PermissionRead:  1,
+				PermissionWrite: 0,
+			},
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
 		}
 	}
 
-	_inventory, err := json.Marshal(inventory)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-
-	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
-		{
-			Collection:      _constants.COLLECTION_INVENTORIES,
-			Key:             uuid.NewString(),
-			UserID:          userId,
-			Value:           string(_inventory),
-			PermissionRead:  1,
-			PermissionWrite: 0,
-		},
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
 	return nil
 }

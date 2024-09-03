@@ -49,16 +49,10 @@ func ReadPlantSeedObjectValueById(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadPlantSeedObjectByIdParams,
+	object *api.StorageObject,
 ) (*_collections.PlantSeed, error) {
-	object, err := ReadPlantSeedObjectById(ctx, logger, db, nk, params)
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
 	var plantSeed *_collections.PlantSeed
-	err = json.Unmarshal([]byte(object.Value), &plantSeed)
+	err := json.Unmarshal([]byte(object.Value), &plantSeed)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
