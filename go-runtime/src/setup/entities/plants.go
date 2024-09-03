@@ -44,8 +44,8 @@ func SetupPlants(
 			},
 		},
 	}
-	_plants, err := json.Marshal(plants)
 
+	_plants, err := json.Marshal(plants)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -60,7 +60,6 @@ func SetupPlants(
 			PermissionWrite: 0,
 		},
 	})
-
 	if err != nil {
 		logger.Error(err.Error())
 		return err

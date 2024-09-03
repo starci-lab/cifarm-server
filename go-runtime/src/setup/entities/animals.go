@@ -36,8 +36,8 @@ func SetupAnimals(
 			},
 		},
 	}
-	_animals, err := json.Marshal(animals)
 
+	_animals, err := json.Marshal(animals)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
