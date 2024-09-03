@@ -1,4 +1,4 @@
-package wallets
+package daily_reward
 
 import (
 	_constants "cifarm-server/src/constants"

@@ -1,4 +1,4 @@
-package wallets
+package daily_reward
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -57,32 +57,6 @@ func WriteDailyRewardObject(
 	return nil
 }
 
-func InitializeStorageIndexLatestDailyRewardObject(
-	ctx context.Context,
-	logger runtime.Logger,
-	db *sql.DB,
-	nk runtime.NakamaModule,
-	initializer runtime.Initializer,
-) error {
-	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
-	collection := _constants.COLLECTION_REWARDS
-	key := ""
-	fields := []string{
-		"values.days",
-	}
-	sortableFields := []string{
-		"create_time",
-	}
-	maxEntries := 1
-	indexOnly := false
-	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-	return nil
-}
-
 func ReadLatestDailyRewardObject(
 	ctx context.Context,
 	logger runtime.Logger,
@@ -96,7 +70,7 @@ func ReadLatestDailyRewardObject(
 		return nil, errors.New(errMsg)
 	}
 	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
-	query := fmt.Sprintf("userId:%s", userId)
+	query := fmt.Sprintf("user_id:%s", userId)
 	order := []string{
 		"-create_time",
 	}
@@ -106,6 +80,8 @@ func ReadLatestDailyRewardObject(
 		logger.Error(err.Error())
 		return nil, err
 	}
+	logger.Info(string(len(objects.Objects)))
+
 	if len(objects.Objects) == 0 {
 		return nil, nil
 	}
@@ -140,7 +116,8 @@ func CanUserClaimDailyReward(
 		0,
 		0,
 		time.UTC)
-	startOfTomorrow := startOfToday
+	//startOfTomorrow := startOfToday
+	startOfTomorrow := startOfToday.Add(24 * time.Hour)
 	now := time.Now().UTC().Unix()
 
 	result := now >= startOfTomorrow.Unix()
@@ -220,6 +197,18 @@ func ClaimDailyRewardRpc(
 	}
 	days := value.Days
 	days++
+
+	err = UpdateWallet(ctx, logger, db, nk, UpdateWalletParams{
+		Amount: amount,
+		Metadata: map[string]interface{}{
+			"name": "Daily reward",
+			"days": days,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
 	err = WriteDailyRewardObject(ctx, logger, db, nk, WriteDailyRewardObjectParams{
 		Amount: amount,
