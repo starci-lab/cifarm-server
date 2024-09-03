@@ -6,7 +6,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/heroiclabs/nakama-common/api"
@@ -35,22 +34,23 @@ func ReadAnimalObjectById(
 	}
 
 	if len(animals.Objects) == 0 {
-		errMsg := "animal not found"
-		logger.Error(errMsg)
-		return nil, errors.New(errMsg)
+		return nil, nil
 	}
 
 	animal := animals.Objects[0]
 	return animal, nil
 }
 
-func ReadAnimalObjectValueById(
+func ToAnimalObjectValueById(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	object *api.StorageObject,
 ) (*_collections.Animal, error) {
+	if object == nil {
+		return nil, nil
+	}
 	var animal *_collections.Animal
 	err := json.Unmarshal([]byte(object.Value), &animal)
 	if err != nil {

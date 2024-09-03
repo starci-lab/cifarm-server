@@ -47,7 +47,7 @@ func ReadInventoryObject(
 	return inventory, nil
 }
 
-func ReadInventoryObjectValue(
+func ToReadInventoryObjectValue(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,

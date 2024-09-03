@@ -108,7 +108,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	amount := int64(100)
-	dailyReward, err := _daily_rewards.ReadLatestDailyRewardObjectValue(
+	dailyReward, err := _daily_rewards.ToLatestDailyRewardObjectValue(
 		ctx,
 		logger,
 		db,

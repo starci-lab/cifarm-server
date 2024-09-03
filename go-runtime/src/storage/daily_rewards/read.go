@@ -44,7 +44,7 @@ func ReadLatestDailyRewardObject(
 	return latest, nil
 }
 
-func ReadLatestDailyRewardObjectValue(
+func ToLatestDailyRewardObjectValue(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -52,6 +52,9 @@ func ReadLatestDailyRewardObjectValue(
 	object *api.StorageObject,
 ) (*_collections.DailyReward, error) {
 	var dailyReward *_collections.DailyReward
+	if object == nil {
+		return nil, nil
+	}
 	err := json.Unmarshal([]byte(object.Value), &dailyReward)
 	if err != nil {
 		logger.Error(err.Error())

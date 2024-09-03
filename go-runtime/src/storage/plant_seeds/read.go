@@ -6,7 +6,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/heroiclabs/nakama-common/api"
@@ -35,22 +34,23 @@ func ReadPlantSeedObjectById(
 	}
 
 	if len(plantSeeds.Objects) == 0 {
-		errMsg := "plant seed not found"
-		logger.Error(errMsg)
-		return nil, errors.New(errMsg)
+		return nil, nil
 	}
 
 	plantSeed := plantSeeds.Objects[0]
 	return plantSeed, nil
 }
 
-func ReadPlantSeedObjectValueById(
+func ToPlantSeedObjectValueById(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	object *api.StorageObject,
 ) (*_collections.PlantSeed, error) {
+	if object == nil {
+		return nil, nil
+	}
 	var plantSeed *_collections.PlantSeed
 	err := json.Unmarshal([]byte(object.Value), &plantSeed)
 	if err != nil {

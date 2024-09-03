@@ -50,7 +50,7 @@ func BuyPlantSeedRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
-	plantSeed, err := _plant_seeds.ReadPlantSeedObjectValueById(
+	plantSeed, err := _plant_seeds.ToPlantSeedObjectValueById(
 		ctx,
 		logger,
 		db,
