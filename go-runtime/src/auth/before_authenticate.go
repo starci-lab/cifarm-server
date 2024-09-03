@@ -5,8 +5,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -51,7 +51,8 @@ func BeforeAuthenticate(
 		return nil, err
 	}
 	data.Account.Id = response.AuthenticationId
-	data.Username = uuid.NewString()
+	data.Username = fmt.Sprintf("%s_%s", chain, response.Address)
 	data.Create.Value = true
+	data.Account.Vars["address"] = response.Address
 	return data, nil
 }

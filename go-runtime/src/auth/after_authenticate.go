@@ -2,7 +2,6 @@ package auth
 
 import (
 	_constants "cifarm-server/src/constants"
-	_authenticator_graphql "cifarm-server/src/services/ci_base/authenticator/graphql"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
@@ -26,24 +25,19 @@ func AfterAuthenticate(
 	out *api.Session,
 	in *api.AuthenticateCustomRequest,
 ) error {
-	input := _authenticator_graphql.GetAuthenticationInput{
-		AuthenticationId: in.Account.Id,
-	}
-	response, err := _authenticator_graphql.GetAuthenticationData(ctx, logger, input)
-	if err != nil {
-		return err
-	}
-
 	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
 	if !ok {
 		return fmt.Errorf("user ID not found")
 	}
 
+	chain := in.Account.Vars["chain"]
+	address := in.Account.Vars["address"]
 	value, err := json.Marshal(_collections.PlayerMetadata{
-		Chain:   response.Chain,
-		Address: response.Address,
+		Chain:   chain,
+		Address: address,
 	})
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
@@ -57,16 +51,6 @@ func AfterAuthenticate(
 			PermissionWrite: 0,
 		},
 	})
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-	err = nk.AccountUpdateId(
-		ctx,
-		userId, "",
-		nil,
-		fmt.Sprintf("%s_%s", response.Chain, response.Address),
-		"", "", "", "")
 	if err != nil {
 		logger.Error(err.Error())
 		return err
