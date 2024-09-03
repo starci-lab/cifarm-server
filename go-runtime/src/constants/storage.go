@@ -11,4 +11,7 @@ const (
 	KEY_PLANTS          = "plants"
 )
 
-const ()
+const (
+	COLLECTION_REWARDS = "rewards"
+	KEY_DAILY          = "daily"
+)
