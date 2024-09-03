@@ -42,7 +42,7 @@ func SetupAnimals(
 
 		write := &runtime.StorageWrite{
 			Collection:      constants.COLLECTION_ANIMALS,
-			Key:             animal.Key,
+			Key:             animal.Id,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,
