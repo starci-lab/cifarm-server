@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -56,6 +57,32 @@ func WriteDailyRewardObject(
 	return nil
 }
 
+func InitializeStorageIndexLatestDailyRewardObject(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	initializer runtime.Initializer,
+) error {
+	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
+	collection := _constants.COLLECTION_REWARDS
+	key := ""
+	fields := []string{
+		"values.days",
+	}
+	sortableFields := []string{
+		"create_time",
+	}
+	maxEntries := 1
+	indexOnly := false
+	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
 func ReadLatestDailyRewardObject(
 	ctx context.Context,
 	logger runtime.Logger,
@@ -68,29 +95,21 @@ func ReadLatestDailyRewardObject(
 		logger.Error(errMsg)
 		return nil, errors.New(errMsg)
 	}
-	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
-		{
-			Collection: _constants.COLLECTION_REWARDS,
-			UserID:     userId,
-		},
-	})
+	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
+	query := fmt.Sprintf("userId:%s", userId)
+	order := []string{
+		"-create_time",
+	}
+
+	objects, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
-	if len(objects) == 0 {
+	if len(objects.Objects) == 0 {
 		return nil, nil
 	}
-	var latestObject *api.StorageObject
-	createTime := int64(0)
-
-	for _, obj := range objects {
-		if obj.CreateTime.Seconds > createTime {
-			createTime = obj.CreateTime.Seconds
-			latestObject = obj
-		}
-	}
-
+	var latestObject = objects.Objects[0]
 	return latestObject, nil
 }
 
