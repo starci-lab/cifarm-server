@@ -1,12 +1,8 @@
 package collections
 
-type Plants struct {
-	Items []Plant `json:"items"`
-}
-
 type Plant struct {
 	Id                          int     `json:"id"`
-	Name                        string  `json:"string"`
+	Key                         string  `json:"string"`
 	GrowthStageDuration         float32 `json:"growthStageDuration"`
 	GrowthStages                int     `json:"growthStages"`
 	SeedPrice                   float32 `json:"price"`
@@ -17,13 +13,9 @@ type Plant struct {
 	MaxHarvestQuantity          int     `json:"maxHarvestQuantity"`
 }
 
-type Animals struct {
-	Items []Animal `json:"items"`
-}
-
 type Animal struct {
 	Id             int     `json:"id"`
-	Name           string  `json:"name"`
+	Key            string  `json:"name"`
 	YieldTime      float32 `json:"yieldTime"`
 	OffspringPrice float32 `json:"offspringPrice"`
 	Premium        bool    `json:"premium"`

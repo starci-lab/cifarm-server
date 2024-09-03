@@ -6,9 +6,11 @@ const (
 )
 
 const (
-	COLLECTION_ENTITIES = "entities"
-	KEY_ANIMALS         = "animals"
-	KEY_PLANTS          = "plants"
+	COLLECTION_ANIMALS = "animals"
+)
+
+const (
+	COLLECTION_PLANTS = "plants"
 )
 
 const (

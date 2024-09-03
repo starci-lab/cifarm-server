@@ -1,7 +1,7 @@
 package entities
 
 import (
-	_constants "cifarm-server/src/constants"
+	"cifarm-server/src/constants"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
@@ -17,42 +17,42 @@ func SetupAnimals(
 	nk runtime.NakamaModule,
 ) error {
 
-	animals := _collections.Animals{
-		Items: []_collections.Animal{
-			{
-				Id:             1,
-				OffspringPrice: 1000,
-				Name:           "Chicken",
-				Premium:        false,
-				GrowthTime:     1000 * 60 * 60 * 7, //7 days
-				YieldTime:      1000 * 60 * 60,     //1 days
-			},
-			{
-				Id:         1,
-				Name:       "Cow",
-				Premium:    true,
-				GrowthTime: 1000 * 60 * 60 * 14, //14 days
-				YieldTime:  1000 * 60 * 60 * 2,  //2 days
-			},
+	animals := []_collections.Animal{
+		{
+			Id:             1,
+			OffspringPrice: 1000,
+			Key:            "Chicken",
+			Premium:        false,
+			GrowthTime:     1000 * 60 * 60 * 7, //7 days
+			YieldTime:      1000 * 60 * 60,     //1 days
+		},
+		{
+			Id:         1,
+			Key:        "Cow",
+			Premium:    true,
+			GrowthTime: 1000 * 60 * 60 * 14, //14 days
+			YieldTime:  1000 * 60 * 60 * 2,  //2 days
 		},
 	}
 
-	_animals, err := json.Marshal(animals)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
+	var writes []*runtime.StorageWrite
+	for _, animal := range animals {
+		value, err := json.Marshal(animal)
+		if err != nil {
+			continue
+		}
 
-	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
-		{
-			Collection:      _constants.COLLECTION_ENTITIES,
-			Key:             _constants.KEY_ANIMALS,
-			Value:           string(_animals),
+		write := &runtime.StorageWrite{
+			Collection:      constants.COLLECTION_ANIMALS,
+			Key:             animal.Key,
+			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,
-		},
-	})
+		}
+		writes = append(writes, write)
+	}
 
+	_, err := nk.StorageWrite(ctx, writes)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

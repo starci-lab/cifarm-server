@@ -1,7 +1,7 @@
 package entities
 
 import (
-	_constants "cifarm-server/src/constants"
+	"cifarm-server/src/constants"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
@@ -17,49 +17,50 @@ func SetupPlants(
 	nk runtime.NakamaModule,
 ) error {
 
-	plants := _collections.Plants{
-		Items: []_collections.Plant{
-			{
-				Id:                  1,
-				SeedPrice:           50,
-				Name:                "Carrot",
-				GrowthStageDuration: 1000 * 60 * 60, //1 hours
-				GrowthStages:        5,
-				Premium:             false,
-				Perennial:           false,
-				MinHarvestQuantity:  14,
-				MaxHarvestQuantity:  20,
-			},
-			{
-				Id:                          2,
-				SeedPrice:                   100,
-				Name:                        "Potato",
-				GrowthStageDuration:         1000 * 60 * 60 * 2.5, //2.5 hours
-				GrowthStages:                5,
-				Premium:                     false,
-				Perennial:                   false,
-				MinHarvestQuantity:          16,
-				MaxHarvestQuantity:          23,
-				NextGrowthStageAfterHarvest: 1,
-			},
+	plants := []_collections.Plant{
+		{
+			Id:                  1,
+			SeedPrice:           50,
+			Key:                 "Carrot",
+			GrowthStageDuration: 1000 * 60 * 60, //1 hours
+			GrowthStages:        5,
+			Premium:             false,
+			Perennial:           false,
+			MinHarvestQuantity:  14,
+			MaxHarvestQuantity:  20,
+		},
+		{
+			Id:                          2,
+			SeedPrice:                   100,
+			Key:                         "Potato",
+			GrowthStageDuration:         1000 * 60 * 60 * 2.5, //2.5 hours
+			GrowthStages:                5,
+			Premium:                     false,
+			Perennial:                   false,
+			MinHarvestQuantity:          16,
+			MaxHarvestQuantity:          23,
+			NextGrowthStageAfterHarvest: 1,
 		},
 	}
 
-	_plants, err := json.Marshal(plants)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
+	var writes []*runtime.StorageWrite
+	for _, plant := range plants {
+		value, err := json.Marshal(plant)
+		if err != nil {
+			continue
+		}
 
-	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
-		{
-			Collection:      _constants.COLLECTION_ENTITIES,
-			Key:             _constants.KEY_PLANTS,
-			Value:           string(_plants),
+		write := &runtime.StorageWrite{
+			Collection:      constants.COLLECTION_PLANTS,
+			Key:             plant.Key,
+			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,
-		},
-	})
+		}
+		writes = append(writes, write)
+	}
+
+	_, err := nk.StorageWrite(ctx, writes)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
