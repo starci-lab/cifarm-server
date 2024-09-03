@@ -15,8 +15,8 @@ import (
 )
 
 type BuyPlantSeedRpcParams struct {
-	Id       bool `json:"id"`
-	Quantity int  `json:"quantity"`
+	Id       string `json:"id"`
+	Quantity int    `json:"quantity"`
 }
 
 type BuyPlantSeedRpcResponse struct {
@@ -82,15 +82,20 @@ func BuyPlantSeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	value, err := json.Marshal(_collections.Inventory{
+	inventory, err := json.Marshal(_collections.Inventory{
 		Id: _plantSeed.Id,
 	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      _constants.COLLECTION_INVENTORY,
 			Key:             uuid.NewString(),
 			UserID:          userId,
-			Value:           string(value),
+			Value:           string(inventory),
 			PermissionRead:  1,
 			PermissionWrite: 0,
 		},
