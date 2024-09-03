@@ -10,10 +10,13 @@ const (
 )
 
 const (
-	COLLECTION_PLANTS = "plants"
+	COLLECTION_PLANT_SEEDS = "plant_seeds"
 )
 
 const (
 	COLLECTION_REWARDS = "rewards"
-	KEY_DAILY          = "daily"
+)
+
+const (
+	COLLECTION_INVENTORY = "inventory"
 )

@@ -2,6 +2,7 @@ package daily_reward
 
 import (
 	_constants "cifarm-server/src/constants"
+	_wallets "cifarm-server/src/utils/wallets"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -75,17 +76,17 @@ func ReadLatestDailyRewardObject(
 		"-create_time",
 	}
 
-	objects, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
+	dailyRewards, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	if len(objects.Objects) == 0 {
+	if len(dailyRewards.Objects) == 0 {
 		return nil, nil
 	}
-	var latestObject = objects.Objects[0]
-	return latestObject, nil
+	var latest = dailyRewards.Objects[0]
+	return latest, nil
 }
 
 type CanClaimDailyRewardRpcResponse struct {
@@ -144,7 +145,7 @@ func ClaimDailyRewardRpc(
 	if object == nil {
 		amount := int64(500)
 		days := 1
-		err := UpdateWallet(ctx, logger, db, nk, UpdateWalletParams{
+		err := _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
 			Amount: amount,
 			Metadata: map[string]interface{}{
 				"name": "Daily reward",
@@ -197,7 +198,7 @@ func ClaimDailyRewardRpc(
 	days := value.Days
 	days++
 
-	err = UpdateWallet(ctx, logger, db, nk, UpdateWalletParams{
+	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
 		Amount: amount,
 		Metadata: map[string]interface{}{
 			"name": "Daily reward",

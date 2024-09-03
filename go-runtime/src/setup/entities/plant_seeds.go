@@ -17,11 +17,10 @@ func SetupPlants(
 	nk runtime.NakamaModule,
 ) error {
 
-	plants := []_collections.Plant{
+	plantSeeds := []_collections.PlantSeed{
 		{
-			Id:                  1,
+			Id:                  "carrot",
 			SeedPrice:           50,
-			Key:                 "carrot",
 			GrowthStageDuration: 1000 * 60 * 60, //1 hours
 			GrowthStages:        5,
 			Premium:             false,
@@ -30,9 +29,8 @@ func SetupPlants(
 			MaxHarvestQuantity:  20,
 		},
 		{
-			Id:                          2,
+			Id:                          "potato",
 			SeedPrice:                   100,
-			Key:                         "potato",
 			GrowthStageDuration:         1000 * 60 * 60 * 2.5, //2.5 hours
 			GrowthStages:                5,
 			Premium:                     false,
@@ -44,15 +42,15 @@ func SetupPlants(
 	}
 
 	var writes []*runtime.StorageWrite
-	for _, plant := range plants {
-		value, err := json.Marshal(plant)
+	for _, plantSeed := range plantSeeds {
+		value, err := json.Marshal(plantSeed)
 		if err != nil {
 			continue
 		}
 
 		write := &runtime.StorageWrite{
-			Collection:      constants.COLLECTION_PLANTS,
-			Key:             plant.Key,
+			Collection:      constants.COLLECTION_PLANT_SEEDS,
+			Key:             plantSeed.Id,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,
