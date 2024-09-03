@@ -1,7 +1,7 @@
 package auth
 
 import (
-	_authenticator_api "cifarm-server/src/services/ci_base/authenticator/api"
+	_authenticator_api "cifarm-server/src/services/cibase/authenticator/api"
 	"context"
 	"database/sql"
 	"errors"
