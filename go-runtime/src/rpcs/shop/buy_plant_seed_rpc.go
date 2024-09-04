@@ -8,7 +8,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -28,12 +27,6 @@ func BuyPlantSeedRpc(ctx context.Context,
 	nk runtime.NakamaModule,
 	payload string) (string, error) {
 
-	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
-	if !ok {
-		errMsg := "user ID not found"
-		logger.Error(errMsg)
-		return "", errors.New(errMsg)
-	}
 	var params *BuyPlantSeedRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
 	if err != nil {

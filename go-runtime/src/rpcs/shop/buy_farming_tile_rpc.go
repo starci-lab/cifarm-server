@@ -7,7 +7,6 @@ import (
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -144,13 +143,6 @@ type BuyFarmingTileRpcResponse struct {
 }
 
 func BuyFarmingTileRpc(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, payload string) (string, error) {
-	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
-	if !ok {
-		errMsg := "user ID not found"
-		logger.Error(errMsg)
-		return "", errors.New(errMsg)
-	}
-
 	data, err := GetFarmingTileData(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
