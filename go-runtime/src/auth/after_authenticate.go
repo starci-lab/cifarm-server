@@ -67,9 +67,7 @@ func AfterAuthenticate(
 			})
 		}
 
-		err = _placed_items.WritePlacedItemObjects(ctx, logger, db, nk, _placed_items.WritePlacedItemObjectsParams{
-			PlacedItems: placedItems,
-		})
+		err = _placed_items.WritePlacedItemObjects(ctx, logger, db, nk, placedItems)
 		if err != nil {
 			logger.Error(err.Error())
 			return err

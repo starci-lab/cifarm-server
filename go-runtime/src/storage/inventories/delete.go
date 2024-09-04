@@ -50,6 +50,10 @@ func DeleteInventoryObject(ctx context.Context,
 	}
 
 	inventory.Quantity -= params.Quantity
-	WriteInventoryObject(ctx, logger, db, nk, *inventory)
+	err = WriteInventoryObject(ctx, logger, db, nk, *inventory)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 	return nil
 }

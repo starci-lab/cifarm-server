@@ -4,6 +4,8 @@ import (
 	_constants "cifarm-server/src/constants"
 	_inventories "cifarm-server/src/storage/inventories"
 	_placed_items "cifarm-server/src/storage/placed_items"
+	_plant_seeds "cifarm-server/src/storage/plant_seeds"
+	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -68,6 +70,48 @@ func PlantSeedRpc(
 		errMsg := "placed item not farming tile"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
+	}
+
+	err = _inventories.DeleteInventoryObject(ctx, logger, db, nk, _inventories.DeleteInventoryObjectParams{
+		Key:      params.InventoryKey,
+		Quantity: 1,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	object, err = _plant_seeds.ReadPlantSeedObjectById(ctx, logger, db, nk, inventory.Id)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	plantSeed, err := _plant_seeds.ToPlantSeed(ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	if plantSeed == nil {
+		errMsg := "plant seed not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
+	placedItem.SeedGrowthInfo = _collections.SeedGrowthInfo{
+		CurrentStage:             1,
+		CurrentStageTimeElapsed:  0,
+		TotalTimeElapsed:         0,
+		HarvestQuantityRemaining: plantSeed.MaxHarvestQuantity,
+		IsInfested:               false,
+		IsWeedy:                  false,
+		PlantSeed:                *plantSeed,
+	}
+
+	err = _placed_items.WritePlacedItemObject(ctx, logger, db, nk, *placedItem)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
 
 	return "", nil

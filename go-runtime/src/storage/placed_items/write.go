@@ -12,16 +12,12 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WritePlacedItemObjectParams struct {
-	PlacedItem _collections.PlacedItem
-}
-
 func WritePlacedItemObject(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WritePlacedItemObjectParams,
+	placedItem _collections.PlacedItem,
 ) error {
 	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
 	if !ok {
@@ -29,7 +25,7 @@ func WritePlacedItemObject(
 		logger.Error(errMsg)
 		return errors.New(errMsg)
 	}
-	value, err := json.Marshal(params.PlacedItem)
+	value, err := json.Marshal(placedItem)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -54,16 +50,12 @@ func WritePlacedItemObject(
 	return nil
 }
 
-type WritePlacedItemObjectsParams struct {
-	PlacedItems []_collections.PlacedItem
-}
-
 func WritePlacedItemObjects(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WritePlacedItemObjectsParams,
+	placedItems []_collections.PlacedItem,
 ) error {
 	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
 	if !ok {
@@ -74,7 +66,7 @@ func WritePlacedItemObjects(
 
 	var writes []*runtime.StorageWrite
 
-	for _, placedItem := range params.PlacedItems {
+	for _, placedItem := range placedItems {
 		value, err := json.Marshal(placedItem)
 		if err != nil {
 			logger.Error(err.Error())

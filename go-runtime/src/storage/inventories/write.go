@@ -60,28 +60,28 @@ func WriteInventoryObject(
 			logger.Error(err.Error())
 			return err
 		}
-	} else {
-		_inventory, err := json.Marshal(
-			inventory,
-		)
-		if err != nil {
-			logger.Error(err.Error())
-			return err
-		}
-		_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
-			{
-				Collection:      _constants.COLLECTION_INVENTORIES,
-				Key:             uuid.NewString(),
-				UserID:          userId,
-				Value:           string(_inventory),
-				PermissionRead:  1,
-				PermissionWrite: 0,
-			},
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return err
-		}
+		return nil
+	}
+	_inventory, err := json.Marshal(
+		inventory,
+	)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      _constants.COLLECTION_INVENTORIES,
+			Key:             uuid.NewString(),
+			UserID:          userId,
+			Value:           string(_inventory),
+			PermissionRead:  1,
+			PermissionWrite: 0,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
 	}
 
 	return nil
