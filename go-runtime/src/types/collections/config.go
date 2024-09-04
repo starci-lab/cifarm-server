@@ -6,5 +6,6 @@ type PlayerMetadata struct {
 }
 
 type Users struct {
+	Id      string   `json:"id"`
 	UserIds []string `json:"userIds"`
 }

@@ -36,7 +36,9 @@ func ReadConfigPlayerMetdataObject(
 	}
 
 	if len(objects.Objects) == 0 {
-		return nil, nil
+		errMsg := "config player metadata not found"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 
 	object := objects.Objects[0]

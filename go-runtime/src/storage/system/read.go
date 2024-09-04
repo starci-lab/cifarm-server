@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -18,7 +19,7 @@ func ReadSystemUsersObject(
 	nk runtime.NakamaModule,
 ) (*api.StorageObject, error) {
 	name := _constants.STORAGE_INDEX_SYSTEM_USERS
-	query := ""
+	query := "user_id:"
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
@@ -30,7 +31,7 @@ func ReadSystemUsersObject(
 	if len(objects.Objects) == 0 {
 		errMsg := "system users not found"
 		logger.Error(errMsg)
-		return nil, err
+		return nil, errors.New(errMsg)
 	}
 
 	object := objects.Objects[0]
