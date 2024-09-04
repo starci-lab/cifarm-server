@@ -17,10 +17,8 @@ func InitializeStorageIndexSystemUsers(
 ) error {
 	name := _constants.STORAGE_INDEX_SYSTEM_USERS
 	collection := _constants.COLLECTION_SYSTEM
-	key := _constants.KEY_PLAYER_METADATA
-	fields := []string{
-		"userIds",
-	}
+	key := _constants.KEY_USERS
+	fields := []string{}
 	sortableFields := []string{}
 	maxEntries := 1
 	indexOnly := false
