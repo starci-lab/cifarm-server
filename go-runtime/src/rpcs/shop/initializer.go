@@ -8,12 +8,12 @@ import (
 )
 
 func InitializeShop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := initializer.RegisterRpc("go_buy_plant_seed", BuyPlantSeedRpc)
+	err := initializer.RegisterRpc("buy_plant_seed", BuyPlantSeedRpc)
 	if err != nil {
 		return err
 	}
 
-	err = initializer.RegisterRpc("go_buy_farming_tile", BuyFarmingTileRpc)
+	err = initializer.RegisterRpc("buy_farming_tile", BuyFarmingTileRpc)
 	if err != nil {
 		return err
 	}
