@@ -107,6 +107,7 @@ func PlantSeedRpc(
 		IsWeedy:                  false,
 		PlantSeed:                *plantSeed,
 	}
+	placedItem.IsPlanted = true
 
 	err = _placed_items.WritePlacedItemObject(ctx, logger, db, nk, *placedItem)
 	if err != nil {

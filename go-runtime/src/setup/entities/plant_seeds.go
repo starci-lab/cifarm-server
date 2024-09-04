@@ -21,7 +21,7 @@ func SetupPlants(
 		{
 			Id:                  _constants.PLANT_SEED_CARROT_SEED,
 			SeedPrice:           50,
-			GrowthStageDuration: 1000 * 60 * 60, //1 hours
+			GrowthStageDuration: 60 * 60, //1 hours
 			GrowthStages:        5,
 			Premium:             false,
 			Perennial:           false,
@@ -31,7 +31,7 @@ func SetupPlants(
 		{
 			Id:                          _constants.PLANT_SEED_POTATO_SEED,
 			SeedPrice:                   100,
-			GrowthStageDuration:         1000 * 60 * 60 * 2.5, //2.5 hours
+			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours
 			GrowthStages:                5,
 			Premium:                     false,
 			Perennial:                   false,

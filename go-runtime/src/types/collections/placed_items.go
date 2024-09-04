@@ -7,8 +7,8 @@ type Position struct {
 
 type SeedGrowthInfo struct {
 	CurrentStage             int       `json:"currentStage"`
-	CurrentStageTimeElapsed  float32   `json:"currentStageTimeElapsed"`
-	TotalTimeElapsed         float32   `json:"totalTimeElapsed"`
+	CurrentStageTimeElapsed  int64     `json:"currentStageTimeElapsed"`
+	TotalTimeElapsed         int64     `json:"totalTimeElapsed"`
 	HarvestQuantityRemaining int       `json:"harvestQuantityRemaining"`
 	IsInfested               bool      `json:"isInfested"`
 	IsWeedy                  bool      `json:"isWeedy"`
@@ -20,4 +20,5 @@ type PlacedItem struct {
 	Position       Position       `json:"position"`
 	Type           int            `json:"type"`
 	SeedGrowthInfo SeedGrowthInfo `json:"seedGrowthInfo"`
+	IsPlanted      bool           `json:"isPlanted"`
 }

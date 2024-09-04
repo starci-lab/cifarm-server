@@ -22,14 +22,14 @@ func SetupAnimals(
 			OffspringPrice: 1000,
 			Id:             _constants.ANIMAL_CHICKEN,
 			Premium:        false,
-			GrowthTime:     1000 * 60 * 60 * 7, //7 days
-			YieldTime:      1000 * 60 * 60,     //1 days
+			GrowthTime:     60 * 60 * 7, //7 days
+			YieldTime:      60 * 60,     //1 days
 		},
 		{
 			Id:         _constants.ANIMAL_COW,
 			Premium:    true,
-			GrowthTime: 1000 * 60 * 60 * 14, //14 days
-			YieldTime:  1000 * 60 * 60 * 2,  //2 days
+			GrowthTime: 60 * 60 * 14, //14 days
+			YieldTime:  60 * 60 * 2,  //2 days
 		},
 	}
 

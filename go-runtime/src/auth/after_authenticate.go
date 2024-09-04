@@ -2,12 +2,14 @@ package auth
 
 import (
 	_constants "cifarm-server/src/constants"
+	_seed_growth "cifarm-server/src/crons/seed_growth"
 	_config "cifarm-server/src/storage/config"
 	_placed_items "cifarm-server/src/storage/placed_items"
 	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -26,6 +28,13 @@ func AfterAuthenticate(
 	out *api.Session,
 	in *api.AuthenticateCustomRequest,
 ) error {
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+
 	chain := in.Account.Vars["chain"]
 	address := in.Account.Vars["address"]
 
@@ -62,8 +71,10 @@ func AfterAuthenticate(
 		var placedItems []_collections.PlacedItem
 		for _, pos := range positions {
 			placedItems = append(placedItems, _collections.PlacedItem{
-				Id:       _constants.FARMING_TILE_BASIC_FARMING_TILE_STARTER,
-				Position: pos,
+				Id:        _constants.FARMING_TILE_BASIC_FARMING_TILE_STARTER,
+				Position:  pos,
+				Type:      _constants.PLACED_ITEM_TYPE_FARMING_TILE,
+				IsPlanted: false,
 			})
 		}
 
@@ -78,6 +89,14 @@ func AfterAuthenticate(
 			Metadata: map[string]interface{}{
 				"name": "Initial",
 			},
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
+		err = _seed_growth.RunSeedGrowthCron(ctx, logger, db, nk, _seed_growth.RunSeedGrowthCronParams{
+			UserId: userId,
 		})
 		if err != nil {
 			logger.Error(err.Error())
