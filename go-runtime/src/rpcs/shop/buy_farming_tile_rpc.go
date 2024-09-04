@@ -17,7 +17,12 @@ type HasFarmingTileParams struct {
 	Id string `json:"id"`
 }
 
-func HasEnoughFarmingTiles(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params HasFarmingTileParams) (bool, error) {
+func HasEnoughFarmingTiles(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule, params HasFarmingTileParams,
+) (bool, error) {
 	object, err := _inventories.ReadInventoryObject(ctx, logger, db, nk, _inventories.ReadInventoryObjectParams{
 		Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_1,
 	},
@@ -64,7 +69,12 @@ type GetFarmingTileIdAndPriceResult struct {
 	Price int64  `json:"price"`
 }
 
-func GetFarmingTileData(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (*GetFarmingTileIdAndPriceResult, error) {
+func GetFarmingTileData(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) (*GetFarmingTileIdAndPriceResult, error) {
 	has1, err := HasEnoughFarmingTiles(ctx, logger, db, nk, HasFarmingTileParams{
 		Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_1,
 	})
@@ -168,7 +178,13 @@ type BuyFarmingTileRpcResponse struct {
 	Price int64  `json:"price"`
 }
 
-func BuyFarmingTileRpc(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, payload string) (string, error) {
+func BuyFarmingTileRpc(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	payload string,
+) (string, error) {
 	data, err := GetFarmingTileData(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
