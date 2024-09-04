@@ -15,8 +15,12 @@ import (
 )
 
 type PlantSeedRpcParams struct {
-	InventoryKey         string `json:"inventoryKey"`
+	SeedInventoryKey     string `json:"seedInventoryKey"`
 	PlacedFarmingTileKey string `json:"placedFarmingTileKey"`
+}
+
+type PlantSeedRpcResponse struct {
+	HarvestIn int64 `json:"harvestIn"`
 }
 
 func PlantSeedRpc(
@@ -33,7 +37,7 @@ func PlantSeedRpc(
 		return "", err
 	}
 
-	object, err := _inventories.ReadInventoryObjectByKey(ctx, logger, db, nk, params.InventoryKey)
+	object, err := _inventories.ReadInventoryObjectByKey(ctx, logger, db, nk, params.SeedInventoryKey)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -59,6 +63,7 @@ func PlantSeedRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+	placedObjectKey := object.Key
 
 	placedItem, err := _placed_items.ToPlacedItem(ctx, logger, db, nk, object)
 	if err != nil {
@@ -72,8 +77,14 @@ func PlantSeedRpc(
 		return "", errors.New(errMsg)
 	}
 
+	if placedItem.IsPlanted {
+		errMsg := "farm tile is planted"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
 	err = _inventories.DeleteInventoryObject(ctx, logger, db, nk, _inventories.DeleteInventoryObjectParams{
-		Key:      params.InventoryKey,
+		Key:      params.SeedInventoryKey,
 		Quantity: 1,
 	})
 	if err != nil {
@@ -109,11 +120,19 @@ func PlantSeedRpc(
 	}
 	placedItem.IsPlanted = true
 
-	err = _placed_items.WritePlacedItemObject(ctx, logger, db, nk, *placedItem)
+	err = _placed_items.WritePlacedItemObject(ctx, logger, db, nk, *placedItem, placedObjectKey)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	return "", nil
+	response := &PlantSeedRpcResponse{HarvestIn: plantSeed.GrowthStageDuration}
+
+	out, err := json.Marshal(response)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	return string(out), nil
 }

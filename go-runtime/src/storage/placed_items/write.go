@@ -18,6 +18,7 @@ func WritePlacedItemObject(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	placedItem _collections.PlacedItem,
+	key string,
 ) error {
 	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
 	if !ok {
@@ -31,9 +32,14 @@ func WritePlacedItemObject(
 		return err
 	}
 
+	_key := key
+	if key == "" {
+		_key = uuid.NewString()
+	}
+
 	write := &runtime.StorageWrite{
 		UserID:          userId,
-		Key:             uuid.NewString(),
+		Key:             _key,
 		Collection:      _constants.COLLECTION_PLACED_ITEMS,
 		Value:           string(value),
 		PermissionRead:  2,

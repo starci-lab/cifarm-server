@@ -36,9 +36,12 @@ func DeleteInventoryObject(ctx context.Context,
 		return errors.New(errMsg)
 	}
 	if params.Quantity == inventory.Quantity {
+		logger.Info("equal")
+		logger.Info(params.Key)
 		err := nk.StorageDelete(ctx, []*runtime.StorageDelete{
 			{
-				Key:        params.Key,
+				UserID:     object.UserId,
+				Key:        object.Key,
 				Collection: _constants.COLLECTION_INVENTORIES,
 			},
 		})
@@ -48,7 +51,7 @@ func DeleteInventoryObject(ctx context.Context,
 		}
 		return nil
 	}
-
+	logger.Info("nalz")
 	inventory.Quantity -= params.Quantity
 	err = WriteInventoryObject(ctx, logger, db, nk, *inventory)
 	if err != nil {
