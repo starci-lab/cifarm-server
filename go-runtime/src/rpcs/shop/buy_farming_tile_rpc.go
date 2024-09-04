@@ -65,7 +65,7 @@ func HasEnoughFarmingTiles(
 	return result, nil
 }
 
-type GetFarmingTileIdAndPriceResult struct {
+type GetFarmingTileDataResult struct {
 	Id    string `json:"id"`
 	Price int64  `json:"price"`
 }
@@ -75,7 +75,7 @@ func GetFarmingTileData(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-) (*GetFarmingTileIdAndPriceResult, error) {
+) (*GetFarmingTileDataResult, error) {
 	has1, err := HasEnoughFarmingTiles(ctx, logger, db, nk, HasFarmingTileParams{
 		Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_1,
 	})
@@ -109,7 +109,7 @@ func GetFarmingTileData(
 		id := _constants.FARMING_TILE_BASIC_FARMING_TILE_1
 		price := farmingTile.Price
 
-		return &GetFarmingTileIdAndPriceResult{
+		return &GetFarmingTileDataResult{
 			Id:    id,
 			Price: price,
 		}, nil
@@ -146,7 +146,7 @@ func GetFarmingTileData(
 		id := _constants.FARMING_TILE_BASIC_FARMING_TILE_2
 		price := farmingTile.Price
 
-		return &GetFarmingTileIdAndPriceResult{
+		return &GetFarmingTileDataResult{
 			Id:    id,
 			Price: price,
 		}, nil
@@ -168,7 +168,7 @@ func GetFarmingTileData(
 	id := _constants.FARMING_TILE_BASIC_FARMING_TILE_3
 	price := farmingTile.Price
 
-	return &GetFarmingTileIdAndPriceResult{
+	return &GetFarmingTileDataResult{
 		Id:    id,
 		Price: price,
 	}, nil
