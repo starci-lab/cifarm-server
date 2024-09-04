@@ -51,11 +51,11 @@ const (
 )
 
 const (
-	FARMING_TILE_BASIC_FARMING_TILE_FREE = "basicFarmingTileFree"
-	FARMING_TILE_BASIC_FARMING_TILE_1    = "basicFarmingTile1"
-	FARMING_TILE_BASIC_FARMING_TILE_2    = "basicFarmingTile2"
-	FARMING_TILE_BASIC_FARMING_TILE_3    = "basicFarmingTile3"
-	FARMING_TILE_PREMIUM_FARMING_TILE_1  = "premiumFarmingTile1"
-	FARMING_TILE_PREMIUM_FARMING_TILE_2  = "premiumFarmingTile2"
-	FARMING_TILE_PREMIUM_FARMING_TILE_3  = "premiumFarmingTile3"
+	FARMING_TILE_BASIC_FARMING_TILE_STARTER = "basicFarmingTileStarter"
+	FARMING_TILE_BASIC_FARMING_TILE_1       = "basicFarmingTile1"
+	FARMING_TILE_BASIC_FARMING_TILE_2       = "basicFarmingTile2"
+	FARMING_TILE_BASIC_FARMING_TILE_3       = "basicFarmingTile3"
+	FARMING_TILE_PREMIUM_FARMING_TILE_1     = "premiumFarmingTile1"
+	FARMING_TILE_PREMIUM_FARMING_TILE_2     = "premiumFarmingTile2"
+	FARMING_TILE_PREMIUM_FARMING_TILE_3     = "premiumFarmingTile3"
 )

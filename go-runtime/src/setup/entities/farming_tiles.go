@@ -19,7 +19,7 @@ func SetupFarmingTiles(
 
 	farming_tiles := []_collections.FarmingTile{
 		{
-			Id:           _constants.FARMING_TILE_BASIC_FARMING_TILE_FREE,
+			Id:           _constants.FARMING_TILE_BASIC_FARMING_TILE_STARTER,
 			Price:        0,
 			MaxOwnership: 6,
 		},
