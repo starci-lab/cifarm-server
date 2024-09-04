@@ -1,4 +1,4 @@
-package placed_items
+package config
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -9,19 +9,18 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeStorageIndexPlacedItems(
+func InitializeStorageIndexSystemUsers(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := _constants.STORAGE_INDEX_PLACED_ITEMS
-	collection := _constants.COLLECTION_PLACED_ITEMS
-	key := ""
+	name := _constants.STORAGE_INDEX_SYSTEM_USERS
+	collection := _constants.COLLECTION_SYSTEM
+	key := _constants.KEY_PLAYER_METADATA
 	fields := []string{
-		"id",
-		"position",
+		"userIds",
 	}
 	sortableFields := []string{}
 	maxEntries := math.MaxInt

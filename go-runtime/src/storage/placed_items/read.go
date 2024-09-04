@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -38,24 +39,29 @@ func ReadPlacedItemObjects(
 	return objects, nil
 }
 
-func ReadOwnedPlacedItemObjectsTypeFarmingTileIsPlanted(
+func ReadPlacedItemObjectsTypeFarmingTileIsPlanted(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	ownerId string,
+	userId string,
 ) (*api.StorageObjects, error) {
-	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
-	if !ok {
-		errMsg := "user ID not found"
-		logger.Error(errMsg)
-		return nil, errors.New(errMsg)
+	if userId == "" {
+		_userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+		if !ok {
+			errMsg := "user ID not found"
+			logger.Error(errMsg)
+			return nil, errors.New(errMsg)
+		}
+		userId = _userId
 	}
+
 	name := _constants.STORAGE_INDEX_PLACED_ITEMS
-	query := fmt.Sprintf(`+value.type:%v +user_id:%s +value.isPlanted:T`, _constants.PLACED_ITEM_TYPE_FARMING_TILE, ownerId)
+	query := fmt.Sprintf(`+value.type:%v +value.isPlanted:T`, _constants.PLACED_ITEM_TYPE_FARMING_TILE)
+	maxEntries := math.MaxInt
 	order := []string{}
 
-	objects, err := nk.StorageIndexList(ctx, userId, name, query, 10000, order)
+	objects, err := nk.StorageIndexList(ctx, userId, name, query, maxEntries, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

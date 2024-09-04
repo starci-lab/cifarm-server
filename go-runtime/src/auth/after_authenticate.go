@@ -2,9 +2,9 @@ package auth
 
 import (
 	_constants "cifarm-server/src/constants"
-	_seed_growth "cifarm-server/src/crons/seed_growth"
 	_config "cifarm-server/src/storage/config"
 	_placed_items "cifarm-server/src/storage/placed_items"
+	_system "cifarm-server/src/storage/system"
 	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/wallets"
 	"context"
@@ -95,9 +95,18 @@ func AfterAuthenticate(
 			return err
 		}
 
-		err = _seed_growth.RunSeedGrowthCron(ctx, logger, db, nk, _seed_growth.RunSeedGrowthCronParams{
-			UserId: userId,
-		})
+		object, err := _system.ReadSystemUsersObject(ctx, logger, db, nk)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		users, err := _system.ToSystemUsers(ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		users.UserIds = append(users.UserIds, userId)
+		err = _system.WriteSystemUsersObject(ctx, logger, db, nk, *users)
 		if err != nil {
 			logger.Error(err.Error())
 			return err

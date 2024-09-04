@@ -9,16 +9,11 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type RunSeedGrowthCronParams struct {
-	UserId string `json:"userId"`
-}
-
 func RunSeedGrowthCron(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params RunSeedGrowthCronParams,
 ) error {
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
@@ -32,10 +27,8 @@ func RunSeedGrowthCron(
 		),
 		gocron.NewTask(
 			func() {
-				logger.Info("%s: seeds growing...", params.UserId)
-				HandleSeedGrowth(ctx, logger, db, nk, HandleSeedGrowthParams{
-					UserId: params.UserId,
-				})
+				logger.Info("seeds growing...")
+				HandleSeedGrowth(ctx, logger, db, nk)
 			},
 		),
 	)

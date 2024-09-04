@@ -8,5 +8,6 @@ const (
 	STORAGE_INDEX_FARMING_TOOLS          = "FarmingTools"
 	STORAGE_INDEX_FARMING_TILES          = "FarmingTiles"
 	STORAGE_INDEX_CONFIG_PLAYER_METADATA = "ConfigPlayerMetadata"
+	STORAGE_INDEX_SYSTEM_USERS           = "SystemUsers"
 	STORAGE_INDEX_PLACED_ITEMS           = "PlacedItems"
 )

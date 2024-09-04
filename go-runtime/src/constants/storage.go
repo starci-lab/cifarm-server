@@ -6,6 +6,11 @@ const (
 )
 
 const (
+	COLLECTION_SYSTEM = "system"
+	KEY_USERS         = "users"
+)
+
+const (
 	COLLECTION_ANIMALS = "animals"
 )
 
