@@ -8,7 +8,7 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeCron(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
+func InitializeCrons(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
 	err := _seed_growth.RunSeedGrowthCron(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
