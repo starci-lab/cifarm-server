@@ -18,7 +18,9 @@ func InitializeStorageIndexSystemUsers(
 	name := _constants.STORAGE_INDEX_SYSTEM_USERS
 	collection := _constants.COLLECTION_SYSTEM
 	key := _constants.KEY_USERS
-	fields := []string{}
+	fields := []string{
+		"userIds",
+	}
 	sortableFields := []string{}
 	maxEntries := 1
 	indexOnly := false
