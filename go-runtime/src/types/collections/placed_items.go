@@ -8,4 +8,5 @@ type Position struct {
 type PlacedItem struct {
 	Id       string   `json:"id"`
 	Position Position `json:"position"`
+	Type     int      `json:"type"`
 }

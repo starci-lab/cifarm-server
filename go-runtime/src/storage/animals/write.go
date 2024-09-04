@@ -1,7 +1,7 @@
 package animals
 
 import (
-	"cifarm-server/src/constants"
+	_constants "cifarm-server/src/constants"
 	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
@@ -10,26 +10,22 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WriteAnimalsObjectsParams struct {
-	Animals []_collections.Animal
-}
-
 func WriteAnimalsObjects(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteAnimalsObjectsParams,
+	animals []_collections.Animal,
 ) error {
 	var writes []*runtime.StorageWrite
-	for _, animal := range params.Animals {
+	for _, animal := range animals {
 		value, err := json.Marshal(animal)
 		if err != nil {
 			continue
 		}
 
 		write := &runtime.StorageWrite{
-			Collection:      constants.COLLECTION_ANIMALS,
+			Collection:      _constants.COLLECTION_ANIMALS,
 			Key:             animal.Id,
 			Value:           string(value),
 			PermissionRead:  2,

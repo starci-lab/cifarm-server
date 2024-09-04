@@ -2,6 +2,7 @@ package daily_rewards
 
 import (
 	_daily_rewards "cifarm-server/src/storage/daily_rewards"
+	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -75,7 +76,7 @@ func ClaimDailyRewardRpc(
 			logger.Error(err.Error())
 			return "", err
 		}
-		err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _daily_rewards.WriteDailyRewardObjectParams{
+		err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _collections.DailyReward{
 			Amount: amount,
 			Days:   days,
 		})
@@ -134,7 +135,7 @@ func ClaimDailyRewardRpc(
 		return "", err
 	}
 
-	err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _daily_rewards.WriteDailyRewardObjectParams{
+	err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _collections.DailyReward{
 		Amount: amount,
 		Days:   days,
 	})

@@ -10,19 +10,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WritePlantSeedObjectsParams struct {
-	PlantSeeds []_collections.PlantSeed
-}
-
 func WritePlantSeedObjects(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WritePlantSeedObjectsParams,
+	plantSeeds []_collections.PlantSeed,
 ) error {
 	var writes []*runtime.StorageWrite
-	for _, plantSeed := range params.PlantSeeds {
+	for _, plantSeed := range plantSeeds {
 		value, err := json.Marshal(plantSeed)
 		if err != nil {
 			continue

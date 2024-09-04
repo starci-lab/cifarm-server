@@ -40,12 +40,11 @@ func AfterAuthenticate(
 		return err
 	}
 	if config == nil {
-		err = _config.WriteConfigPlayerMetdataObject(ctx, logger, db, nk, _config.WriteConfigPlayerMetdataObjectParams{
-			PlayerMetadata: _collections.PlayerMetadata{
+		err = _config.WriteConfigPlayerMetdataObject(ctx, logger, db, nk,
+			_collections.PlayerMetadata{
 				Chain:   chain,
 				Address: address,
-			},
-		})
+			})
 		if err != nil {
 			logger.Error(err.Error())
 			return err

@@ -12,18 +12,12 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WriteInventoryObjectParams struct {
-	Id       string `json:"id"`
-	Quantity int    `json:"quantity"`
-	Type     int    `json:"int"`
-}
-
 func WriteInventoryObject(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteInventoryObjectParams,
+	inventory _collections.Inventory,
 ) error {
 	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
 	if !ok {
@@ -33,7 +27,7 @@ func WriteInventoryObject(
 	}
 
 	object, err := ReadInventoryObject(ctx, logger, db, nk, ReadInventoryObjectParams{
-		Id: params.Id,
+		Id: inventory.Id,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -46,7 +40,7 @@ func WriteInventoryObject(
 			logger.Error(err.Error())
 			return err
 		}
-		inventory.Quantity += params.Quantity
+		inventory.Quantity += inventory.Quantity
 		_inventory, err := json.Marshal(inventory)
 		if err != nil {
 			logger.Error(err.Error())
@@ -67,11 +61,9 @@ func WriteInventoryObject(
 			return err
 		}
 	} else {
-		_inventory, err := json.Marshal(_collections.Inventory{
-			Id:       params.Id,
-			Type:     params.Type,
-			Quantity: params.Quantity,
-		})
+		_inventory, err := json.Marshal(
+			inventory,
+		)
 		if err != nil {
 			logger.Error(err.Error())
 			return err

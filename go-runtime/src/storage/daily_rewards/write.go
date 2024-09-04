@@ -2,6 +2,7 @@ package daily_rewards
 
 import (
 	_constants "cifarm-server/src/constants"
+	_collections "cifarm-server/src/types/collections"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -11,17 +12,12 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WriteDailyRewardObjectParams struct {
-	Amount int64 `json:"amount"`
-	Days   int   `json:"days"`
-}
-
 func WriteDailyRewardObject(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteDailyRewardObjectParams,
+	dailyReward _collections.DailyReward,
 ) error {
 	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
 	if !ok {
@@ -30,7 +26,7 @@ func WriteDailyRewardObject(
 		return errors.New(errMsg)
 	}
 
-	value, err := json.Marshal(params)
+	value, err := json.Marshal(dailyReward)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

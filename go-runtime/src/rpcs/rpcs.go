@@ -2,6 +2,7 @@ package rpcs
 
 import (
 	_daily_rewards "cifarm-server/src/rpcs/daily_rewards"
+	_farming "cifarm-server/src/rpcs/farming"
 	_shop "cifarm-server/src/rpcs/shop"
 	"context"
 	"database/sql"
@@ -16,6 +17,11 @@ func InitializeRpcs(ctx context.Context, logger runtime.Logger, db *sql.DB, nk r
 	}
 
 	err = _shop.InitializeShop(ctx, logger, db, nk, initializer)
+	if err != nil {
+		return err
+	}
+
+	err = _farming.InitializeFarming(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}

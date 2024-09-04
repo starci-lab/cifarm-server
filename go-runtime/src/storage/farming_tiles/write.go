@@ -10,19 +10,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WriteFarmingTileObjectsParams struct {
-	FarmingTiles []_collections.FarmingTile
-}
-
 func WriteFarmingTilesObjects(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteFarmingTileObjectsParams,
+	farmingTiles []_collections.FarmingTile,
 ) error {
 	var writes []*runtime.StorageWrite
-	for _, farmingTile := range params.FarmingTiles {
+	for _, farmingTile := range farmingTiles {
 		value, err := json.Marshal(farmingTile)
 		if err != nil {
 			continue

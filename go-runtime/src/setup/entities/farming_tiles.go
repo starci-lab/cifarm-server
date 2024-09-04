@@ -40,9 +40,7 @@ func SetupFarmingTiles(
 		},
 	}
 
-	err := _farming_tiles.WriteFarmingTilesObjects(ctx, logger, db, nk, _farming_tiles.WriteFarmingTileObjectsParams{
-		FarmingTiles: farming_tiles,
-	})
+	err := _farming_tiles.WriteFarmingTilesObjects(ctx, logger, db, nk, farming_tiles)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

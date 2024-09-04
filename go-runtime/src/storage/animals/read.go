@@ -12,19 +12,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadAnimalObjectByIdParams struct {
-	Id string `json:"id"`
-}
-
 func ReadAnimalObjectById(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadAnimalObjectByIdParams,
+	id string,
 ) (*api.StorageObject, error) {
 	name := _constants.STORAGE_INDEX_ANIMALS
-	query := fmt.Sprintf(`+value.id:%s`, params.Id)
+	query := fmt.Sprintf(`+value.id:%s`, id)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)

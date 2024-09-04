@@ -41,9 +41,7 @@ func SetupPlants(
 		},
 	}
 
-	err := _plant_seeds.WritePlantSeedObjects(ctx, logger, db, nk, _plant_seeds.WritePlantSeedObjectsParams{
-		PlantSeeds: plantSeeds,
-	})
+	err := _plant_seeds.WritePlantSeedObjects(ctx, logger, db, nk, plantSeeds)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

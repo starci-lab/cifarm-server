@@ -12,19 +12,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadPlantSeedObjectByIdParams struct {
-	Id string `json:"Id"`
-}
-
 func ReadPlantSeedObjectById(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadPlantSeedObjectByIdParams,
+	id string,
 ) (*api.StorageObject, error) {
 	name := _constants.STORAGE_INDEX_PLANT_SEEDS
-	query := fmt.Sprintf(`+value.id:%s`, params.Id)
+	query := fmt.Sprintf(`+value.id:%s`, id)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)

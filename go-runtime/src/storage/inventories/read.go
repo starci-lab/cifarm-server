@@ -47,6 +47,36 @@ func ReadInventoryObject(
 	return object, nil
 }
 
+func ReadInventoryObjectByKey(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	key string,
+) (*api.StorageObject, error) {
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
+	}
+	name := _constants.STORAGE_INDEX_INVENTORIES
+	query := fmt.Sprintf(`+key:%s`, key)
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects.Objects) == 0 {
+		return nil, nil
+	}
+	var object = objects.Objects[0]
+	return object, nil
+}
+
 func ToInventory(
 	ctx context.Context,
 	logger runtime.Logger,

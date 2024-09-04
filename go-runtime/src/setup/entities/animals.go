@@ -33,9 +33,7 @@ func SetupAnimals(
 		},
 	}
 
-	err := _animals.WriteAnimalsObjects(ctx, logger, db, nk, _animals.WriteAnimalsObjectsParams{
-		Animals: animals,
-	})
+	err := _animals.WriteAnimalsObjects(ctx, logger, db, nk, animals)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

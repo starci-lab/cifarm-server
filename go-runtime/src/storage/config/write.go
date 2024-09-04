@@ -11,16 +11,12 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WriteConfigPlayerMetdataObjectParams struct {
-	PlayerMetadata _collections.PlayerMetadata
-}
-
 func WriteConfigPlayerMetdataObject(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteConfigPlayerMetdataObjectParams,
+	playerMetadata _collections.PlayerMetadata,
 ) error {
 	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
 	if !ok {
@@ -29,7 +25,7 @@ func WriteConfigPlayerMetdataObject(
 		return errors.New(errMsg)
 	}
 
-	value, err := json.Marshal(params.PlayerMetadata)
+	value, err := json.Marshal(playerMetadata)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

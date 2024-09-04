@@ -4,6 +4,7 @@ import (
 	_constants "cifarm-server/src/constants"
 	_farming_tiles "cifarm-server/src/storage/farming_tiles"
 	_inventories "cifarm-server/src/storage/inventories"
+	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -41,11 +42,7 @@ func HasEnoughFarmingTiles(
 		return false, nil
 	}
 
-	object, err = _farming_tiles.ReadFarmingTileObjectById(
-		ctx, logger, db, nk,
-		_farming_tiles.ReadFarmingTileObjectByIdParams{
-			Id: params.Id,
-		})
+	object, err = _farming_tiles.ReadFarmingTileObjectById(ctx, logger, db, nk, params.Id)
 	if err != nil {
 		logger.Error(err.Error())
 		return false, err
@@ -85,11 +82,7 @@ func GetFarmingTileData(
 	}
 
 	if !has1 {
-		object, err := _farming_tiles.ReadFarmingTileObjectById(
-			ctx, logger, db, nk,
-			_farming_tiles.ReadFarmingTileObjectByIdParams{
-				Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_1,
-			})
+		object, err := _farming_tiles.ReadFarmingTileObjectById(ctx, logger, db, nk, _constants.FARMING_TILE_BASIC_FARMING_TILE_1)
 		if err != nil {
 			logger.Error(err.Error())
 			return nil, err
@@ -122,11 +115,7 @@ func GetFarmingTileData(
 		return nil, err
 	}
 	if !has2 {
-		object, err := _farming_tiles.ReadFarmingTileObjectById(
-			ctx, logger, db, nk,
-			_farming_tiles.ReadFarmingTileObjectByIdParams{
-				Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_2,
-			})
+		object, err := _farming_tiles.ReadFarmingTileObjectById(ctx, logger, db, nk, _constants.FARMING_TILE_BASIC_FARMING_TILE_2)
 		if err != nil {
 			logger.Error(err.Error())
 			return nil, err
@@ -151,11 +140,7 @@ func GetFarmingTileData(
 			Price: price,
 		}, nil
 	}
-	object, err := _farming_tiles.ReadFarmingTileObjectById(
-		ctx, logger, db, nk,
-		_farming_tiles.ReadFarmingTileObjectByIdParams{
-			Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_3,
-		})
+	object, err := _farming_tiles.ReadFarmingTileObjectById(ctx, logger, db, nk, _constants.FARMING_TILE_BASIC_FARMING_TILE_3)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
@@ -205,10 +190,10 @@ func BuyFarmingTileRpc(
 	}
 	err = _inventories.WriteInventoryObject(ctx,
 		logger, db, nk,
-		_inventories.WriteInventoryObjectParams{
+		_collections.Inventory{
 			Id:       data.Id,
 			Quantity: 1,
-			Type:     _constants.TYPE_FARMING_TILE,
+			Type:     _constants.INVENTORY_TYPE_FARMING_TILE,
 		})
 	if err != nil {
 		logger.Error(err.Error())

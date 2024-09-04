@@ -4,6 +4,7 @@ import (
 	_constants "cifarm-server/src/constants"
 	_inventories "cifarm-server/src/storage/inventories"
 	_plant_seeds "cifarm-server/src/storage/plant_seeds"
+	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -35,11 +36,7 @@ func BuyPlantSeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	object, err := _plant_seeds.ReadPlantSeedObjectById(
-		ctx, logger, db, nk,
-		_plant_seeds.ReadPlantSeedObjectByIdParams{
-			Id: params.Id,
-		})
+	object, err := _plant_seeds.ReadPlantSeedObjectById(ctx, logger, db, nk, params.Id)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -76,10 +73,10 @@ func BuyPlantSeedRpc(ctx context.Context,
 
 	err = _inventories.WriteInventoryObject(ctx,
 		logger, db, nk,
-		_inventories.WriteInventoryObjectParams{
+		_collections.Inventory{
 			Id:       plantSeed.Id,
 			Quantity: params.Quantity,
-			Type:     _constants.TYPE_SEED,
+			Type:     _constants.INVENTORY_TYPE_PLANT_SEED,
 		})
 	if err != nil {
 		logger.Error(err.Error())

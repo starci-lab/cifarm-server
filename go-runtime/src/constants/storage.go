@@ -32,8 +32,8 @@ const (
 )
 
 const (
-	TYPE_SEED         = 0
-	TYPE_FARMING_TILE = 1
+	INVENTORY_TYPE_PLANT_SEED   = 0
+	INVENTORY_TYPE_FARMING_TILE = 1
 )
 
 const (
@@ -62,4 +62,8 @@ const (
 
 const (
 	COLLECTION_PLACED_ITEMS = "placedItems"
+)
+
+const (
+	PLACED_ITEM_TYPE_FARMING_TILE = 0
 )

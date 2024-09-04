@@ -29,9 +29,7 @@ func SetupFarmingTools(
 		},
 	}
 
-	err := _farming_tools.WriteFarmingToolObjects(ctx, logger, db, nk, _farming_tools.WriteFarmingToolObjectsParams{
-		FarmingTools: farming_tools,
-	})
+	err := _farming_tools.WriteFarmingToolObjects(ctx, logger, db, nk, farming_tools)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

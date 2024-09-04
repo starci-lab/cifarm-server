@@ -12,19 +12,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadFarmingToolObjectByIdParams struct {
-	Id string `json:"Id"`
-}
-
 func ReadFarmingToolObjectById(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadFarmingToolObjectByIdParams,
+	id string,
 ) (*api.StorageObject, error) {
 	name := _constants.STORAGE_INDEX_FARMING_TOOLS
-	query := fmt.Sprintf("+value.id:%s", params.Id)
+	query := fmt.Sprintf("+value.id:%s", id)
 	order := []string{
 		"-create_time",
 	}
