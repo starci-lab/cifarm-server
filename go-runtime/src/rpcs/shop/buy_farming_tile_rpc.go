@@ -21,7 +21,8 @@ func HasEnoughFarmingTiles(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
-	nk runtime.NakamaModule, params HasFarmingTileParams,
+	nk runtime.NakamaModule,
+	params HasFarmingTileParams,
 ) (bool, error) {
 	object, err := _inventories.ReadInventoryObject(ctx, logger, db, nk, _inventories.ReadInventoryObjectParams{
 		Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_1,
