@@ -77,7 +77,7 @@ func WritePlacedItemObjects(
 			Key:             uuid.NewString(),
 			Collection:      _constants.COLLECTION_PLACED_ITEMS,
 			Value:           string(value),
-			PermissionRead:  2,
+			PermissionRead:  1,
 			PermissionWrite: 0,
 		}
 		writes = append(writes, write)
