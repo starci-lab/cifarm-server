@@ -25,23 +25,25 @@ func ReadConfigPlayerMetdataObject(
 		return nil, errors.New(errMsg)
 	}
 
-	name := _constants.STORAGE_INDEX_CONFIG_PLAYER_METADATA
-	query := ""
-	order := []string{}
-
-	objects, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Collection: _constants.COLLECTION_CONFIG,
+			Key:        _constants.KEY_PLAYER_METADATA,
+			UserID:     userId,
+		},
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	if len(objects.Objects) == 0 {
+	if len(objects) == 0 {
 		errMsg := "config player metadata not found"
 		logger.Error(errMsg)
 		return nil, errors.New(errMsg)
 	}
 
-	object := objects.Objects[0]
+	object := objects[0]
 	return object, nil
 }
 

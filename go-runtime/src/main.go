@@ -2,7 +2,6 @@ package main
 
 import (
 	_auth "cifarm-server/src/auth"
-	_crons "cifarm-server/src/crons"
 	_rpcs "cifarm-server/src/rpcs"
 	_setup "cifarm-server/src/setup"
 	_storage "cifarm-server/src/storage"
@@ -38,11 +37,11 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = _crons.InitializeCrons(ctx, logger, db, nk, initializer)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
+	// err = _crons.InitializeCrons(ctx, logger, db, nk, initializer)
+	// if err != nil {
+	// 	logger.Error(err.Error())
+	// 	return err
+	// }
 
 	return nil
 }

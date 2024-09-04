@@ -1,4 +1,4 @@
-package config
+package system
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -27,7 +27,7 @@ func WriteSystemUsersObject(
 		Key:             _constants.KEY_USERS,
 		Collection:      _constants.COLLECTION_SYSTEM,
 		Value:           string(value),
-		PermissionRead:  1,
+		PermissionRead:  2,
 		PermissionWrite: 0,
 	}
 

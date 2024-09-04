@@ -1,4 +1,4 @@
-package config
+package system
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -18,23 +18,24 @@ func ReadSystemUsersObject(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) (*api.StorageObject, error) {
-	name := _constants.STORAGE_INDEX_SYSTEM_USERS
-	query := "user_id:"
-	order := []string{}
-
-	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Key:        _constants.KEY_USERS,
+			Collection: _constants.COLLECTION_SYSTEM,
+		},
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	if len(objects.Objects) == 0 {
+	if len(objects) == 0 {
 		errMsg := "system users not found"
 		logger.Error(errMsg)
 		return nil, errors.New(errMsg)
 	}
 
-	object := objects.Objects[0]
+	object := objects[0]
 	return object, nil
 }
 
