@@ -26,7 +26,7 @@ func ReadLatestDailyRewardObject(
 		return nil, errors.New(errMsg)
 	}
 	name := _constants.STORAGE_INDEX_DAILY_REWARDS
-	query := fmt.Sprintf("+user_id:%s", userId)
+	query := fmt.Sprintf(`+user_id:%s`, userId)
 	order := []string{
 		"-create_time",
 	}

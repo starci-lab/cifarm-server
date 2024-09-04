@@ -19,7 +19,9 @@ func InitializeStorageIndexFarmingTiles(
 	collection := _constants.COLLECTION_FARMING_TILES
 	key := ""
 	fields := []string{
+		"id",
 		"price",
+		"maxOwnership",
 	}
 	sortableFields := []string{}
 	maxEntries := 100

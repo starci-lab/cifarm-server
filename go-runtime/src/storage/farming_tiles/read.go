@@ -13,7 +13,7 @@ import (
 )
 
 type ReadFarmingTileObjectByIdParams struct {
-	Id string `json:"Id"`
+	Id string `json:"id"`
 }
 
 func ReadFarmingTileObjectById(
@@ -24,12 +24,12 @@ func ReadFarmingTileObjectById(
 	params ReadFarmingTileObjectByIdParams,
 ) (*api.StorageObject, error) {
 	name := _constants.STORAGE_INDEX_FARMING_TILES
-	query := fmt.Sprintf("+value.id:%s", params.Id)
+	query := fmt.Sprintf(`+value.id:%s`, params.Id)
 	order := []string{
 		"-create_time",
 	}
 
-	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
@@ -49,15 +49,15 @@ func ToFarmingTile(
 	nk runtime.NakamaModule,
 	object *api.StorageObject,
 ) (*_collections.FarmingTile, error) {
-	var FARMING_TILE *_collections.FarmingTile
 	if object == nil {
 		return nil, nil
 	}
-	err := json.Unmarshal([]byte(object.Value), &FARMING_TILE)
+	var farmingTile *_collections.FarmingTile
+	err := json.Unmarshal([]byte(object.Value), &farmingTile)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	return FARMING_TILE, nil
+	return farmingTile, nil
 }

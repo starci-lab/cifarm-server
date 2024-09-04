@@ -24,7 +24,7 @@ func ReadAnimalObjectById(
 	params ReadAnimalObjectByIdParams,
 ) (*api.StorageObject, error) {
 	name := _constants.STORAGE_INDEX_ANIMALS
-	query := fmt.Sprintf("+value.id:%s", params.Id)
+	query := fmt.Sprintf(`+value.id:%s`, params.Id)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)

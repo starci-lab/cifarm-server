@@ -8,6 +8,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -52,6 +53,12 @@ func BuyPlantSeedRpc(ctx context.Context,
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
+	}
+
+	if plantSeed == nil {
+		errMsg := "plant seed not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
 	}
 
 	totalCost := int64(plantSeed.SeedPrice) * int64(params.Quantity)

@@ -31,7 +31,7 @@ func ReadInventoryObject(
 		return nil, errors.New(errMsg)
 	}
 	name := _constants.STORAGE_INDEX_INVENTORIES
-	query := fmt.Sprintf("+value.id:%s +user_id:%s", params.Id, userId)
+	query := fmt.Sprintf(`+value.id:%s +user_id:%s`, params.Id, userId)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)

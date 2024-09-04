@@ -24,7 +24,7 @@ func ReadPlantSeedObjectById(
 	params ReadPlantSeedObjectByIdParams,
 ) (*api.StorageObject, error) {
 	name := _constants.STORAGE_INDEX_PLANT_SEEDS
-	query := fmt.Sprintf("+value.id:%s", params.Id)
+	query := fmt.Sprintf(`+value.id:%s`, params.Id)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)

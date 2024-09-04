@@ -7,6 +7,8 @@ import (
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
+	"encoding/json"
+	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -29,6 +31,9 @@ func HasEnoughFarmingTiles(ctx context.Context, logger runtime.Logger, db *sql.D
 		logger.Error(err.Error())
 		return false, err
 	}
+	if inventory == nil {
+		return false, nil
+	}
 
 	object, err = _farming_tiles.ReadFarmingTileObjectById(
 		ctx, logger, db, nk,
@@ -44,6 +49,12 @@ func HasEnoughFarmingTiles(ctx context.Context, logger runtime.Logger, db *sql.D
 		logger.Error(err.Error())
 		return false, err
 	}
+	if farmingTile == nil {
+		errMsg := "farming tile not found"
+		logger.Error(errMsg)
+		return false, errors.New(errMsg)
+	}
+
 	result := inventory.Quantity >= farmingTile.MaxOwnership
 	return result, nil
 }
@@ -61,6 +72,7 @@ func GetFarmingTileData(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		logger.Error(err.Error())
 		return nil, err
 	}
+
 	if !has1 {
 		object, err := _farming_tiles.ReadFarmingTileObjectById(
 			ctx, logger, db, nk,
@@ -76,6 +88,13 @@ func GetFarmingTileData(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 			logger.Error(err.Error())
 			return nil, err
 		}
+
+		if farmingTile == nil {
+			errMsg := "farming tile not found"
+			logger.Error(errMsg)
+			return nil, errors.New(errMsg)
+		}
+
 		id := _constants.FARMING_TILE_BASIC_FARMING_TILE_1
 		price := farmingTile.Price
 
@@ -106,6 +125,13 @@ func GetFarmingTileData(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 			logger.Error(err.Error())
 			return nil, err
 		}
+
+		if farmingTile == nil {
+			errMsg := "farming tile not found"
+			logger.Error(errMsg)
+			return nil, errors.New(errMsg)
+		}
+
 		id := _constants.FARMING_TILE_BASIC_FARMING_TILE_2
 		price := farmingTile.Price
 
@@ -172,5 +198,13 @@ func BuyFarmingTileRpc(ctx context.Context, logger runtime.Logger, db *sql.DB, n
 		return "", err
 	}
 
-	return "", nil
+	_value, err := json.Marshal(BuyFarmingTileRpcResponse{
+		Price: data.Price,
+		Id:    data.Id,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	return string(_value), err
 }
