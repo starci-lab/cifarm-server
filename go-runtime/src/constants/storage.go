@@ -59,3 +59,7 @@ const (
 	FARMING_TILE_PREMIUM_FARMING_TILE_2     = "premiumFarmingTile2"
 	FARMING_TILE_PREMIUM_FARMING_TILE_3     = "premiumFarmingTile3"
 )
+
+const (
+	COLLECTION_PLACED_ITEMS = "placedItems"
+)

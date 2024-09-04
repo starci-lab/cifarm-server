@@ -3,7 +3,7 @@ package auth
 import (
 	_constants "cifarm-server/src/constants"
 	_config "cifarm-server/src/storage/config"
-	_inventories "cifarm-server/src/storage/inventories"
+	_placed_items "cifarm-server/src/storage/placed_items"
 	_collections "cifarm-server/src/types/collections"
 	_wallets "cifarm-server/src/wallets"
 	"context"
@@ -50,10 +50,25 @@ func AfterAuthenticate(
 			logger.Error(err.Error())
 			return err
 		}
-		err = _inventories.WriteInventoryObject(ctx, logger, db, nk, _inventories.WriteInventoryObjectParams{
-			Id:       _constants.FARMING_TILE_BASIC_FARMING_TILE_STARTER,
-			Type:     _constants.TYPE_FARMING_TILE,
-			Quantity: 6,
+
+		positions := []_collections.Position{
+			{X: -0.5, Y: 0.5},
+			{X: 0.5, Y: 0.5},
+			{X: 1.5, Y: -0.5},
+			{X: 0.5, Y: -0.5},
+			{X: 1.5, Y: -0.5},
+		}
+
+		var placedItems []_collections.PlacedItem
+		for _, pos := range positions {
+			placedItems = append(placedItems, _collections.PlacedItem{
+				Id:       _constants.FARMING_TILE_BASIC_FARMING_TILE_STARTER, // Adjust ID if needed
+				Position: pos,
+			})
+		}
+
+		err = _placed_items.WritePlacedItemObjects(ctx, logger, db, nk, _placed_items.WritePlacedItemObjectsParams{
+			PlacedItems: placedItems,
 		})
 		if err != nil {
 			logger.Error(err.Error())
