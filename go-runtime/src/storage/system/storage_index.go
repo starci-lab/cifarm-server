@@ -4,7 +4,6 @@ import (
 	_constants "cifarm-server/src/constants"
 	"context"
 	"database/sql"
-	"math"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -23,7 +22,7 @@ func InitializeStorageIndexSystemUsers(
 		"userIds",
 	}
 	sortableFields := []string{}
-	maxEntries := math.MaxInt
+	maxEntries := 1
 	indexOnly := false
 	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
 	if err != nil {

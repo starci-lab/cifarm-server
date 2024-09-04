@@ -27,7 +27,7 @@ func WriteSystemUsersObject(
 		Key:             _constants.KEY_USERS,
 		Collection:      _constants.COLLECTION_SYSTEM,
 		Value:           string(value),
-		PermissionRead:  0,
+		PermissionRead:  1,
 		PermissionWrite: 0,
 	}
 
