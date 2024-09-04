@@ -1,4 +1,4 @@
-package rpcs
+package auth
 
 import (
 	_authenticator_api "cifarm-server/src/services/cibase/authenticator/api"
