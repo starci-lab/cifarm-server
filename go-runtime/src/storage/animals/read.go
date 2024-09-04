@@ -23,25 +23,25 @@ func ReadAnimalObjectById(
 	nk runtime.NakamaModule,
 	params ReadAnimalObjectByIdParams,
 ) (*api.StorageObject, error) {
-	name := _constants.STORAGE_INDEX_ANIMAL_OBJECTS
+	name := _constants.STORAGE_INDEX_ANIMALS
 	query := fmt.Sprintf("+value.id:%s", params.Id)
 	order := []string{}
 
-	animals, err := nk.StorageIndexList(ctx, "", name, query, 100, order)
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	if len(animals.Objects) == 0 {
+	if len(objects.Objects) == 0 {
 		return nil, nil
 	}
 
-	animal := animals.Objects[0]
-	return animal, nil
+	object := objects.Objects[0]
+	return object, nil
 }
 
-func ToAnimalObjectValueById(
+func ToAnimal(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,

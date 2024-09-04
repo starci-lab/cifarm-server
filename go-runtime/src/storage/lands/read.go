@@ -1,4 +1,4 @@
-package inventories
+package lands
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -6,35 +6,30 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadInventoryObjectParams struct {
-	Id string `json:"id"`
+type ReadLandObjectByIdParams struct {
+	Id string `json:"Id"`
 }
 
-func ReadInventoryObject(
+func ReadLandObjectById(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadInventoryObjectParams,
+	params ReadLandObjectByIdParams,
 ) (*api.StorageObject, error) {
-	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
-	if !ok {
-		errMsg := "user ID not found"
-		logger.Error(errMsg)
-		return nil, errors.New(errMsg)
+	name := _constants.STORAGE_INDEX_FARMING_TOOLS
+	query := fmt.Sprintf("+value.id:%s", params.Id)
+	order := []string{
+		"-create_time",
 	}
-	name := _constants.STORAGE_INDEX_INVENTORIES
-	query := fmt.Sprintf("+value.id:%s +user_id:%s", params.Id, userId)
-	order := []string{}
 
-	objects, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
@@ -47,22 +42,22 @@ func ReadInventoryObject(
 	return object, nil
 }
 
-func ToInventory(
+func ToLand(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	object *api.StorageObject,
-) (*_collections.Inventory, error) {
+) (*_collections.Land, error) {
+	var land *_collections.Land
 	if object == nil {
 		return nil, nil
 	}
-
-	var inventory *_collections.Inventory
-	err := json.Unmarshal([]byte(object.Value), &inventory)
+	err := json.Unmarshal([]byte(object.Value), &land)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
-	return inventory, nil
+
+	return land, nil
 }

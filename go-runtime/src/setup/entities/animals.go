@@ -1,6 +1,7 @@
 package entities
 
 import (
+	_constants "cifarm-server/src/constants"
 	_animals "cifarm-server/src/storage/animals"
 	_collections "cifarm-server/src/types/collections"
 	"context"
@@ -19,13 +20,13 @@ func SetupAnimals(
 	animals := []_collections.Animal{
 		{
 			OffspringPrice: 1000,
-			Id:             _collections.ANIMAL_CHICKEN,
+			Id:             _constants.ANIMAL_CHICKEN,
 			Premium:        false,
 			GrowthTime:     1000 * 60 * 60 * 7, //7 days
 			YieldTime:      1000 * 60 * 60,     //1 days
 		},
 		{
-			Id:         _collections.ANIMAL_COW,
+			Id:         _constants.ANIMAL_COW,
 			Premium:    true,
 			GrowthTime: 1000 * 60 * 60 * 14, //14 days
 			YieldTime:  1000 * 60 * 60 * 2,  //2 days

@@ -23,25 +23,25 @@ func ReadPlantSeedObjectById(
 	nk runtime.NakamaModule,
 	params ReadPlantSeedObjectByIdParams,
 ) (*api.StorageObject, error) {
-	name := _constants.STORAGE_INDEX_PLANT_SEED_OBJECTS
+	name := _constants.STORAGE_INDEX_PLANT_SEEDS
 	query := fmt.Sprintf("+value.id:%s", params.Id)
 	order := []string{}
 
-	plantSeeds, err := nk.StorageIndexList(ctx, "", name, query, 100, order)
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 100, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	if len(plantSeeds.Objects) == 0 {
+	if len(objects.Objects) == 0 {
 		return nil, nil
 	}
 
-	plantSeed := plantSeeds.Objects[0]
-	return plantSeed, nil
+	object := objects.Objects[0]
+	return object, nil
 }
 
-func ToPlantSeedObjectValueById(
+func ToPlantSeed(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,

@@ -1,6 +1,7 @@
 package entities
 
 import (
+	_constants "cifarm-server/src/constants"
 	_plant_seeds "cifarm-server/src/storage/plant_seeds"
 	_collections "cifarm-server/src/types/collections"
 	"context"
@@ -18,7 +19,7 @@ func SetupPlants(
 
 	plantSeeds := []_collections.PlantSeed{
 		{
-			Id:                  _collections.PLANT_SEED_CARROT_SEED,
+			Id:                  _constants.PLANT_SEED_CARROT_SEED,
 			SeedPrice:           50,
 			GrowthStageDuration: 1000 * 60 * 60, //1 hours
 			GrowthStages:        5,
@@ -28,7 +29,7 @@ func SetupPlants(
 			MaxHarvestQuantity:  20,
 		},
 		{
-			Id:                          _collections.PLANT_SEED_POTATO_SEED,
+			Id:                          _constants.PLANT_SEED_POTATO_SEED,
 			SeedPrice:                   100,
 			GrowthStageDuration:         1000 * 60 * 60 * 2.5, //2.5 hours
 			GrowthStages:                5,

@@ -24,5 +24,15 @@ func InitializeSetup(
 		logger.Error(err.Error())
 		return err
 	}
+	err = _entities.SetupFarmingTools(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	err = _entities.SetupLand(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 	return nil
 }

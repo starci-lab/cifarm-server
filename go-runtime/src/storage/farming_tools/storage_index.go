@@ -1,4 +1,4 @@
-package plant_seeds
+package farming_tools
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -8,19 +8,18 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeStorageIndexPlantSeedObjects(
+func InitializeStorageIndexFarmingTools(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := _constants.STORAGE_INDEX_PLANT_SEEDS
-	collection := _constants.COLLECTION_PLANT_SEEDS
+	name := _constants.STORAGE_INDEX_INVENTORIES
+	collection := _constants.COLLECTION_FARMING_TOOLS
 	key := ""
 	fields := []string{
-		"id",
-		"price",
+		"days",
 	}
 	sortableFields := []string{}
 	maxEntries := 100

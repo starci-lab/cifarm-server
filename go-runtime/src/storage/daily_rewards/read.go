@@ -25,26 +25,26 @@ func ReadLatestDailyRewardObject(
 		logger.Error(errMsg)
 		return nil, errors.New(errMsg)
 	}
-	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
+	name := _constants.STORAGE_INDEX_DAILY_REWARDS
 	query := fmt.Sprintf("+user_id:%s", userId)
 	order := []string{
 		"-create_time",
 	}
 
-	dailyRewards, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
+	objects, err := nk.StorageIndexList(ctx, userId, name, query, 1, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	if len(dailyRewards.Objects) == 0 {
+	if len(objects.Objects) == 0 {
 		return nil, nil
 	}
-	var latest = dailyRewards.Objects[0]
+	var latest = objects.Objects[0]
 	return latest, nil
 }
 
-func ToLatestDailyRewardObjectValue(
+func ToLatestDailyReward(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,

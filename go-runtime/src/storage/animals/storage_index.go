@@ -8,14 +8,14 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeStorageIndexAnimalsObjects(
+func InitializeStorageIndexAnimals(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := _constants.STORAGE_INDEX_ANIMAL_OBJECTS
+	name := _constants.STORAGE_INDEX_ANIMALS
 	collection := _constants.COLLECTION_ANIMALS
 	key := ""
 	fields := []string{

@@ -8,21 +8,21 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeStorageIndexLatestDailyRewardObject(
+func InitializeStorageIndexDailyRewards(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := _constants.STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS
+	name := _constants.STORAGE_INDEX_DAILY_REWARDS
 	collection := _constants.COLLECTION_REWARDS
 	key := ""
 	fields := []string{
 		"days",
 	}
 	sortableFields := []string{}
-	maxEntries := 1
+	maxEntries := 100
 	indexOnly := false
 	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
 	if err != nil {

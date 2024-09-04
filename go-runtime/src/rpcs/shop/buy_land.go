@@ -13,16 +13,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type BuyPlantSeedRpcParams struct {
-	Id       string `json:"id"`
-	Quantity int    `json:"quantity"`
+type BuyLandRpcParams struct {
+	Quantity int `json:"quantity"`
 }
 
-type BuyPlantSeedRpcResponse struct {
+type BuyLandRpcResponse struct {
 	TotalCost int64 `json:"totalCost"`
 }
 
-func BuyPlantSeedRpc(ctx context.Context,
+func BuyLandRpc(ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,

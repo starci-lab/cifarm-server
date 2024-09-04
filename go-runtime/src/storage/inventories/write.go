@@ -41,7 +41,7 @@ func WriteInventoryObject(
 	}
 
 	if object != nil {
-		inventory, err := ToReadInventoryObjectValue(ctx, logger, db, nk, object)
+		inventory, err := ToInventory(ctx, logger, db, nk, object)
 		if err != nil {
 			logger.Error(err.Error())
 			return err

@@ -1,8 +1,10 @@
 package constants
 
 const (
-	STORAGE_INDEX_LATEST_DAILY_REWARD_OBJECTS = "LatestDailyRewardObjects"
-	STORAGE_INDEX_PLANT_SEED_OBJECTS          = "PlantSeedObjects"
-	STORAGE_INDEX_ANIMAL_OBJECTS              = "Animals"
-	STORAGE_INDEX_INVENTORY_OBJECTS           = "InventoryObjects"
+	STORAGE_INDEX_DAILY_REWARDS = "DailyRewards"
+	STORAGE_INDEX_PLANT_SEEDS   = "PlantSeeds"
+	STORAGE_INDEX_ANIMALS       = "Animals"
+	STORAGE_INDEX_INVENTORIES   = "Inventories"
+	STORAGE_INDEX_FARMING_TOOLS = "FarmingTools"
+	STORAGE_INDEX_LANDS         = "Lands"
 )

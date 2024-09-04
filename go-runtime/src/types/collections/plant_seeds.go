@@ -11,8 +11,3 @@ type PlantSeed struct {
 	MinHarvestQuantity          int     `json:"minHarvestQuantity"`
 	MaxHarvestQuantity          int     `json:"maxHarvestQuantity"`
 }
-
-const (
-	PLANT_SEED_CARROT_SEED = "carrotSeed"
-	PLANT_SEED_POTATO_SEED = "potatoSeed"
-)
