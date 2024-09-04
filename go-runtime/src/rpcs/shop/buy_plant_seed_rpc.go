@@ -63,7 +63,6 @@ func BuyPlantSeedRpc(ctx context.Context,
 
 	totalCost := int64(plantSeed.SeedPrice) * int64(params.Quantity)
 	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
-		UserId: userId,
 		Amount: -totalCost,
 		Metadata: map[string]interface{}{
 			"name":   "Buy seeds",

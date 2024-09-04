@@ -54,7 +54,7 @@ type GetFarmingTileIdAndPriceResult struct {
 	Price int64  `json:"price"`
 }
 
-func GetFarmingTileIdAndPrice(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (*GetFarmingTileIdAndPriceResult, error) {
+func GetFarmingTileData(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (*GetFarmingTileIdAndPriceResult, error) {
 	has1, err := HasEnoughFarmingTiles(ctx, logger, db, nk, HasFarmingTileParams{
 		Id: _constants.FARMING_TILE_BASIC_FARMING_TILE_1,
 	})
@@ -151,14 +151,13 @@ func BuyFarmingTileRpc(ctx context.Context, logger runtime.Logger, db *sql.DB, n
 		return "", errors.New(errMsg)
 	}
 
-	data, err := GetFarmingTileIdAndPrice(ctx, logger, db, nk)
+	data, err := GetFarmingTileData(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
 	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
-		UserId: userId,
 		Amount: -data.Price,
 		Metadata: map[string]interface{}{
 			"name":   "Buy farming tile",
