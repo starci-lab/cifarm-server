@@ -15,7 +15,7 @@ func InitializeStorageIndexFarmingTools(
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := _constants.STORAGE_INDEX_INVENTORIES
+	name := _constants.STORAGE_INDEX_FARMING_TOOLS
 	collection := _constants.COLLECTION_FARMING_TOOLS
 	key := ""
 	fields := []string{

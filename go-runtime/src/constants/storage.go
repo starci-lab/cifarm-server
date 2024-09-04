@@ -2,7 +2,7 @@ package constants
 
 const (
 	COLLECTION_CONFIG   = "config"
-	KEY_PLAYER_METADATA = "player_metadata"
+	KEY_PLAYER_METADATA = "playerMetadata"
 )
 
 const (
@@ -15,8 +15,9 @@ const (
 )
 
 const (
-	COLLECTION_PLANT_SEEDS = "plant_seeds"
+	COLLECTION_PLANT_SEEDS = "plantSeeds"
 )
+
 const (
 	PLANT_SEED_CARROT_SEED = "carrotSeed"
 	PLANT_SEED_POTATO_SEED = "potatoSeed"
@@ -36,7 +37,7 @@ const (
 )
 
 const (
-	COLLECTION_FARMING_TOOLS = "farming_tools"
+	COLLECTION_FARMING_TOOLS = "farmingTools"
 )
 
 const (
@@ -46,15 +47,15 @@ const (
 )
 
 const (
-	COLLECTION_FARMING_TILES = "FARMING_TILEs"
+	COLLECTION_FARMING_TILES = "farmingTiles"
 )
 
 const (
-	FARMING_TILE_BASIC_FARMING_TILE_FREE = "basicFARMING_TILEFree"
-	FARMING_TILE_BASIC_FARMING_TILE_1    = "basicFARMING_TILE1"
-	FARMING_TILE_BASIC_FARMING_TILE_2    = "basicFARMING_TILE2"
-	FARMING_TILE_BASIC_FARMING_TILE_3    = "basicFARMING_TILE3"
-	FARMING_TILE_PREMIUM_FARMING_TILE_1  = "premiumFARMING_TILE1"
-	FARMING_TILE_PREMIUM_FARMING_TILE_2  = "premiumFARMING_TILE2"
-	FARMING_TILE_PREMIUM_FARMING_TILE_3  = "premiumFARMING_TILE3"
+	FARMING_TILE_BASIC_FARMING_TILE_FREE = "basicFarmingTileFree"
+	FARMING_TILE_BASIC_FARMING_TILE_1    = "basicFarmingTile1"
+	FARMING_TILE_BASIC_FARMING_TILE_2    = "basicFarmingTile2"
+	FARMING_TILE_BASIC_FARMING_TILE_3    = "basicFarmingTile3"
+	FARMING_TILE_PREMIUM_FARMING_TILE_1  = "premiumFarmingTile1"
+	FARMING_TILE_PREMIUM_FARMING_TILE_2  = "premiumFarmingTile2"
+	FARMING_TILE_PREMIUM_FARMING_TILE_3  = "premiumFarmingTile3"
 )
