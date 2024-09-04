@@ -55,6 +55,7 @@ func AfterAuthenticate(
 			{X: -0.5, Y: 0.5},
 			{X: 0.5, Y: 0.5},
 			{X: 1.5, Y: -0.5},
+			{X: -0.5, Y: -0.5},
 			{X: 0.5, Y: -0.5},
 			{X: 1.5, Y: -0.5},
 		}
@@ -62,7 +63,7 @@ func AfterAuthenticate(
 		var placedItems []_collections.PlacedItem
 		for _, pos := range positions {
 			placedItems = append(placedItems, _collections.PlacedItem{
-				Id:       _constants.FARMING_TILE_BASIC_FARMING_TILE_STARTER, // Adjust ID if needed
+				Id:       _constants.FARMING_TILE_BASIC_FARMING_TILE_STARTER,
 				Position: pos,
 			})
 		}
