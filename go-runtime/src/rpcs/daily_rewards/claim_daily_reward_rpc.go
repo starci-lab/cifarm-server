@@ -62,7 +62,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	if object == nil {
-		amount := int64(500)
+		amount := int64(100)
 		days := 1
 		err := _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
 			Amount: amount,
