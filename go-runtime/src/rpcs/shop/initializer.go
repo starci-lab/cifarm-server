@@ -13,5 +13,10 @@ func InitializeShop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk r
 		return err
 	}
 
+	err = initializer.RegisterRpc("go_buy_farming_tile", BuyFarmingTileRpc)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

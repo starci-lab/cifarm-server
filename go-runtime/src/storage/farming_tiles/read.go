@@ -1,4 +1,4 @@
-package lands
+package farming_tiles
 
 import (
 	_constants "cifarm-server/src/constants"
@@ -12,18 +12,18 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadLandObjectByIdParams struct {
+type ReadFarmingTileObjectByIdParams struct {
 	Id string `json:"Id"`
 }
 
-func ReadLandObjectById(
+func ReadFarmingTileObjectById(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadLandObjectByIdParams,
+	params ReadFarmingTileObjectByIdParams,
 ) (*api.StorageObject, error) {
-	name := _constants.STORAGE_INDEX_FARMING_TOOLS
+	name := _constants.STORAGE_INDEX_FARMING_TILES
 	query := fmt.Sprintf("+value.id:%s", params.Id)
 	order := []string{
 		"-create_time",
@@ -42,22 +42,22 @@ func ReadLandObjectById(
 	return object, nil
 }
 
-func ToLand(
+func ToFarmingTile(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	object *api.StorageObject,
-) (*_collections.Land, error) {
-	var land *_collections.Land
+) (*_collections.FarmingTile, error) {
+	var FARMING_TILE *_collections.FarmingTile
 	if object == nil {
 		return nil, nil
 	}
-	err := json.Unmarshal([]byte(object.Value), &land)
+	err := json.Unmarshal([]byte(object.Value), &FARMING_TILE)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
 
-	return land, nil
+	return FARMING_TILE, nil
 }

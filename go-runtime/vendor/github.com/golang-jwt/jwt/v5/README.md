@@ -121,7 +121,7 @@ backwards-incompatible changes outside of major version updates (and only with
 good reason).
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org).  Accepted pull
-requests will land on `main`.  Periodically, versions will be tagged from
+requests will FARMING_TILE on `main`.  Periodically, versions will be tagged from
 `main`.  You can find all the releases on [the project releases
 page](https://github.com/golang-jwt/jwt/releases).
 

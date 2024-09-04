@@ -1,11 +1,11 @@
 package storage
 
 import (
+	_FARMING_TILEs "cifarm-server/src/storage/FARMING_TILEs"
 	_animals "cifarm-server/src/storage/animals"
 	_daily_rewards "cifarm-server/src/storage/daily_rewards"
 	_farming_tools "cifarm-server/src/storage/farming_tools"
 	_inventories "cifarm-server/src/storage/inventories"
-	_lands "cifarm-server/src/storage/lands"
 	_plant_seeds "cifarm-server/src/storage/plant_seeds"
 	"context"
 	"database/sql"
@@ -44,7 +44,7 @@ func InitializeStorage(ctx context.Context, logger runtime.Logger, db *sql.DB, n
 		return err
 	}
 
-	err = _lands.InitializeLands(ctx, logger, db, nk, initializer)
+	err = _FARMING_TILEs.InitializeFarmingTiles(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
