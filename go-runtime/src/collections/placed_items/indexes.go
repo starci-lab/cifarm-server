@@ -21,6 +21,7 @@ func RegisterByFilters1(
 	fields := []string{
 		"isPlanted",
 		"type",
+		"fullyMatured",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

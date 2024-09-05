@@ -75,7 +75,7 @@ func ReadByFilters1(
 ) (*api.StorageObjects, error) {
 
 	name := STORAGE_INDEX_BY_FILTERS_1
-	query := fmt.Sprintf(`+value.isPlanted:T +value.type:%v`, TYPE_TILE)
+	query := fmt.Sprintf(`+value.isPlanted:T -fullyMatured:T +value.type:%v`, TYPE_TILE)
 	maxEntries := collections_common.MAX_ENTRIES
 	order := []string{}
 

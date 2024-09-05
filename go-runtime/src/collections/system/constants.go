@@ -5,5 +5,6 @@ const (
 )
 
 const (
-	KEY_USERS = "users"
+	KEY_USERS              = "users"
+	KEY_LAST_SERVER_UPTIME = "lastServerUptime"
 )

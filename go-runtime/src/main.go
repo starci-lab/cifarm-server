@@ -30,7 +30,6 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		logger.Error(err.Error())
 		return err
 	}
-
 	err = setup.Initialize(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())

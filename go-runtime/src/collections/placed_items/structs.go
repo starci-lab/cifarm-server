@@ -25,4 +25,5 @@ type PlacedItem struct {
 	Type           int            `json:"type"`
 	SeedGrowthInfo SeedGrowthInfo `json:"seedGrowthInfo"`
 	IsPlanted      bool           `json:"isPlanted"`
+	FullyMatured   bool           `json:"fullyMatured"`
 }

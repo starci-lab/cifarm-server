@@ -62,6 +62,7 @@ func Delete(ctx context.Context,
 	inventory.Quantity -= params.Quantity
 	err = Write(ctx, logger, db, nk, WriteParams{
 		Inventory: *inventory,
+		UserId:    params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())

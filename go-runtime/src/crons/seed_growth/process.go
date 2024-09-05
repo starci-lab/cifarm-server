@@ -10,8 +10,55 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
+type ExecuteGrowthLogicParams struct {
+	PlacedItem          *collections_placed_items.PlacedItem
+	TimeSinceLastUptime int64
+	UserId              string
+	Key                 string
+}
+
+func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params ExecuteGrowthLogicParams,
+) error {
+	if params.PlacedItem.FullyMatured {
+		return nil
+	}
+	time := 1 + params.TimeSinceLastUptime
+	params.PlacedItem.SeedGrowthInfo.TotalTimeElapsed += time
+	params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed += time
+
+	var loopHappens int
+	for {
+		loopHappens += 1
+		if loopHappens > 5 {
+			break
+		}
+		if params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed >= params.PlacedItem.SeedGrowthInfo.Seed.GrowthStageDuration {
+			params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed -= params.PlacedItem.SeedGrowthInfo.Seed.GrowthStageDuration
+			params.PlacedItem.SeedGrowthInfo.CurrentStage += 1
+			if params.PlacedItem.SeedGrowthInfo.CurrentStage == params.PlacedItem.SeedGrowthInfo.Seed.GrowthStages {
+				params.PlacedItem.FullyMatured = true
+				break
+			}
+		} else {
+			break
+		}
+	}
+
+	err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+		PlacedItem: *params.PlacedItem,
+		UserId:     params.UserId,
+		Key:        params.Key,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
 type HandleSeedGrowthParams struct {
-	UserId string `json:"userId"`
+	UserId              string `json:"userId"`
+	TimeSinceLastUptime int64  `json:"timeSinceLastUptime"`
 }
 
 func HandleSeedGrowth(
@@ -20,6 +67,7 @@ func HandleSeedGrowth(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	params HandleSeedGrowthParams,
+
 ) error {
 	objects, err := collections_placed_items.ReadByFilters1(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.UserId,
@@ -37,21 +85,11 @@ func HandleSeedGrowth(
 				logger.Error(err.Error())
 				return err
 			}
-			if placedItem.SeedGrowthInfo.CurrentStage == placedItem.SeedGrowthInfo.Seed.GrowthStages {
-				return nil
-			}
-			time := int64(1)
-			placedItem.SeedGrowthInfo.TotalTimeElapsed += time
-			placedItem.SeedGrowthInfo.CurrentStageTimeElapsed += time
-
-			if placedItem.SeedGrowthInfo.CurrentStageTimeElapsed >= placedItem.SeedGrowthInfo.Seed.GrowthStageDuration {
-				placedItem.SeedGrowthInfo.CurrentStageTimeElapsed -= placedItem.SeedGrowthInfo.Seed.GrowthStageDuration
-				placedItem.SeedGrowthInfo.CurrentStage += 1
-			}
-			err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
-				PlacedItem: *placedItem,
-				UserId:     params.UserId,
-				Key:        object.Key,
+			err = ExecuteGrowthLogic(ctx, logger, db, nk, ExecuteGrowthLogicParams{
+				PlacedItem:          placedItem,
+				TimeSinceLastUptime: params.TimeSinceLastUptime,
+				UserId:              params.UserId,
+				Key:                 object.Key,
 			})
 			if err != nil {
 				logger.Error(err.Error())
@@ -68,8 +106,9 @@ func Process(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
+	timeSinceLastUptime int64,
 ) error {
-	object, err := collections_system.ReadByKey(ctx, logger, db, nk)
+	object, err := collections_system.ReadUsers(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -81,7 +120,8 @@ func Process(
 	}
 	for _, userId := range users.UserIds {
 		go HandleSeedGrowth(ctx, logger, db, nk, HandleSeedGrowthParams{
-			UserId: userId,
+			UserId:              userId,
+			TimeSinceLastUptime: timeSinceLastUptime,
 		})
 	}
 

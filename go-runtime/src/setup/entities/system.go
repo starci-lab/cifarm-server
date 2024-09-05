@@ -14,7 +14,7 @@ func SetupSystem(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) error {
-	object, err := collections_system.ReadByKey(ctx, logger, db, nk)
+	object, err := collections_system.ReadUsers(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -27,7 +27,7 @@ func SetupSystem(
 		UserIds: []string{},
 	}
 
-	err = collections_system.Write(ctx, logger, db, nk, collections_system.WriteParams{
+	err = collections_system.WriteUsers(ctx, logger, db, nk, collections_system.WriteUsersParams{
 		Users: users,
 	})
 	if err != nil {

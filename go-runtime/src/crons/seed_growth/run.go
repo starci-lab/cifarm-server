@@ -1,6 +1,8 @@
 package crons_seed_growth
 
 import (
+	collections_common "cifarm-server/src/collections/common"
+	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
 	"time"
@@ -15,6 +17,22 @@ func Run(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) error {
+	object, err := collections_system.ReadLastServerUptime(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	lastServerUptime, err := collections_common.ToValue[collections_system.LastServerUptime](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	var timeSinceLastUptime int64
+	if lastServerUptime != nil {
+		timeSinceLastUptime = time.Now().Unix() - lastServerUptime.TimeInSeconds
+	}
+	logger.Info("time since last uptime: %vs", timeSinceLastUptime)
+
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
 		logger.Error(err.Error())
@@ -27,7 +45,10 @@ func Run(
 		),
 		gocron.NewTask(
 			func() {
-				Process(ctx, logger, db, nk)
+				go Process(ctx, logger, db, nk, timeSinceLastUptime)
+				if timeSinceLastUptime > 0 {
+					timeSinceLastUptime = 0
+				}
 			},
 		),
 	)
