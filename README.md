@@ -16,7 +16,7 @@ CiFarm Server is now live and fully operational in the production environment.<b
 Access the Cibase API at https://blockchain-auth-service.starci.net/api and request the message by sending a POST request to https://blockchain-auth-service.starci.net/api/v1/authenticator/request-message. Sign the retrieved message using your blockchain credentials, and then submit it to the CiFarm server for verification. You have a time limit of 1 minute to complete this process.
 #### 2. Implementation of Authentication Code (Unity)
 
-```   
+```csharp   
 async void Start()
     {
         const string scheme = "https";
@@ -45,14 +45,14 @@ async void Start()
 RPC Name: `buy_seed`
 <br/>
 Request Body:  
-```
+```json
 {
     "key" : "carrot",
     "quantity" : 5
 }
 ```
 Response:  
-```
+```json
 {
     "totalCost" : 2500
 }
@@ -65,13 +65,13 @@ Throw errors if there are issues such as insufficient balance or an invalid plan
 RPC Name: `buy_animal`
 <br/>
 Request Body:  
-```
+```json
 {
     "key" : "chicken"
 }
 ```
 Response:  
-```
+```json
 {
     "cost" : 1000
 }
@@ -84,14 +84,14 @@ Throw errors if there are issues such as insufficient balance or an invalid anim
 RPC Name: `plant_seed`
 <br/>
 Request Body:  
-```
+```json
 {
     "inventorySeedKey" : "d6a6a181-41e5-4389-96d9-89a1f5a58b13",
     "placedItemTileKey" : "e6df5293-0338-4e33-b6b2-24ae2ecdd24d"
 }
 ```
 Response:  
-```
+```json
 {
     "harvestIn" : 36000
 }
@@ -103,7 +103,7 @@ Throw errors if the seed key does not exist or if the tile has already been plan
 ## Server Authoritative
 #### 1. Get the match ID
 Step 1: Get the value of centralMatchInfo object
-```
+```csharp
 var personalStorageId = new StorageObjectId
 {
     Collection = "System",
@@ -118,14 +118,14 @@ var personalStorageObjects = await client.ReadStorageObjectsAsync(session, new[]
 var value = personalStorageObjects.Objects.ToList()[0].Value;
 ```
 Step 2: Define class & Deserialize
-```
+```csharp
 class CentralMatchInfo
 {
     [JsonProperty("matchId")]   
     public string MatchId { get; set; }
 }
 ```
-```
+```csharp
 var matchId = "";
 var result = JsonConvert.DeserializeObject<CentralMatchInfo>(value);
 if (result != null)
@@ -134,7 +134,7 @@ if (result != null)
 }
 ```
 Step 3: Get the socket & Join the match
-```
+```csharp
 var socket = client.NewSocket(true);
 await socket.ConnectAsync(session);
 var match = await socket.JoinMatchAsync(matchId);
@@ -145,7 +145,7 @@ var match = await socket.JoinMatchAsync(matchId);
 #### 2. Get Realtime Tiles State
 You can retrieve the real-time state of your farm's tiles, with updates occurring once per second.
 
-```
+```csharp
  socket.ReceivedMatchState += newState =>
  {
     //trigger once per second
