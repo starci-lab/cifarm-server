@@ -185,6 +185,13 @@ func BuyTileRpc(
 	nk runtime.NakamaModule,
 	payload string,
 ) (string, error) {
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
 	data, err := GetTileData(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
@@ -197,6 +204,7 @@ func BuyTileRpc(
 			"name": "Buy tile",
 			"key":  data.Key,
 		},
+		UserId: userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())

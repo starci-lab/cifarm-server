@@ -76,6 +76,7 @@ func ClaimDailyRewardRpc(
 		days := 1
 		err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
 			Amount: amount,
+			UserId: userId,
 			Metadata: map[string]interface{}{
 				"name": "Daily reward",
 				"days": days,
@@ -131,6 +132,7 @@ func ClaimDailyRewardRpc(
 
 	err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
 		Amount: amount,
+		UserId: userId,
 		Metadata: map[string]interface{}{
 			"name": "Daily reward",
 			"days": days,

@@ -27,6 +27,12 @@ func BuySeedRpc(ctx context.Context,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	payload string) (string, error) {
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
 
 	var params *BuySeedRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
@@ -57,6 +63,7 @@ func BuySeedRpc(ctx context.Context,
 	totalCost := int64(seed.Price) * int64(params.Quantity)
 	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
 		Amount: -totalCost,
+		UserId: userId,
 		Metadata: map[string]interface{}{
 			"name": "Buy seeds",
 			"key":  params.Key,
