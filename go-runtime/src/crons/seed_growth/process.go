@@ -11,10 +11,10 @@ import (
 )
 
 type ExecuteGrowthLogicParams struct {
-	PlacedItem          *collections_placed_items.PlacedItem
-	TimeSinceLastUptime int64
-	UserId              string
-	Key                 string
+	PlacedItem    *collections_placed_items.PlacedItem
+	TimeInSeconds int64
+	UserId        string
+	Key           string
 }
 
 func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params ExecuteGrowthLogicParams,
@@ -22,9 +22,8 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 	if params.PlacedItem.FullyMatured {
 		return nil
 	}
-	time := 1 + params.TimeSinceLastUptime
-	params.PlacedItem.SeedGrowthInfo.TotalTimeElapsed += time
-	params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed += time
+	params.PlacedItem.SeedGrowthInfo.TotalTimeElapsed += params.TimeInSeconds
+	params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed += params.TimeInSeconds
 
 	var loopHappens int
 	for {
@@ -57,8 +56,8 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 }
 
 type HandleSeedGrowthParams struct {
-	UserId              string `json:"userId"`
-	TimeSinceLastUptime int64  `json:"timeSinceLastUptime"`
+	UserId        string `json:"userId"`
+	TimeInSeconds int64  `json:"timeInSeconds"`
 }
 
 func HandleSeedGrowth(
@@ -86,10 +85,10 @@ func HandleSeedGrowth(
 				return err
 			}
 			err = ExecuteGrowthLogic(ctx, logger, db, nk, ExecuteGrowthLogicParams{
-				PlacedItem:          placedItem,
-				TimeSinceLastUptime: params.TimeSinceLastUptime,
-				UserId:              params.UserId,
-				Key:                 object.Key,
+				PlacedItem:    placedItem,
+				TimeInSeconds: params.TimeInSeconds,
+				UserId:        params.UserId,
+				Key:           object.Key,
 			})
 			if err != nil {
 				logger.Error(err.Error())
@@ -120,8 +119,8 @@ func Process(
 	}
 	for _, userId := range users.UserIds {
 		go HandleSeedGrowth(ctx, logger, db, nk, HandleSeedGrowthParams{
-			UserId:              userId,
-			TimeSinceLastUptime: timeSinceLastUptime,
+			UserId:        userId,
+			TimeInSeconds: 1 + timeSinceLastUptime,
 		})
 	}
 
