@@ -49,3 +49,24 @@ func ToValues[TValue any](
 
 	return values, nil
 }
+
+func ToValues2[TValue any](
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	objects []*api.StorageObject,
+) ([]*TValue, error) {
+	var values []*TValue
+	for _, object := range objects {
+		var data *TValue
+		err := json.Unmarshal([]byte(object.Value), &data)
+		if err != nil {
+			logger.Error(err.Error())
+			return nil, err
+		}
+		values = append(values, data)
+	}
+
+	return values, nil
+}

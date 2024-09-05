@@ -11,7 +11,7 @@ import (
 func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
 	err := initializer.RegisterMatch(NAME,
 		func(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (runtime.Match, error) {
-			return &LobbyMatch{}, nil
+			return &Match{}, nil
 		})
 	if err != nil {
 		logger.Error(err.Error())

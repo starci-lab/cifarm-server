@@ -14,14 +14,14 @@ type ReadsParams struct {
 	UserId string `json:"userId"`
 }
 
-func Reads(
+func ReadMany(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	params ReadsParams,
 ) ([]*api.StorageObject, error) {
-	objects, _, err := nk.StorageList(ctx, params.UserId, params.UserId, COLLECTION_NAME, 10000, "")
+	objects, _, err := nk.StorageList(ctx, params.UserId, params.UserId, COLLECTION_NAME, collections_common.MAX_ENTRIES, "")
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
