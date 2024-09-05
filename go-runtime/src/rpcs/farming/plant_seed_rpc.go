@@ -134,7 +134,6 @@ func PlantSeedRpc(
 		Seed:                     *seed,
 	}
 	placedItem.IsPlanted = true
-
 	err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *placedItem,
 		UserId:     userId,
@@ -145,13 +144,11 @@ func PlantSeedRpc(
 		return "", err
 	}
 
-	response := &PlantSeedRpcResponse{HarvestIn: seed.GrowthStageDuration}
-
-	out, err := json.Marshal(response)
+	value, err := json.Marshal(PlantSeedRpcResponse{HarvestIn: seed.GrowthStageDuration})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	return string(out), nil
+	return string(value), nil
 }

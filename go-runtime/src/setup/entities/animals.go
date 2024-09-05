@@ -31,7 +31,7 @@ func SetupAnimals(
 		},
 	}
 
-	err := collections_animals.WriteMany(ctx, logger, db, nk, collections_animals.WriteParams{
+	err := collections_animals.WriteMany(ctx, logger, db, nk, collections_animals.WriteManyParams{
 		Animals: animals,
 	})
 	if err != nil {

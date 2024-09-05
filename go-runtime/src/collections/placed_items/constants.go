@@ -10,5 +10,13 @@ const (
 )
 
 const (
-	TYPE_TILE = 0
+	TYPE_TILE     = 0
+	TYPE_BUILDING = 1
+)
+
+const (
+	SIZE_0 = 0
+	SIZE_1 = 1
+	SIZE_2 = 1
+	SIZE_3 = 1
 )

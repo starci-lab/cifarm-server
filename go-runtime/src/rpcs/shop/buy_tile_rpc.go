@@ -222,7 +222,7 @@ func BuyTileRpc(
 		return "", err
 	}
 
-	_value, err := json.Marshal(BuyTileRpcResponse{
+	value, err := json.Marshal(BuyTileRpcResponse{
 		Price: data.Price,
 		Key:   data.Key,
 	})
@@ -230,5 +230,5 @@ func BuyTileRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
-	return string(_value), err
+	return string(value), err
 }

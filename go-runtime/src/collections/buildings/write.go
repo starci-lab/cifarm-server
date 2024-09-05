@@ -1,4 +1,4 @@
-package collections_animals
+package collections_buildings
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 )
 
 type WriteManyParams struct {
-	Animals []Animal `json:"animals"`
+	Buldings []Bulding `json:"buildings"`
 }
 
 func WriteMany(
@@ -20,15 +20,15 @@ func WriteMany(
 	params WriteManyParams,
 ) error {
 	var writes []*runtime.StorageWrite
-	for _, animal := range params.Animals {
-		value, err := json.Marshal(animal)
+	for _, bulding := range params.Buldings {
+		value, err := json.Marshal(bulding)
 		if err != nil {
 			continue
 		}
 
 		write := &runtime.StorageWrite{
 			Collection:      COLLECTION_NAME,
-			Key:             animal.ReferenceId,
+			Key:             bulding.ReferenceId,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

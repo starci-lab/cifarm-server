@@ -1,9 +1,9 @@
 package rpcs_shop
 
 import (
+	collections_animals "cifarm-server/src/collections/animals"
 	collections_common "cifarm-server/src/collections/common"
 	collections_inventories "cifarm-server/src/collections/inventories"
-	collections_seeds "cifarm-server/src/collections/seeds"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -13,16 +13,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type BuySeedRpcParams struct {
-	Key      string `json:"key"`
-	Quantity int    `json:"quantity"`
+type BuyAnimalRpcParams struct {
+	Key string `json:"key"`
 }
 
-type BuySeedRpcResponse struct {
-	TotalCost int64 `json:"totalCost"`
+type BuyAnimalRpcResponse struct {
+	Cost int64 `json:"cost"`
 }
 
-func BuySeedRpc(ctx context.Context,
+func BuyAnimalRpc(ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
@@ -34,35 +33,39 @@ func BuySeedRpc(ctx context.Context,
 		return "", errors.New(errMsg)
 	}
 
-	var params *BuySeedRpcParams
+	var params *BuyAnimalRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	object, err := collections_seeds.ReadByKey(ctx, logger, db, nk, collections_seeds.ReadByKeyParams{
+	object, err := collections_animals.ReadByKey(ctx, logger, db, nk, collections_animals.ReadByKeyParams{
 		Key: params.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	seed, err := collections_common.ToValue[collections_seeds.Seed](ctx, logger, db, nk, object)
+	animal, err := collections_common.ToValue[collections_animals.Animal](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	if seed == nil {
-		errMsg := "seed not found"
+	if animal == nil {
+		errMsg := "animal not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+	if animal.Premium {
+		errMsg := "cannot buy premium animal"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	totalCost := int64(seed.Price) * int64(params.Quantity)
 	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
-		Amount: -totalCost,
+		Amount: -animal.OffspringPrice,
 		UserId: userId,
 		Metadata: map[string]interface{}{
 			"name": "Buy seeds",
@@ -79,8 +82,8 @@ func BuySeedRpc(ctx context.Context,
 		collections_inventories.WriteParams{
 			Inventory: collections_inventories.Inventory{
 				ReferenceId: params.Key,
-				Quantity:    params.Quantity,
-				Type:        collections_inventories.TYPE_SEED,
+				Quantity:    1,
+				Type:        collections_inventories.TYPE_ANIMAL,
 			},
 			UserId: userId,
 		})
@@ -89,8 +92,8 @@ func BuySeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	value, err := json.Marshal(BuySeedRpcResponse{
-		TotalCost: totalCost,
+	value, err := json.Marshal(BuyAnimalRpcResponse{
+		Cost: animal.OffspringPrice,
 	})
 	if err != nil {
 		logger.Error(err.Error())

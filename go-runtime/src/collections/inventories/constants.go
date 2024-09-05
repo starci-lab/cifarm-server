@@ -9,6 +9,7 @@ const (
 )
 
 const (
-	TYPE_SEED = 0
-	TYPE_TILE = 1
+	TYPE_SEED   = 0
+	TYPE_TILE   = 1
+	TYPE_ANIMAL = 2
 )
