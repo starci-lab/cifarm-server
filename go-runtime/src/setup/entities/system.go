@@ -1,8 +1,7 @@
-package entities
+package setup_entities
 
 import (
-	_system "cifarm-server/src/storage/system"
-	_collections "cifarm-server/src/types/collections"
+	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
 
@@ -15,7 +14,7 @@ func SetupSystem(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) error {
-	object, err := _system.ReadSystemUsersObject(ctx, logger, db, nk)
+	object, err := collections_system.ReadByKey(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -24,12 +23,13 @@ func SetupSystem(
 		return nil
 	}
 
-	users := _collections.Users{
+	users := collections_system.Users{
 		UserIds: []string{},
-		Id:      "users",
 	}
 
-	err = _system.WriteSystemUsersObject(ctx, logger, db, nk, users)
+	err = collections_system.Write(ctx, logger, db, nk, collections_system.WriteParams{
+		Users: users,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err

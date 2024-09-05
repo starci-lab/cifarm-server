@@ -1,9 +1,7 @@
-package entities
+package setup_entities
 
 import (
-	_constants "cifarm-server/src/constants"
-	_animals "cifarm-server/src/storage/animals"
-	_collections "cifarm-server/src/types/collections"
+	collections_animals "cifarm-server/src/collections/animals"
 	"context"
 	"database/sql"
 
@@ -17,23 +15,25 @@ func SetupAnimals(
 	nk runtime.NakamaModule,
 ) error {
 
-	animals := []_collections.Animal{
+	animals := []collections_animals.Animal{
 		{
+			ReferenceId:    collections_animals.KEY_CHICKEN,
 			OffspringPrice: 1000,
-			Id:             _constants.ANIMAL_CHICKEN,
 			Premium:        false,
 			GrowthTime:     60 * 60 * 7, //7 days
 			YieldTime:      60 * 60,     //1 days
 		},
 		{
-			Id:         _constants.ANIMAL_COW,
-			Premium:    true,
-			GrowthTime: 60 * 60 * 14, //14 days
-			YieldTime:  60 * 60 * 2,  //2 days
+			ReferenceId: collections_animals.KEY_COW,
+			Premium:     true,
+			GrowthTime:  60 * 60 * 14, //14 days
+			YieldTime:   60 * 60 * 2,  //2 days
 		},
 	}
 
-	err := _animals.WriteAnimalsObjects(ctx, logger, db, nk, animals)
+	err := collections_animals.WriteMany(ctx, logger, db, nk, collections_animals.WriteParams{
+		Animals: animals,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err

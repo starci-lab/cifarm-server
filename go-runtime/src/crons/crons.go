@@ -1,15 +1,15 @@
-package rpcs
+package crons
 
 import (
-	_seed_growth "cifarm-server/src/crons/seed_growth"
+	crons_seed_growth "cifarm-server/src/crons/seed_growth"
 	"context"
 	"database/sql"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeCrons(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := _seed_growth.RunSeedGrowthCron(ctx, logger, db, nk)
+func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) error {
+	err := crons_seed_growth.RunSeedGrowthCron(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

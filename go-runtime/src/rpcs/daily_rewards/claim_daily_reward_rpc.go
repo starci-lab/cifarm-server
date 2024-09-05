@@ -1,9 +1,9 @@
-package daily_rewards
+package rpcs_daily_rewards
 
 import (
-	_daily_rewards "cifarm-server/src/storage/daily_rewards"
-	_collections "cifarm-server/src/types/collections"
-	_wallets "cifarm-server/src/wallets"
+	collections_common "cifarm-server/src/collections/common"
+	collections_daily_rewards "cifarm-server/src/collections/daily_rewards"
+	"cifarm-server/src/wallets"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -56,7 +56,16 @@ func ClaimDailyRewardRpc(
 	nk runtime.NakamaModule,
 	payload string,
 ) (string, error) {
-	object, err := _daily_rewards.ReadLatestDailyRewardObject(ctx, logger, db, nk)
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
+	object, err := collections_daily_rewards.ReadLatest(ctx, logger, db, nk, collections_daily_rewards.ReadLatestParams{
+		UserId: userId,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -65,7 +74,7 @@ func ClaimDailyRewardRpc(
 	if object == nil {
 		amount := int64(100)
 		days := 1
-		err := _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
+		err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
 			Amount: amount,
 			Metadata: map[string]interface{}{
 				"name": "Daily reward",
@@ -76,9 +85,12 @@ func ClaimDailyRewardRpc(
 			logger.Error(err.Error())
 			return "", err
 		}
-		err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _collections.DailyReward{
-			Amount: amount,
-			Days:   days,
+		err = collections_daily_rewards.Write(ctx, logger, db, nk, collections_daily_rewards.WriteParams{
+			UserId: userId,
+			DailyReward: collections_daily_rewards.DailyReward{
+				Amount: amount,
+				Days:   days,
+			},
 		})
 		if err != nil {
 			logger.Error(err.Error())
@@ -109,13 +121,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	amount := int64(100)
-	dailyReward, err := _daily_rewards.ToLatestDailyReward(
-		ctx,
-		logger,
-		db,
-		nk,
-		object,
-	)
+	dailyReward, err := collections_common.ToValue[collections_daily_rewards.DailyReward](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -123,7 +129,7 @@ func ClaimDailyRewardRpc(
 	days := dailyReward.Days
 	days++
 
-	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
+	err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
 		Amount: amount,
 		Metadata: map[string]interface{}{
 			"name": "Daily reward",
@@ -135,9 +141,12 @@ func ClaimDailyRewardRpc(
 		return "", err
 	}
 
-	err = _daily_rewards.WriteDailyRewardObject(ctx, logger, db, nk, _collections.DailyReward{
-		Amount: amount,
-		Days:   days,
+	err = collections_daily_rewards.Write(ctx, logger, db, nk, collections_daily_rewards.WriteParams{
+		DailyReward: collections_daily_rewards.DailyReward{
+			Amount: amount,
+			Days:   days,
+		},
+		UserId: userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())

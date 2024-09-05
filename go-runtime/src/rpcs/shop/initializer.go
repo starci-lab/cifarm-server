@@ -1,4 +1,4 @@
-package shop
+package rpcs_shop
 
 import (
 	"context"
@@ -7,13 +7,13 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeShop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := initializer.RegisterRpc("buy_plant_seed", BuyPlantSeedRpc)
+func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
+	err := initializer.RegisterRpc("buy_seed", BuySeedRpc)
 	if err != nil {
 		return err
 	}
 
-	err = initializer.RegisterRpc("buy_farming_tile", BuyFarmingTileRpc)
+	err = initializer.RegisterRpc("buy_tile", BuyTileRpc)
 	if err != nil {
 		return err
 	}

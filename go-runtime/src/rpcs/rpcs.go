@@ -1,38 +1,38 @@
 package rpcs
 
 import (
-	_auth "cifarm-server/src/rpcs/auth"
-	_daily_rewards "cifarm-server/src/rpcs/daily_rewards"
-	_farming "cifarm-server/src/rpcs/farming"
-	_shop "cifarm-server/src/rpcs/shop"
+	rpcs_auth "cifarm-server/src/rpcs/auth"
+	rpcs_daily_rewards "cifarm-server/src/rpcs/daily_rewards"
+	rpcs_farming "cifarm-server/src/rpcs/farming"
+	rpcs_shop "cifarm-server/src/rpcs/shop"
 	"context"
 	"database/sql"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func InitializeRpcs(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
+func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
 	err := initializer.RegisterRpc("go_healthcheck", HealthcheckRpc)
 	if err != nil {
 		return err
 	}
 
-	err = _auth.InitializeAuth(ctx, logger, db, nk, initializer)
+	err = rpcs_auth.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}
 
-	err = _daily_rewards.InitializeDailyReward(ctx, logger, db, nk, initializer)
+	err = rpcs_farming.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}
 
-	err = _shop.InitializeShop(ctx, logger, db, nk, initializer)
+	err = rpcs_shop.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}
 
-	err = _farming.InitializeFarming(ctx, logger, db, nk, initializer)
+	err = rpcs_daily_rewards.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}

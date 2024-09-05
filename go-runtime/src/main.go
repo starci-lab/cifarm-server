@@ -1,11 +1,11 @@
 package main
 
 import (
-	_auth "cifarm-server/src/auth"
-	_crons "cifarm-server/src/crons"
-	_rpcs "cifarm-server/src/rpcs"
-	_setup "cifarm-server/src/setup"
-	_storage "cifarm-server/src/storage"
+	"cifarm-server/src/auth"
+	storage "cifarm-server/src/collections"
+	"cifarm-server/src/crons"
+	"cifarm-server/src/rpcs"
+	"cifarm-server/src/setup"
 	"context"
 	"database/sql"
 
@@ -13,35 +13,34 @@ import (
 )
 
 func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := _storage.InitializeStorage(ctx, logger, db, nk, initializer)
+	err := storage.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
 
-	err = _setup.InitializeSetup(ctx, logger, db, nk)
+	err = auth.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
 
-	err = _auth.InitializeAuth(ctx, logger, db, nk, initializer)
+	err = rpcs.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
 
-	err = _rpcs.InitializeRpcs(ctx, logger, db, nk, initializer)
+	err = setup.Initialize(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
 
-	err = _crons.InitializeCrons(ctx, logger, db, nk, initializer)
+	err = crons.Initialize(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-
 	return nil
 }

@@ -1,7 +1,7 @@
 package auth
 
 import (
-	_authenticator_api "cifarm-server/src/services/cibase/authenticator/api"
+	services_cibase_authenticator_api "cifarm-server/src/services/cibase/api/authenticator"
 	"context"
 	"database/sql"
 	"errors"
@@ -38,14 +38,14 @@ func BeforeAuthenticate(
 		return nil, errors.New("missing 'chain' in account variables")
 	}
 
-	body := _authenticator_api.VerifyMessageRequestBody{
+	body := services_cibase_authenticator_api.VerifyMessageRequestBody{
 		Message:   message,
 		PublicKey: publicKey,
 		Signature: signature,
 		Chain:     chain,
 	}
 
-	response, err := _authenticator_api.VerifyMessage(ctx, logger, &body)
+	response, err := services_cibase_authenticator_api.VerifyMessage(ctx, logger, &body)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

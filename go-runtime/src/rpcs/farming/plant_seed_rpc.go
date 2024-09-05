@@ -1,11 +1,10 @@
-package farming
+package rpcs_farming
 
 import (
-	_constants "cifarm-server/src/constants"
-	_inventories "cifarm-server/src/storage/inventories"
-	_placed_items "cifarm-server/src/storage/placed_items"
-	_plant_seeds "cifarm-server/src/storage/plant_seeds"
-	_collections "cifarm-server/src/types/collections"
+	collections_common "cifarm-server/src/collections/common"
+	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_seeds "cifarm-server/src/collections/seeds"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -15,8 +14,8 @@ import (
 )
 
 type PlantSeedRpcParams struct {
-	SeedInventoryKey     string `json:"seedInventoryKey"`
-	PlacedFarmingTileKey string `json:"placedFarmingTileKey"`
+	InventorySeedKey  string `json:"inventorySeedKey"`
+	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
 type PlantSeedRpcResponse struct {
@@ -30,6 +29,13 @@ func PlantSeedRpc(
 	nk runtime.NakamaModule,
 	payload string,
 ) (string, error) {
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
 	var params *PlantSeedRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
 	if err != nil {
@@ -37,12 +43,15 @@ func PlantSeedRpc(
 		return "", err
 	}
 
-	object, err := _inventories.ReadInventoryObjectByKey(ctx, logger, db, nk, params.SeedInventoryKey)
+	object, err := collections_inventories.ReadByKey(ctx, logger, db, nk, collections_inventories.ReadByKeyParams{
+		Key:    params.InventorySeedKey,
+		UserId: userId,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	inventory, err := _inventories.ToInventory(ctx, logger, db, nk, object)
+	inventory, err := collections_common.ToValue[collections_inventories.Inventory](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -52,81 +61,90 @@ func PlantSeedRpc(
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
-	if inventory.Type != _constants.INVENTORY_TYPE_PLANT_SEED {
+	if inventory.Type != collections_inventories.TYPE_SEED {
 		errMsg := "inventory not plant seed"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	object, err = _placed_items.ReadPlacedItemObjectByKey(ctx, logger, db, nk, params.PlacedFarmingTileKey)
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+		Key:    params.PlacedItemTileKey,
+		UserId: userId,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	placedObjectKey := object.Key
+	placedItemKey := object.Key
 
-	placedItem, err := _placed_items.ToPlacedItem(ctx, logger, db, nk, object)
+	placedItem, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	if placedItem.Type != _constants.PLACED_ITEM_TYPE_FARMING_TILE {
+	if placedItem.Type != collections_placed_items.TYPE_TILE {
 		errMsg := "placed item not farming tile"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
 	if placedItem.IsPlanted {
-		errMsg := "farm tile is planted"
+		errMsg := "tile is planted"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	err = _inventories.DeleteInventoryObject(ctx, logger, db, nk, _inventories.DeleteInventoryObjectParams{
-		Key:      params.SeedInventoryKey,
-		Quantity: 1,
+	err = collections_inventories.Delete(ctx, logger, db, nk, collections_inventories.DeleteParams{
+		ReferenceId: params.InventorySeedKey,
+		Quantity:    1,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	object, err = _plant_seeds.ReadPlantSeedObjectById(ctx, logger, db, nk, inventory.Id)
+	object, err = collections_seeds.ReadByKey(ctx, logger, db, nk, collections_seeds.ReadByKeyParams{
+		Key: inventory.ReferenceId,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	plantSeed, err := _plant_seeds.ToPlantSeed(ctx, logger, db, nk, object)
+	seed, err := collections_common.ToValue[collections_seeds.Seed](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	if plantSeed == nil {
-		errMsg := "plant seed not found"
+	if seed == nil {
+		errMsg := "seed not found"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	placedItem.SeedGrowthInfo = _collections.SeedGrowthInfo{
+	placedItem.SeedGrowthInfo = collections_placed_items.SeedGrowthInfo{
 		CurrentStage:             1,
 		CurrentStageTimeElapsed:  0,
 		TotalTimeElapsed:         0,
-		HarvestQuantityRemaining: plantSeed.MaxHarvestQuantity,
+		HarvestQuantityRemaining: seed.MaxHarvestQuantity,
 		IsInfested:               false,
 		IsWeedy:                  false,
-		PlantSeed:                *plantSeed,
+		Seed:                     *seed,
 	}
 	placedItem.IsPlanted = true
 
-	err = _placed_items.WritePlacedItemObject(ctx, logger, db, nk, *placedItem, placedObjectKey)
+	err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+		PlacedItem: *placedItem,
+		UserId:     userId,
+		Key:        placedItemKey,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	response := &PlantSeedRpcResponse{HarvestIn: plantSeed.GrowthStageDuration}
+	response := &PlantSeedRpcResponse{HarvestIn: seed.GrowthStageDuration}
 
 	out, err := json.Marshal(response)
 	if err != nil {
