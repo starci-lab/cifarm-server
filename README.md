@@ -60,7 +60,7 @@ Response:
 
 The buy_seed function allows you to purchase seeds. You specify the type of seed (e.g., "carrot") and the quantity you want (e.g., 5). The response will show you the total cost of the seeds, which will be deducted from your wallet.
 <br/>
-Throw errors if there are issues such as insufficient balance or an invalid plant key...
+Throw errors if there are issues such as insufficient balance or an invalid plant key, ...
 #### 2. Buy Animal
 RPC Name: `buy_animal`
 <br/>
@@ -79,7 +79,7 @@ Response:
 
 The buy_animal function lets you purchase an animal by specifying its type (e.g., "chicken"). The response will display the cost of the animal, which will be deducted from your wallet. 
 <br/>
-Throw errors if there are issues such as insufficient balance or an invalid animal key...
+Throw errors if there are issues such as insufficient balance or an invalid animal key, ...
 #### 3. Plant Seed
 RPC Name: `plant_seed`
 <br/>
@@ -98,4 +98,4 @@ Response:
 ```
 The plant_seed function allows you to plant a seed. You need to provide the unique key for the seed from your inventory (e.g., "d6a6a181-41e5-4389-96d9-89a1f5a58b13") and the key for the tile where you want to plant it (e.g., "e6df5293-0338-4e33-b6b2-24ae2ecdd24d"). The response will indicate the time until the seed is ready for harvest (e.g., "harvestIn": 36000 seconds).
 <br/>
-Throw errors if the seed key does not exist or if the tile has already been planted,...
+Throw errors if the seed key does not exist or if the tile has already been planted, ...
