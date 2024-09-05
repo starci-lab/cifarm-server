@@ -96,8 +96,9 @@ func PlantSeedRpc(
 	}
 
 	err = collections_inventories.Delete(ctx, logger, db, nk, collections_inventories.DeleteParams{
-		ReferenceId: params.InventorySeedKey,
-		Quantity:    1,
+		Key:      params.InventorySeedKey,
+		Quantity: 1,
+		UserId:   userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())

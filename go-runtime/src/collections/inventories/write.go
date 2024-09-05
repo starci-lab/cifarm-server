@@ -24,6 +24,7 @@ func Write(
 ) error {
 	object, err := ReadByReferenceId(ctx, logger, db, nk, ReadByReferenceIdParams{
 		ReferenceId: params.Inventory.ReferenceId,
+		UserId:      params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())

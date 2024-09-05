@@ -10,8 +10,9 @@ import (
 )
 
 type DeleteParams struct {
-	ReferenceId string `json:"referenceId"`
-	Quantity    int    `json:"quantity"`
+	Key      string `json:"key"`
+	Quantity int    `json:"quantity"`
+	UserId   string `json:"userId"`
 }
 
 func Delete(ctx context.Context,
@@ -20,8 +21,9 @@ func Delete(ctx context.Context,
 	nk runtime.NakamaModule,
 	params DeleteParams,
 ) error {
-	object, err := ReadByReferenceId(ctx, logger, db, nk, ReadByReferenceIdParams{
-		ReferenceId: params.ReferenceId,
+	object, err := ReadByKey(ctx, logger, db, nk, ReadByKeyParams{
+		Key:    params.Key,
+		UserId: params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -32,6 +34,12 @@ func Delete(ctx context.Context,
 		logger.Error(err.Error())
 		return err
 	}
+	if inventory == nil {
+		errMsg := "inventory not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+
 	if params.Quantity > inventory.Quantity {
 		errMsg := "cannot delete more than the available quantity in inventory"
 		logger.Error(errMsg)
