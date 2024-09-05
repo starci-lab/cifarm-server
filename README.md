@@ -1,8 +1,8 @@
 # CiFarm Server
 Developed using Go and the Nakama framework.
 <br/>
-<img src="https://cdn.icon-icons.com/icons2/2699/PNG/512/golang_logo_icon_171073.png" alt="Example Image" height="50" style="margin-right:8px">
-<img src="https://heroiclabs.com/images/pages/nakama/dark-logo.460a1d86928149a160b025152207fea9659bedd7cb818ee8971d6ee536776bfe.svg" alt="Example Image" height="50">
+<img src="https://cdn.icon-icons.com/icons2/2699/PNG/512/golang_logo_icon_171073.png" alt="Example Image" height="100" style="margin-right:8px">
+<img src="https://heroiclabs.com/images/pages/nakama/dark-logo.460a1d86928149a160b025152207fea9659bedd7cb818ee8971d6ee536776bfe.svg" alt="Example Image" height="100">
 <br/>
 ### Introduction
 ![CiFarmBackground](https://scontent.xx.fbcdn.net/v/t1.15752-9/456037244_1297281141439021_1125970913282244783_n.png?_nc_cat=111&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeEHNQutC5nQX6XCBg2wFN3Pc-swk58WUx5z6zCTnxZTHi-HeUcH4zWtDYjgW2Id-JUs4ReGCtJHsJ2tG1GxEiHG&_nc_ohc=fG5d9Mt-5fEQ7kNvgERdcZ_&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_Q7cD1QGH_oYTt_MZFFSq99GpENcx1L1iREcnflEujxQE6wEN_A&oe=670176C6)
