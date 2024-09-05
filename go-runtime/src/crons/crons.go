@@ -9,7 +9,7 @@ import (
 )
 
 func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) error {
-	err := crons_seed_growth.RunSeedGrowthCron(ctx, logger, db, nk)
+	err := crons_seed_growth.Run(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

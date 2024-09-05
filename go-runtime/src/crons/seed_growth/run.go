@@ -9,7 +9,7 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func RunSeedGrowthCron(
+func Run(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -27,14 +27,11 @@ func RunSeedGrowthCron(
 		),
 		gocron.NewTask(
 			func() {
-				logger.Info("seeds growing...")
 				Process(ctx, logger, db, nk)
 			},
 		),
 	)
-
-	logger.Info("seed growth job: %s", job.ID())
-
+	logger.Info(`Job started: %s"`, job.ID())
 	if err != nil {
 		logger.Error(err.Error())
 		return err

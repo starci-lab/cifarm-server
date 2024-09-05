@@ -22,13 +22,13 @@ func HandleSeedGrowth(
 	params HandleSeedGrowthParams,
 ) error {
 	objects, err := collections_placed_items.ReadByFilters1(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
-		Key: params.UserId,
+		Key:    params.UserId,
+		UserId: params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-	logger.Info(`%v`, len(objects.Objects))
 
 	for _, object := range objects.Objects {
 		go func() error {
@@ -79,7 +79,6 @@ func Process(
 		logger.Error(err.Error())
 		return err
 	}
-
 	for _, userId := range users.UserIds {
 		go HandleSeedGrowth(ctx, logger, db, nk, HandleSeedGrowthParams{
 			UserId: userId,

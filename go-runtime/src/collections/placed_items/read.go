@@ -1,6 +1,7 @@
 package collections_placed_items
 
 import (
+	collections_common "cifarm-server/src/collections/common"
 	"context"
 	"database/sql"
 	"fmt"
@@ -74,10 +75,11 @@ func ReadByFilters1(
 ) (*api.StorageObjects, error) {
 
 	name := STORAGE_INDEX_BY_FILTERS_1
-	query := fmt.Sprintf(`+isPlanted:T +type:%v`, TYPE_TILE)
+	query := fmt.Sprintf(`+value.isPlanted:T +value.type:%v`, TYPE_TILE)
+	maxEntries := collections_common.MAX_ENTRIES
 	order := []string{}
 
-	objects, err := nk.StorageIndexList(ctx, params.UserId, name, query, 1, order)
+	objects, err := nk.StorageIndexList(ctx, params.UserId, name, query, maxEntries, order)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
