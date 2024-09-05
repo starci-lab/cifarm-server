@@ -25,10 +25,10 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 	params.PlacedItem.SeedGrowthInfo.TotalTimeElapsed += params.TimeInSeconds
 	params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed += params.TimeInSeconds
 
-	var loopHappens int
+	var loopCounter int
 	for {
-		loopHappens += 1
-		if loopHappens > 5 {
+		loopCounter += 1
+		if loopCounter > 5 {
 			break
 		}
 		if params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed >= params.PlacedItem.SeedGrowthInfo.Seed.GrowthStageDuration {
