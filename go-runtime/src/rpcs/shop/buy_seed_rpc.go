@@ -82,6 +82,7 @@ func BuySeedRpc(ctx context.Context,
 				Quantity:    params.Quantity,
 				Type:        collections_inventories.TYPE_SEED,
 			},
+			UserId: userId,
 		})
 	if err != nil {
 		logger.Error(err.Error())
