@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -50,6 +51,7 @@ func BeforeAuthenticate(
 		return nil, err
 	}
 	data.Create.Value = true
+	data.Username = fmt.Sprintf("%s_%s", chainKey, response.Address)
 	data.Account.Vars["address"] = response.Address
 	return data, nil
 }
