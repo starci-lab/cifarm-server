@@ -21,7 +21,7 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	if err != nil {
 		return err
 	}
-
+	//
 	err = rpcs_farming.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
