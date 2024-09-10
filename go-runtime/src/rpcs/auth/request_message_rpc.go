@@ -1,7 +1,7 @@
 package rpcs_auth
 
 import (
-	services_cibase_authenticator_api "cifarm-server/src/services/cibase/api/authenticator"
+	services_periphery_authenticator "cifarm-server/src/services/periphery/api/authenticator"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -20,7 +20,7 @@ func RequestMessageRpc(
 	nk runtime.NakamaModule,
 	payload string,
 ) (string, error) {
-	response, err := services_cibase_authenticator_api.RequestMessage(ctx, logger)
+	response, err := services_periphery_authenticator.RequestMessage(ctx, logger)
 	if err != nil {
 		return "", err
 	}

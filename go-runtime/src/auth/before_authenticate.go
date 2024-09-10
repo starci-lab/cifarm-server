@@ -1,11 +1,10 @@
 package auth
 
 import (
-	services_cibase_authenticator_api "cifarm-server/src/services/cibase/api/authenticator"
+	services_periphery_authenticator "cifarm-server/src/services/periphery/api/authenticator"
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -33,25 +32,23 @@ func BeforeAuthenticate(
 		return nil, errors.New("missing 'publicKey' in account variables")
 	}
 
-	chain, ok := data.Account.Vars["chain"]
+	chainKey, ok := data.Account.Vars["chainKey"]
 	if !ok {
-		return nil, errors.New("missing 'chain' in account variables")
+		return nil, errors.New("missing 'chainKey' in account variables")
 	}
 
-	body := services_cibase_authenticator_api.VerifyMessageRequestBody{
+	body := services_periphery_authenticator.VerifyMessageRequestBody{
 		Message:   message,
 		PublicKey: publicKey,
 		Signature: signature,
-		Chain:     chain,
+		ChainKey:  chainKey,
 	}
 
-	response, err := services_cibase_authenticator_api.VerifyMessage(ctx, logger, &body)
+	response, err := services_periphery_authenticator.VerifyMessage(ctx, logger, &body)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
-	data.Account.Id = response.AuthenticationId
-	data.Username = fmt.Sprintf("%s_%s", chain, response.Address)
 	data.Create.Value = true
 	data.Account.Vars["address"] = response.Address
 	return data, nil

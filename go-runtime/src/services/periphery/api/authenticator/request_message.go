@@ -1,7 +1,7 @@
-package services_cibase_authenticator_api
+package services_periphery_authenticator
 
 import (
-	"cifarm-server/src/config"
+	cifarm_periphery "cifarm-server/src/services/periphery"
 	services_uitls_api "cifarm-server/src/services/utils/api"
 	"context"
 	"errors"
@@ -24,10 +24,10 @@ func RequestMessage(ctx context.Context, logger runtime.Logger) (response *Reque
 		logger.Error("Cannot get environment variables")
 		return nil, errors.New("cannot get environment variables")
 	}
-	url, ok := vars[config.ENV_CI_BASE_API_URL]
+	url, ok := vars[cifarm_periphery.CIFARM_PERIPHERY_API_URL]
 	if !ok {
-		logger.Error("CI_BASE_API_URL not found in environment variables")
-		return nil, errors.New("CI_BASE_API_URL not found in environment variables")
+		logger.Error("CIFARM_PERIPHERY_API_URL not found in environment variables")
+		return nil, errors.New("CIFARM_PERIPHERY_API_URL not found in environment variables")
 	}
 	url = url + "/authenticator/request-message"
 	logger.Info("POST %v", url)

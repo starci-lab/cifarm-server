@@ -5,9 +5,8 @@ console:
 runtime:
   js_entrypoint: "build/index.js"
   env:
-    - "ci_base_api_url=https://blockchain-auth-service.starci.net/api/v1"
-    - "ci_base_graphql_url=https://blockchain-auth-service.starci.net/graphql"
-    - "encryption_key=948033f7-f3b3-4311-9017-d7557d5b65c6"
+    - "cifarm-periphery-api-url=https://api.cifarm.starci.net/api/v1"
+    - "cifarm-periphery-graphql-url=https://api.cifarm.starci.net/graphql"
 session:
   encryption_key: "948033f7-f3b3-4311-9017-d7557d5b65c6"
   token_expiry_sec: 7200 # 2 hours
