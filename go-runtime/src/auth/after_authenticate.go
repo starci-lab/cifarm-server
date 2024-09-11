@@ -65,12 +65,12 @@ func AfterAuthenticate(
 		}
 
 		positions := []collections_placed_items.Position{
-			{X: -0.5, Y: 0.5},
-			{X: 0.5, Y: 0.5},
-			{X: 1.5, Y: -0.5},
-			{X: -0.5, Y: -0.5},
-			{X: 0.5, Y: -0.5},
-			{X: 1.5, Y: -0.5},
+			{X: 0, Y: -1},
+			{X: 0, Y: 0},
+			{X: 0, Y: 1},
+			{X: 1, Y: -1},
+			{X: 1, Y: 0},
+			{X: 1, Y: 1},
 		}
 
 		var placedItems []collections_placed_items.PlacedItem

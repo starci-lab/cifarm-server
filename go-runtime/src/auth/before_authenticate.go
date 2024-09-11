@@ -55,4 +55,3 @@ func BeforeAuthenticate(
 	data.Account.Vars["address"] = response.Address
 	return data, nil
 }
- 
