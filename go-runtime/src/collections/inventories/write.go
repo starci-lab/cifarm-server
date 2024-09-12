@@ -37,7 +37,7 @@ func Write(
 			logger.Error(err.Error())
 			return err
 		}
-		inventory.Quantity += inventory.Quantity
+		inventory.Quantity += params.Inventory.Quantity
 		data, err := json.Marshal(inventory)
 		if err != nil {
 			logger.Error(err.Error())

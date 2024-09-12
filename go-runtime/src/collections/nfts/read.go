@@ -1,6 +1,7 @@
 package collections_nfts
 
 import (
+	"cifarm-server/src/utils"
 	"context"
 	"database/sql"
 	"fmt"
@@ -75,4 +76,36 @@ func ReadByTokenId(
 	}
 	var object = objects.Objects[0]
 	return object, nil
+}
+
+type ReadByTokenIdsParams struct {
+	TokenIds []int  `json:"tokenIds"`
+	Type     int    `json:"type"`
+	ChainKey string `json:"string"`
+	Network  string `json:"network"`
+}
+
+func ReadByTokenIds(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadByTokenIdsParams,
+) (*api.StorageObjects, error) {
+	name := STORAGE_INDEX_BY_TOKEN_ID
+	query := fmt.Sprintf(`+value.tokenId:%v +value.type:%v +value.chainKey:%s +value.network:%s`,
+		utils.SliceToString(params.TokenIds),
+		params.Type,
+		params.ChainKey,
+		params.Network,
+	)
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return objects, nil
 }

@@ -29,15 +29,17 @@ func Delete(ctx context.Context,
 		logger.Error(err.Error())
 		return err
 	}
+
+	if object == nil {
+		errMsg := "inventory not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+
 	inventory, err := collections_common.ToValue[Inventory](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
-	}
-	if inventory == nil {
-		errMsg := "inventory not found"
-		logger.Error(errMsg)
-		return errors.New(errMsg)
 	}
 
 	if params.Quantity > inventory.Quantity {

@@ -7,4 +7,6 @@ type Nft struct {
 	AccountAddress string `json:"accountAddress"`
 	ChainKey       string `json:"chainKey"`
 	Network        string `json:"network"`
+	MappingKey     string `json:"mappingKey"`
+	IsPlaced       bool   `json:"isPlaced"`
 }

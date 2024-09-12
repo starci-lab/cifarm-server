@@ -79,6 +79,7 @@ func WriteMany(
 			TokenId:  nft.TokenId,
 			Type:     nft.Type,
 			ChainKey: nft.ChainKey,
+			Network:  nft.Network,
 		})
 
 		if err != nil {
