@@ -9,38 +9,33 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type GetNftsInput struct {
+type GetNftsByOwnerAddressInput struct {
 	AccountAddress string `json:"accountAddress"`
 	Network        string `json:"network"`
 	NftKey         string `json:"nftKey"`
 	ChainKey       string `json:"chainKey"`
 }
 
-type GetNftsFilter struct {
+type GetNftsByOwnerAddressFilter struct {
 	Skip int `json:"skip"`
 	Take int `json:"take"`
 }
 
-type GetNftArgs struct {
-	Input  GetNftsInput  `json:"input"`
-	Filter GetNftsFilter `json:"filter"`
+type GetNftByOwnerAddressArgs struct {
+	Input  GetNftsByOwnerAddressInput  `json:"input"`
+	Filter GetNftsByOwnerAddressFilter `json:"filter"`
 }
 
-type NftResponse struct {
-	TokenId  int    `json:"tokenId"`
-	TokenURI string `json:"tokenURI"`
+type GetNftsByOwnerAddressResponse struct {
+	Records []NftData `json:"records"`
+	Count   int       `json:"count"`
 }
 
-type GetNftsResponse struct {
-	Records []NftResponse `json:"records"`
-	Count   int           `json:"count"`
-}
-
-func GetNfts(
+func GetNftsByOwnerAddress(
 	ctx context.Context,
 	logger runtime.Logger,
-	args GetNftArgs,
-) (*GetNftsResponse, error) {
+	args GetNftByOwnerAddressArgs,
+) (*GetNftsByOwnerAddressResponse, error) {
 	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
 	if !ok {
 		logger.Error("Cannot get environment variables")
@@ -53,12 +48,13 @@ func GetNfts(
 	}
 	client := graphql.NewClient(url, nil)
 
-	query := `query Query($args: GetNftsArgs!) {
-  nfts(args: $args) {
+	query := `query Query($args: GetNftsByOwnerAddressArgs!) {
+  nftsByOwnerAddress(args: $args) {
     count,
     records {
       tokenId,
-      tokenURI
+      tokenURI,
+	  ownerAddress
     }
   }
 }`
@@ -66,7 +62,7 @@ func GetNfts(
 		"args": args,
 	}
 	result := struct {
-		Nfts GetNftsResponse `json:"nfts"`
+		NftsByOwnerAddress GetNftsByOwnerAddressResponse `json:"nftsByOwnerAddress"`
 	}{}
 
 	err := client.WithDebug(true).Exec(context.Background(),
@@ -78,5 +74,5 @@ func GetNfts(
 		logger.Error(err.Error())
 		return nil, err
 	}
-	return &result.Nfts, nil
+	return &result.NftsByOwnerAddress, nil
 }
