@@ -17,17 +17,17 @@ func SetupAnimals(
 
 	animals := []collections_animals.Animal{
 		{
-			ReferenceId:    collections_animals.KEY_CHICKEN,
+			Key:            collections_animals.KEY_CHICKEN,
 			OffspringPrice: 1000,
 			Premium:        false,
 			GrowthTime:     60 * 60 * 7, //7 days
 			YieldTime:      60 * 60,     //1 days
 		},
 		{
-			ReferenceId: collections_animals.KEY_COW,
-			Premium:     true,
-			GrowthTime:  60 * 60 * 14, //14 days
-			YieldTime:   60 * 60 * 2,  //2 days
+			Key:        collections_animals.KEY_COW,
+			Premium:    true,
+			GrowthTime: 60 * 60 * 14, //14 days
+			YieldTime:  60 * 60 * 2,  //2 days
 		},
 	}
 

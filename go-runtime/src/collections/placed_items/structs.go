@@ -20,7 +20,8 @@ type SeedGrowthInfo struct {
 }
 
 type PlacedItem struct {
-	ReferenceId    string         `json:"referenceId"`
+	Key            string         `json:"key"`
+	ReferenceKey   string         `json:"referenceKey"`
 	Position       Position       `json:"position"`
 	Type           int            `json:"type"`
 	SeedGrowthInfo SeedGrowthInfo `json:"seedGrowthInfo"`

@@ -14,11 +14,6 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type CanClaimDailyRewardRpcResponse struct {
-	Amount int64 `json:"amount"`
-	Days   int   `json:"days"`
-}
-
 func CanUserClaimDailyReward(
 	ctx context.Context,
 	logger runtime.Logger,
@@ -47,6 +42,11 @@ func CanUserClaimDailyReward(
 
 	result := now >= startOfTomorrow.Unix()
 	return result, nil
+}
+
+type ClaimDailyRewardRpcResponse struct {
+	Amount int64 `json:"amount"`
+	Days   int   `json:"days"`
 }
 
 func ClaimDailyRewardRpc(
@@ -98,7 +98,7 @@ func ClaimDailyRewardRpc(
 			return "", err
 		}
 
-		value, err := json.Marshal(CanClaimDailyRewardRpcResponse{
+		value, err := json.Marshal(ClaimDailyRewardRpcResponse{
 			Amount: amount,
 			Days:   days,
 		})
@@ -155,7 +155,7 @@ func ClaimDailyRewardRpc(
 		return "", err
 	}
 
-	_value, err := json.Marshal(CanClaimDailyRewardRpcResponse{
+	_value, err := json.Marshal(ClaimDailyRewardRpcResponse{
 		Amount: amount,
 		Days:   days,
 	})

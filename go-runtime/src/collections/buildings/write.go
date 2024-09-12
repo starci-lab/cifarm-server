@@ -27,8 +27,8 @@ func WriteMany(
 		}
 
 		write := &runtime.StorageWrite{
+			Key:             bulding.Key,
 			Collection:      COLLECTION_NAME,
-			Key:             bulding.ReferenceId,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

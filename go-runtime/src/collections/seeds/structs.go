@@ -1,7 +1,7 @@
 package collections_seeds
 
 type Seed struct {
-	ReferenceId                 string `json:"referenceId"`
+	Key                         string `json:"key"`
 	GrowthStageDuration         int64  `json:"growthStageDuration"`
 	GrowthStages                int    `json:"growthStages"`
 	Price                       int64  `json:"price"`

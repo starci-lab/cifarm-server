@@ -17,22 +17,22 @@ func SetupTiles(
 
 	tiles := []collections_tiles.Tile{
 		{
-			ReferenceId:  collections_tiles.KEY_STARTER,
+			Key:          collections_tiles.KEY_STARTER,
 			Price:        0,
 			MaxOwnership: 6,
 		},
 		{
-			ReferenceId:  collections_tiles.KEY_BASIC_1,
+			Key:          collections_tiles.KEY_BASIC_1,
 			Price:        1000,
 			MaxOwnership: 10,
 		},
 		{
-			ReferenceId:  collections_tiles.KEY_BASIC_2,
+			Key:          collections_tiles.KEY_BASIC_2,
 			Price:        2500,
 			MaxOwnership: 30,
 		},
 		{
-			ReferenceId:  collections_tiles.KEY_BASIC_3,
+			Key:          collections_tiles.KEY_BASIC_3,
 			Price:        10000,
 			MaxOwnership: 9999,
 		},

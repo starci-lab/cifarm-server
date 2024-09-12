@@ -22,14 +22,16 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) error {
+	if params.Key == "" {
+		key := uuid.NewString()
+		params.Key = key
+		params.PlacedItem.Key = key
+	}
+
 	value, err := json.Marshal(params.PlacedItem)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
-	}
-
-	if params.Key == "" {
-		params.Key = uuid.NewString()
 	}
 
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
@@ -65,6 +67,9 @@ func WriteMany(
 ) error {
 	var writes []*runtime.StorageWrite
 	for _, placedItem := range params.PlacedItems {
+		key := uuid.NewString()
+		placedItem.Key = key
+
 		value, err := json.Marshal(placedItem)
 		if err != nil {
 			continue
@@ -72,7 +77,7 @@ func WriteMany(
 
 		write := &runtime.StorageWrite{
 			Collection:      COLLECTION_NAME,
-			Key:             uuid.NewString(),
+			Key:             key,
 			Value:           string(value),
 			UserID:          params.UserId,
 			PermissionRead:  1,

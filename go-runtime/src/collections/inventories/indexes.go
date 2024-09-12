@@ -8,7 +8,7 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func RegisterByReferenceId(
+func RegisterByReferenceKey(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -19,7 +19,7 @@ func RegisterByReferenceId(
 	collection := COLLECTION_NAME
 	key := ""
 	fields := []string{
-		"referenceId",
+		"referenceKey",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

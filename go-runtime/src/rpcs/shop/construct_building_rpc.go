@@ -70,9 +70,9 @@ func ConstructBuildingRpc(ctx context.Context,
 	}
 	err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: collections_placed_items.PlacedItem{
-			ReferenceId: params.Key,
-			Position:    params.Position,
-			Type:        collections_placed_items.TYPE_BUILDING,
+			ReferenceKey: params.Key,
+			Position:     params.Position,
+			Type:         collections_placed_items.TYPE_BUILDING,
 		},
 		UserId: userId,
 	})

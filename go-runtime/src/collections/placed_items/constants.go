@@ -5,7 +5,7 @@ const (
 )
 
 const (
-	STORAGE_INDEX_BY_REFERENCE_ID = "PlacedItemsStorageIndexByReferenceId"
+	STORAGE_INDEX_BY_REFERENCE_ID = "PlacedItemsStorageIndexByReferenceKey"
 	STORAGE_INDEX_BY_FILTERS_1    = "PlacedItemsStorageIndexByFilters1"
 )
 

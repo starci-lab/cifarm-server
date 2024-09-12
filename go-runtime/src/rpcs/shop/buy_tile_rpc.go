@@ -14,7 +14,7 @@ import (
 )
 
 type HasEnoughTilesParams struct {
-	ReferenceId string `json:"referenceId"`
+	ReferenceKey string `json:"referenceKey"`
 }
 
 func HasEnoughTiles(
@@ -31,9 +31,9 @@ func HasEnoughTiles(
 		return false, errors.New(errMsg)
 	}
 
-	object, err := collections_inventories.ReadByReferenceId(ctx, logger, db, nk, collections_inventories.ReadByReferenceIdParams{
-		ReferenceId: params.ReferenceId,
-		UserId:      userId,
+	object, err := collections_inventories.ReadByReferenceKey(ctx, logger, db, nk, collections_inventories.ReadByReferenceKeyParams{
+		ReferenceKey: params.ReferenceKey,
+		UserId:       userId,
 	},
 	)
 	if err != nil {
@@ -50,7 +50,7 @@ func HasEnoughTiles(
 	}
 
 	object, err = collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
-		Key: params.ReferenceId,
+		Key: params.ReferenceKey,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -84,7 +84,7 @@ func GetTileData(
 ) (*GetTileDataResult, error) {
 	key := collections_tiles.KEY_BASIC_1
 	has1, err := HasEnoughTiles(ctx, logger, db, nk, HasEnoughTilesParams{
-		ReferenceId: key,
+		ReferenceKey: key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -120,7 +120,7 @@ func GetTileData(
 	}
 	key = collections_tiles.KEY_BASIC_2
 	has2, err := HasEnoughTiles(ctx, logger, db, nk, HasEnoughTilesParams{
-		ReferenceId: key,
+		ReferenceKey: key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -212,9 +212,9 @@ func BuyTileRpc(
 	}
 	err = collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
-			ReferenceId: data.Key,
-			Quantity:    1,
-			Type:        collections_inventories.TYPE_TILE,
+			ReferenceKey: data.Key,
+			Quantity:     1,
+			Type:         collections_inventories.TYPE_TILE,
 		},
 	})
 	if err != nil {

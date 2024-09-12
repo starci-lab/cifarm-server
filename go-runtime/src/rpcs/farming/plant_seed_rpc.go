@@ -106,7 +106,7 @@ func PlantSeedRpc(
 	}
 
 	object, err = collections_seeds.ReadByKey(ctx, logger, db, nk, collections_seeds.ReadByKeyParams{
-		Key: inventory.ReferenceId,
+		Key: inventory.ReferenceKey,
 	})
 	if err != nil {
 		logger.Error(err.Error())

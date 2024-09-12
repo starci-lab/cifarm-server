@@ -22,9 +22,9 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) error {
-	object, err := ReadByReferenceId(ctx, logger, db, nk, ReadByReferenceIdParams{
-		ReferenceId: params.Inventory.ReferenceId,
-		UserId:      params.UserId,
+	object, err := ReadByReferenceKey(ctx, logger, db, nk, ReadByReferenceKeyParams{
+		ReferenceKey: params.Inventory.ReferenceKey,
+		UserId:       params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -59,6 +59,10 @@ func Write(
 		}
 		return nil
 	}
+
+	key := uuid.NewString()
+	params.Inventory.Key = key
+
 	data, err := json.Marshal(
 		params.Inventory,
 	)
@@ -69,7 +73,7 @@ func Write(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             uuid.NewString(),
+			Key:             key,
 			UserID:          params.UserId,
 			Value:           string(data),
 			PermissionRead:  1,

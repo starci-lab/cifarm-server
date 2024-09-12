@@ -78,9 +78,9 @@ func BuySeedRpc(ctx context.Context,
 		logger, db, nk,
 		collections_inventories.WriteParams{
 			Inventory: collections_inventories.Inventory{
-				ReferenceId: params.Key,
-				Quantity:    params.Quantity,
-				Type:        collections_inventories.TYPE_SEED,
+				ReferenceKey: params.Key,
+				Quantity:     params.Quantity,
+				Type:         collections_inventories.TYPE_SEED,
 			},
 			UserId: userId,
 		})

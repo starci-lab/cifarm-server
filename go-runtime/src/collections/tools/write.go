@@ -28,7 +28,7 @@ func WriteMany(
 
 		write := &runtime.StorageWrite{
 			Collection:      COLLECTION_NAME,
-			Key:             tool.ReferenceId,
+			Key:             tool.Key,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

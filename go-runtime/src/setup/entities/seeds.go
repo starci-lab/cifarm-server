@@ -17,7 +17,7 @@ func SetupSeeds(
 
 	seeds := []collections_seeds.Seed{
 		{
-			ReferenceId:         collections_seeds.KEY_CARROT,
+			Key:                 collections_seeds.KEY_CARROT,
 			Price:               50,
 			GrowthStageDuration: 60 * 60, //1 hours
 			GrowthStages:        5,
@@ -27,7 +27,7 @@ func SetupSeeds(
 			MaxHarvestQuantity:  20,
 		},
 		{
-			ReferenceId:                 collections_seeds.KEY_POTATO,
+			Key:                         collections_seeds.KEY_POTATO,
 			Price:                       100,
 			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours
 			GrowthStages:                5,

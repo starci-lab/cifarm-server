@@ -81,9 +81,9 @@ func BuyAnimalRpc(ctx context.Context,
 		logger, db, nk,
 		collections_inventories.WriteParams{
 			Inventory: collections_inventories.Inventory{
-				ReferenceId: params.Key,
-				Quantity:    1,
-				Type:        collections_inventories.TYPE_ANIMAL,
+				ReferenceKey: params.Key,
+				Quantity:     1,
+				Type:         collections_inventories.TYPE_ANIMAL,
 			},
 			UserId: userId,
 		})

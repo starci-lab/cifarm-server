@@ -21,6 +21,9 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) error {
+	key := uuid.NewString()
+	params.DailyReward.Key = key
+
 	value, err := json.Marshal(params.DailyReward)
 	if err != nil {
 		logger.Error(err.Error())
@@ -30,7 +33,7 @@ func Write(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             uuid.NewString(),
+			Key:             key,
 			UserID:          params.UserId,
 			Value:           string(value),
 			PermissionRead:  1,

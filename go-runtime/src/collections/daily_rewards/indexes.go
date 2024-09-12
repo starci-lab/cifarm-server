@@ -19,7 +19,7 @@ func RegisterLatest(
 	collection := COLLECTION_NAME
 	key := ""
 	fields := []string{
-		"referenceId",
+		"referenceKey",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

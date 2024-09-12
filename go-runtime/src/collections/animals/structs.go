@@ -1,7 +1,7 @@
 package collections_animals
 
 type Animal struct {
-	ReferenceId    string `json:"referenceId"`
+	Key            string `json:"key"`
 	YieldTime      int64  `json:"yieldTime"`
 	OffspringPrice int64  `json:"offspringPrice"`
 	Premium        bool   `json:"premium"`

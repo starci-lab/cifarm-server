@@ -17,13 +17,13 @@ func SetupTools(
 
 	tools := []collections_tools.Tool{
 		{
-			ReferenceId: collections_tools.KEY_FERTILIZER_1,
+			Key: collections_tools.KEY_FERTILIZER_1,
 		},
 		{
-			ReferenceId: collections_tools.KEY_FERTILIZER_2,
+			Key: collections_tools.KEY_FERTILIZER_2,
 		},
 		{
-			ReferenceId: collections_tools.KEY_PESTICIDE,
+			Key: collections_tools.KEY_PESTICIDE,
 		},
 	}
 
