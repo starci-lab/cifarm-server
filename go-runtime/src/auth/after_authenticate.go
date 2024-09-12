@@ -35,8 +35,9 @@ func AfterAuthenticate(
 		return errors.New(errMsg)
 	}
 
-	chain := in.Account.Vars["chain"]
-	address := in.Account.Vars["address"]
+	chain := in.Account.Vars["chainKey"]
+	address := in.Account.Vars["accountAddress"]
+	network := in.Account.Vars["network"]
 
 	object, err := collections_config.ReadMetadataByKey(ctx, logger, db, nk, collections_config.ReadMetadataByKeyParams{
 		UserId: userId,
@@ -54,8 +55,9 @@ func AfterAuthenticate(
 		err = collections_config.Write(ctx, logger, db, nk,
 			collections_config.WriteParams{
 				Metadata: collections_config.Metadata{
-					Chain:   chain,
-					Address: address,
+					ChainKey:       chain,
+					AccountAddress: address,
+					Network:        network,
 				},
 				UserId: userId,
 			})

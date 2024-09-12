@@ -1,6 +1,7 @@
 package collections_config
 
 type Metadata struct {
-	Chain   string `json:"chain"`
-	Address string `json:"address"`
+	ChainKey       string `json:"chainKey"`
+	AccountAddress string `json:"accountAddress"`
+	Network        string `json:"network"`
 }

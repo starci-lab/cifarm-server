@@ -3,6 +3,7 @@ package storage
 import (
 	collections_daily_rewards "cifarm-server/src/collections/daily_rewards"
 	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_nfts "cifarm-server/src/collections/nfts"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	"context"
 	"database/sql"
@@ -34,5 +35,12 @@ func Initialize(
 		logger.Error(err.Error())
 		return err
 	}
+
+	err = collections_nfts.Initialize(ctx, logger, db, nk, initializer)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	return nil
 }

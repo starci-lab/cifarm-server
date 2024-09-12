@@ -42,8 +42,10 @@ func ReadByKey(
 }
 
 type ReadByTokenIdParams struct {
-	TokenId int `json:"tokenId"`
-	Type    int `json:"type"`
+	TokenId  int    `json:"tokenId"`
+	Type     int    `json:"type"`
+	ChainKey string `json:"string"`
+	Network  string `json:"network"`
 }
 
 func ReadByTokenId(
@@ -54,7 +56,12 @@ func ReadByTokenId(
 	params ReadByTokenIdParams,
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX_BY_TOKEN_ID
-	query := fmt.Sprintf(`+value.tokenId:%v +value.type:%v`, params.TokenId, params.Type)
+	query := fmt.Sprintf(`+value.tokenId:%v +value.type:%v +value.chainKey:%s +value.network:%s`,
+		params.TokenId,
+		params.Type,
+		params.ChainKey,
+		params.Network,
+	)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)

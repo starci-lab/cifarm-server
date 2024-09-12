@@ -38,6 +38,11 @@ func BeforeAuthenticate(
 		return nil, errors.New("missing 'chainKey' in account variables")
 	}
 
+	_, ok = data.Account.Vars["network"]
+	if !ok {
+		return nil, errors.New("missing 'network' in account variables")
+	}
+
 	body := services_periphery_api_authenticator.VerifyMessageRequestBody{
 		Message:   message,
 		PublicKey: publicKey,
@@ -52,6 +57,6 @@ func BeforeAuthenticate(
 	}
 	data.Create.Value = true
 	data.Username = fmt.Sprintf("%s_%s", chainKey, response.Address)
-	data.Account.Vars["address"] = response.Address
+	data.Account.Vars["accountAddress"] = response.Address
 	return data, nil
 }

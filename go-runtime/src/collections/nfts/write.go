@@ -10,8 +10,7 @@ import (
 )
 
 type WriteParams struct {
-	Nft    Nft    `json:"nft"`
-	UserId string `json:"userId"`
+	Nft Nft `json:"nft"`
 }
 
 func Write(
@@ -21,8 +20,23 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) error {
-	key := uuid.NewString()
-	params.Nft.Key = key
+	foundNft, err := ReadByTokenId(ctx, logger, db, nk, ReadByTokenIdParams{
+		TokenId:  params.Nft.TokenId,
+		Type:     params.Nft.Type,
+		ChainKey: params.Nft.ChainKey,
+		Network:  params.Nft.Network,
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	if foundNft == nil {
+		params.Nft.Key = uuid.NewString()
+	} else {
+		params.Nft.Key = foundNft.Key
+	}
 
 	data, err := json.Marshal(
 		params.Nft,
@@ -34,8 +48,6 @@ func Write(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             key,
-			UserID:          params.UserId,
 			Value:           string(data),
 			PermissionRead:  2,
 			PermissionWrite: 0,
@@ -50,8 +62,7 @@ func Write(
 }
 
 type WriteManyParams struct {
-	Nfts   []Nft  `json:"nfts"`
-	UserId string `json:"userId"`
+	Nfts []Nft `json:"nfts"`
 }
 
 func WriteMany(
@@ -65,9 +76,11 @@ func WriteMany(
 	for _, nft := range params.Nfts {
 		//check existed, then override
 		foundNft, err := ReadByTokenId(ctx, logger, db, nk, ReadByTokenIdParams{
-			TokenId: nft.TokenId,
-			Type:    nft.Type,
+			TokenId:  nft.TokenId,
+			Type:     nft.Type,
+			ChainKey: nft.ChainKey,
 		})
+
 		if err != nil {
 			logger.Error(err.Error())
 			return err
@@ -87,7 +100,6 @@ func WriteMany(
 		write := &runtime.StorageWrite{
 			Collection:      COLLECTION_NAME,
 			Key:             nft.Key,
-			UserID:          params.UserId,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

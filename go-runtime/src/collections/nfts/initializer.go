@@ -13,5 +13,10 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
+	err = RegisterByTokenId(ctx, logger, db, nk, initializer)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
