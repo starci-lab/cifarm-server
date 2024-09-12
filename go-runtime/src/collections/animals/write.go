@@ -23,7 +23,8 @@ func WriteMany(
 	for _, animal := range params.Animals {
 		value, err := json.Marshal(animal)
 		if err != nil {
-			continue
+			logger.Error(err.Error())
+			return err
 		}
 
 		write := &runtime.StorageWrite{

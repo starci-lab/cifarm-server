@@ -21,7 +21,7 @@ func ReadByReferenceKey(
 	nk runtime.NakamaModule,
 	params ReadByReferenceKeyParams,
 ) (*api.StorageObject, error) {
-	name := STORAGE_INDEX_BY_REFERENCE_ID
+	name := STORAGE_INDEX_BY_REFERENCE_KEY
 	query := fmt.Sprintf(`+value.referenceKey:%s`, params.ReferenceKey)
 	order := []string{}
 

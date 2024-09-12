@@ -1,4 +1,4 @@
-package collections_placed_items
+package collections_nfts
 
 import (
 	"context"
@@ -10,9 +10,8 @@ import (
 )
 
 type WriteParams struct {
-	PlacedItem PlacedItem `json:"placedItem"`
-	UserId     string     `json:"userId"`
-	Key        string     `json:"key"`
+	Nft    Nft    `json:"nft"`
+	UserId string `json:"userId"`
 }
 
 func Write(
@@ -22,29 +21,26 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) error {
-	if params.Key == "" {
-		key := uuid.NewString()
-		params.Key = key
-		params.PlacedItem.Key = key
-	}
+	key := uuid.NewString()
+	params.Nft.Key = key
 
-	value, err := json.Marshal(params.PlacedItem)
+	data, err := json.Marshal(
+		params.Nft,
+	)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             params.Key,
+			Key:             key,
 			UserID:          params.UserId,
-			Value:           string(value),
-			PermissionRead:  1,
+			Value:           string(data),
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		},
 	})
-
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -54,8 +50,8 @@ func Write(
 }
 
 type WriteManyParams struct {
-	PlacedItems []PlacedItem `json:"placedItems"`
-	UserId      string       `json:"userId"`
+	Nfts   []Nft  `json:"nfts"`
+	UserId string `json:"userId"`
 }
 
 func WriteMany(
@@ -66,22 +62,34 @@ func WriteMany(
 	params WriteManyParams,
 ) error {
 	var writes []*runtime.StorageWrite
-	for _, placedItem := range params.PlacedItems {
-		key := uuid.NewString()
-		placedItem.Key = key
-
-		value, err := json.Marshal(placedItem)
+	for _, nft := range params.Nfts {
+		//check existed, then override
+		foundNft, err := ReadByTokenId(ctx, logger, db, nk, ReadByTokenIdParams{
+			TokenId: nft.TokenId,
+			Type:    nft.Type,
+		})
 		if err != nil {
 			logger.Error(err.Error())
 			return err
 		}
 
+		if foundNft == nil {
+			nft.Key = uuid.NewString()
+		} else {
+			nft.Key = foundNft.Key
+		}
+
+		value, err := json.Marshal(nft)
+		if err != nil {
+			continue
+		}
+
 		write := &runtime.StorageWrite{
 			Collection:      COLLECTION_NAME,
-			Key:             key,
-			Value:           string(value),
+			Key:             nft.Key,
 			UserID:          params.UserId,
-			PermissionRead:  1,
+			Value:           string(value),
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		}
 		writes = append(writes, write)
