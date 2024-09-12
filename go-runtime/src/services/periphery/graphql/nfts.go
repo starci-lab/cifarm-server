@@ -1,4 +1,4 @@
-package authenticator_graphql
+package services_periphery_graphql
 
 import (
 	cifarm_periphery "cifarm-server/src/services/periphery"
@@ -9,55 +9,74 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type GetAuthenticationInput struct {
-	AuthenticationId string `json:"authenticationId"`
+type GetNftsInput struct {
+	AccountAddress string `json:"accountAddress"`
+	Network        string `json:"network"`
+	NftKey         string `json:"nftKey"`
+	ChainKey       string `json:"chainKey"`
 }
 
-type AuthenticationData struct {
-	Address string `json:"address"`
-	Chain   string `json:"chain"`
+type GetNftsFilter struct {
+	Skip int `json:"skip"`
+	Take int `json:"take"`
 }
 
-func GetAuthenticationData(
+type GetNftArgs struct {
+	Input  GetNftsInput  `json:"input"`
+	Filter GetNftsFilter `json:"filter"`
+}
+
+type NftResponse struct {
+	TokenId  int    `json:"tokenId"`
+	TokenURI string `json:"tokenURI"`
+}
+
+type GetNftsResponse struct {
+	Records []NftResponse `json:"records"`
+	Count   int           `json:"count"`
+}
+
+func GetNfts(
 	ctx context.Context,
 	logger runtime.Logger,
-	input GetAuthenticationInput,
-) (*AuthenticationData, error) {
+	args GetNftArgs,
+) (*GetNftsResponse, error) {
 	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
 	if !ok {
 		logger.Error("Cannot get environment variables")
 		return nil, errors.New("cannot get environment variables")
 	}
-	url, ok := vars[cifarm_periphery.CIFARM_PERIPHERY_API_URL]
+	url, ok := vars[cifarm_periphery.CIFARM_PERIPHERY_GRAPHQL_URL]
 	if !ok {
-		logger.Error("CIFARM_PERIPHERY_API_URL not found in environment variables")
-		return nil, errors.New("CIFARM_PERIPHERY_API_URL not found in environment variables")
+		logger.Error("CIFARM_PERIPHERY_GRAPHQL_URL not found in environment variables")
+		return nil, errors.New("CIFARM_PERIPHERY_GRAPHQL_URL not found in environment variables")
 	}
-	logger.Info("GRAPHPQL %v", url)
 	client := graphql.NewClient(url, nil)
 
-	query := `query Query($input: GetAuthenticationDataInput!) {
-  authenticationData(input: $input) {
-    chain,
-	address
+	query := `query Query($args: GetNftsArgs!) {
+  nfts(args: $args) {
+    count,
+    records {
+      tokenId,
+      tokenURI
+    }
   }
 }`
 	variables := map[string]interface{}{
-		"input": map[string]interface{}{
-			"authenticationId": input.AuthenticationId,
-		},
+		"args": args,
 	}
 	result := struct {
-		AuthenticationData AuthenticationData `json:"authenticationData"`
+		Nfts GetNftsResponse `json:"nfts"`
 	}{}
 
-	err := client.Exec(context.Background(),
+	err := client.WithDebug(true).Exec(context.Background(),
 		query,
 		&result,
 		variables,
 	)
 	if err != nil {
+		logger.Error(err.Error())
 		return nil, err
 	}
-	return &result.AuthenticationData, nil
+	return &result.Nfts, nil
 }

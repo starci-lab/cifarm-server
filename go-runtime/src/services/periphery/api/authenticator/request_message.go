@@ -1,4 +1,4 @@
-package services_periphery_authenticator
+package services_periphery_api_authenticator
 
 import (
 	cifarm_periphery "cifarm-server/src/services/periphery"

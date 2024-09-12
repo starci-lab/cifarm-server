@@ -1,7 +1,7 @@
 package auth
 
 import (
-	services_periphery_authenticator "cifarm-server/src/services/periphery/api/authenticator"
+	services_periphery_api_authenticator "cifarm-server/src/services/periphery/api/authenticator"
 	"context"
 	"database/sql"
 	"errors"
@@ -38,14 +38,14 @@ func BeforeAuthenticate(
 		return nil, errors.New("missing 'chainKey' in account variables")
 	}
 
-	body := services_periphery_authenticator.VerifyMessageRequestBody{
+	body := services_periphery_api_authenticator.VerifyMessageRequestBody{
 		Message:   message,
 		PublicKey: publicKey,
 		Signature: signature,
 		ChainKey:  chainKey,
 	}
 
-	response, err := services_periphery_authenticator.VerifyMessage(ctx, logger, &body)
+	response, err := services_periphery_api_authenticator.VerifyMessage(ctx, logger, &body)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
