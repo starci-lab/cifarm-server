@@ -7,7 +7,6 @@ import (
 	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
-	socketio_client "github.com/zhouhui8915/go-socket.io-client"
 )
 
 func ObserveNftTransfer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) error {
@@ -21,19 +20,6 @@ func ObserveNftTransfer(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		logger.Error("CIFARM_PERIPHERY_WEBSOCKET_URL not found in environment variables")
 		return errors.New("CIFARM_PERIPHERY_WEBSOCKET_URL not found in environment variables")
 	}
-
-	client, err := socketio_client.NewClient(url, nil)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-	// Handle an incoming event
-	client.On("connection", func() {
-		logger.Info("Websocket to peripery server ebstablisted.")
-	})
-	client.On("nft-transfer-observed", func(msg string) {
-		logger.Info(msg)
-	})
-
+	logger.Error(url)
 	return nil
 }
