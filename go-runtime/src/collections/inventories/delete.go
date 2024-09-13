@@ -72,3 +72,31 @@ func Delete(ctx context.Context,
 	}
 	return nil
 }
+
+type DeleteUniqueParams struct {
+	Key    string `json:"key"`
+	UserId string `json:"userId"`
+}
+
+func DeleteUnique(ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params DeleteUniqueParams,
+) error {
+	err := nk.StorageDelete(ctx, []*runtime.StorageDelete{
+		{
+			Collection: COLLECTION_NAME,
+			Key:        params.Key,
+			UserID:     params.UserId,
+		},
+	})
+
+	//also delete the placedItems
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

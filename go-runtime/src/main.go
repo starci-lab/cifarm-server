@@ -7,7 +7,6 @@ import (
 	"cifarm-server/src/matches"
 	"cifarm-server/src/rpcs"
 	"cifarm-server/src/setup"
-	"cifarm-server/src/websockets"
 	"context"
 	"database/sql"
 
@@ -51,10 +50,5 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = websockets.Initialize(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
 	return nil
 }

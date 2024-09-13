@@ -1,6 +1,7 @@
 package collections_inventories
 
 import (
+	collections_common "cifarm-server/src/collections/common"
 	"context"
 	"database/sql"
 	"fmt"
@@ -68,4 +69,58 @@ func ReadByKey(
 	}
 	var object = objects[0]
 	return object, nil
+}
+
+type ReadByTokenIdParams struct {
+	TokenId      int    `json:"tokenId"`
+	ReferenceKey string `json:"referenceKey"`
+}
+
+func ReadByTokenId(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadByTokenIdParams,
+) (*api.StorageObject, error) {
+	name := STORAGE_INDEX_BY_TOKEN_ID
+	query := fmt.Sprintf("+value.tokenId:%v +value.referenceKey:%s", params.TokenId, params.ReferenceKey)
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects.Objects) == 0 {
+		return nil, nil
+	}
+	var object = objects.Objects[0]
+	return object, nil
+}
+
+type ReadManyByUserIdParams struct {
+	UserId       string `json:"userId"`
+	ReferenceKey string `json:"referenceKey"`
+}
+
+func ReadManyByUserId(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadManyByUserIdParams,
+) (*api.StorageObjects, error) {
+	name := STORAGE_INDEX_BY_USER_ID
+	query := fmt.Sprintf("+userId:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, collections_common.MAX_ENTRIES, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return objects, nil
 }

@@ -3,20 +3,24 @@ package rpcs_nfts
 import (
 	collections_common "cifarm-server/src/collections/common"
 	collections_config "cifarm-server/src/collections/config"
-	collections_nfts "cifarm-server/src/collections/nfts"
+	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_tiles "cifarm-server/src/collections/tiles"
 	services_periphery_graphql "cifarm-server/src/services/periphery/graphql"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
 
-	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
 type UpdatePremiumTileNftsRpcResponse struct {
 	TokenIds []int `json:"tokenIds"`
 }
+
+const (
+	PREMIUM_TILE = "premiumTile"
+)
 
 func UpdatePremiumTileNftsRpc(
 	ctx context.Context,
@@ -53,7 +57,7 @@ func UpdatePremiumTileNftsRpc(
 				AccountAddress: metadata.AccountAddress,
 				ChainKey:       metadata.ChainKey,
 				Network:        metadata.Network,
-				NftKey:         collections_nfts.NFT_KEY_PREMIUM_TILE,
+				NftKey:         "premiumTile",
 			},
 		})
 
@@ -62,32 +66,109 @@ func UpdatePremiumTileNftsRpc(
 		return "", err
 	}
 
-	var nfts []collections_nfts.Nft
-
-	for _, nftResponse := range data.Records {
-		nfts = append(nfts, collections_nfts.Nft{
-			TokenId:        nftResponse.TokenId,
-			Type:           collections_nfts.TYPE_PREMIUM_TILE,
-			AccountAddress: metadata.AccountAddress,
-			ChainKey:       metadata.ChainKey,
-			Network:        metadata.Network,
-			MappingKey:     uuid.NewString(),
-			IsPlaced:       false,
-		})
-	}
-
-	err = collections_nfts.WriteMany(ctx, logger, db, nk, collections_nfts.WriteManyParams{
-		Nfts: nfts,
+	//previousNft
+	objects, err := collections_inventories.ReadManyByUserId(ctx, logger, db, nk, collections_inventories.ReadManyByUserIdParams{
+		UserId:       userId,
+		ReferenceKey: collections_tiles.KEY_PREMIUM,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-
-	var tokenIds []int
-	for _, nft := range nfts {
-		tokenIds = append(tokenIds, nft.TokenId)
+	previousNftInventories, err := collections_common.ToValues[collections_inventories.Inventory](ctx, logger, db, nk, objects)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
+
+	//create or transfer from other
+	var tokenIds []int
+	for _, nftResponse := range data.Records {
+		object, err := collections_inventories.ReadByTokenId(ctx, logger, db, nk, collections_inventories.ReadByTokenIdParams{
+			TokenId:      nftResponse.TokenId,
+			ReferenceKey: collections_tiles.KEY_PREMIUM,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return "", err
+		}
+		if object == nil {
+			//nft not found, mean that you have create new
+			err := collections_inventories.WriteUnique(ctx, logger, db, nk, collections_inventories.WriteUniqueParams{
+				UserId: userId,
+				Inventory: collections_inventories.Inventory{
+					ReferenceKey: collections_tiles.KEY_PREMIUM,
+					Placeable:    true,
+					TokenId:      nftResponse.TokenId,
+					Type:         collections_inventories.TYPE_TILE,
+				},
+				PermissionRead: 2,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return "", err
+			}
+		} else {
+			//nft found, then we check if previous owner difference from now, so that we procedure a transfer ownership
+			if object.UserId != userId {
+				err := collections_inventories.TransferOwnership(ctx, logger, db, nk, collections_inventories.TransferOwnershipParams{
+					FromUserId: object.UserId,
+					ToUserId:   userId,
+					Key:        object.Key,
+				})
+				if err != nil {
+					logger.Error(err.Error())
+					return "", err
+				}
+			}
+		}
+		tokenIds = append(tokenIds, nftResponse.TokenId)
+	}
+	//DESTROY or you transfer to others
+	for _, previousNftInventory := range previousNftInventories {
+		var found bool
+		for _, nft := range data.Records {
+			if nft.TokenId == previousNftInventory.TokenId {
+				found = true
+				break
+				//do nothing
+			}
+		}
+		if !found {
+			//not found mean that the previous nft have been disable, there is too case - lose or you transfer
+			object, err := collections_inventories.ReadByTokenId(ctx, logger, db, nk, collections_inventories.ReadByTokenIdParams{
+				TokenId:      previousNftInventory.TokenId,
+				ReferenceKey: collections_tiles.KEY_PREMIUM,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return "", err
+			}
+			if object == nil {
+				//nft not found, mean that the token has been removed
+				err := collections_inventories.DeleteUnique(ctx, logger, db, nk, collections_inventories.DeleteUniqueParams{
+					UserId: userId,
+					Key:    previousNftInventory.Key,
+				})
+				if err != nil {
+					logger.Error(err.Error())
+					return "", err
+				}
+			} else {
+				//you must transfer ownership
+				err := collections_inventories.TransferOwnership(ctx, logger, db, nk, collections_inventories.TransferOwnershipParams{
+					FromUserId: userId,
+					ToUserId:   object.UserId,
+					Key:        object.Key,
+				})
+				if err != nil {
+					logger.Error(err.Error())
+					return "", err
+				}
+			}
+		}
+	}
+
 	value, err := json.Marshal(UpdatePremiumTileNftsRpcResponse{
 		TokenIds: tokenIds,
 	})

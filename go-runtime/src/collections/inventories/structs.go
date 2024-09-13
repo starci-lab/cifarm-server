@@ -14,4 +14,7 @@ type Inventory struct {
 	Type         int      `json:"type"`
 	Quantity     int      `json:"quantity"`
 	Unique       bool     `json:"unique"`
+	TokenId      int      `json:"tokenId"`
+	Placeable    bool     `json:"placeable"`
+	IsPlaced     bool     `json:"isPlaced"`
 }

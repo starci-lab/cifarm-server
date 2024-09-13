@@ -87,3 +87,92 @@ func Write(
 
 	return nil
 }
+
+type WriteUniqueParams struct {
+	Inventory      Inventory `json:"inventory"`
+	UserId         string    `json:"userId"`
+	PermissionRead int       `json:"permissionRead"`
+}
+
+func WriteUnique(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteUniqueParams,
+) error {
+	key := uuid.NewString()
+	params.Inventory.Key = key
+	params.Inventory.Unique = true
+
+	value, err := json.Marshal(params.Inventory)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             key,
+			UserID:          params.UserId,
+			Value:           string(value),
+			PermissionRead:  params.PermissionRead,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type TransferOwnershipParams struct {
+	Key        string `json:"key"`
+	FromUserId string `json:"fromUserId"`
+	ToUserId   string `json:"toUserId"`
+}
+
+func TransferOwnership(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params TransferOwnershipParams,
+) error {
+	object, err := ReadByKey(ctx, logger, db, nk, ReadByKeyParams{
+		Key:    params.Key,
+		UserId: params.FromUserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	value, err := json.Marshal(object.Value)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	//we do destroy placed items
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             object.Key,
+			UserID:          params.ToUserId,
+			Value:           string(value),
+			PermissionRead:  int(object.PermissionRead),
+			PermissionWrite: int(object.PermissionWrite),
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

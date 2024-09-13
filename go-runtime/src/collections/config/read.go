@@ -53,7 +53,7 @@ func GetUserIdByMetadata(
 ) (string, error) {
 	name := STORAGE_INDEX_USER_ID
 	query := fmt.Sprintf(
-		`+value.accountAddress:%s +value.network:%s +value.chainKey:%s`,
+		"+value.accountAddress:%s +value.network:%s +value.chainKey:%s",
 		params.Metadata.AccountAddress,
 		params.Metadata.Network,
 		params.Metadata.ChainKey)

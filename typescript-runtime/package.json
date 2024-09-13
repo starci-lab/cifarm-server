@@ -27,6 +27,7 @@
   "dependencies": {
     "ethers": "6.13.2",
     "nakama-runtime": "github:heroiclabs/nakama-common",
+    "socket.io-client": "^4.7.5",
     "tslib": "2.7.0"
   }
 }
