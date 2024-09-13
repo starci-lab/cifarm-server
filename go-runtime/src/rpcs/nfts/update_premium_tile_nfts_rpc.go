@@ -80,6 +80,7 @@ func UpdatePremiumTileNftsRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+	logger.Info("%v,", len(previousNftInventories))
 
 	//create or transfer from other
 	var tokenIds []int
@@ -136,16 +137,24 @@ func UpdatePremiumTileNftsRpc(
 		}
 		if !found {
 			//not found mean that the previous nft have been disable, there is too case - lose or you transfer
-			object, err := collections_inventories.ReadByTokenId(ctx, logger, db, nk, collections_inventories.ReadByTokenIdParams{
-				TokenId:      previousNftInventory.TokenId,
-				ReferenceKey: collections_tiles.KEY_PREMIUM,
-			})
+
+			data, err := services_periphery_graphql.GetNftByTokenId(
+				ctx,
+				logger,
+				services_periphery_graphql.GetNftByTokenIdArgs{
+					Input: services_periphery_graphql.GetNftByTokenIdInput{
+						TokenId:  previousNftInventory.TokenId,
+						ChainKey: metadata.ChainKey,
+						Network:  metadata.Network,
+						NftKey:   "premiumTile",
+					},
+				})
 			if err != nil {
 				logger.Error(err.Error())
 				return "", err
 			}
-			if object == nil {
-				//nft not found, mean that the token has been removed
+			if data == nil {
+				//which mean has been burned
 				err := collections_inventories.DeleteUnique(ctx, logger, db, nk, collections_inventories.DeleteUniqueParams{
 					UserId: userId,
 					Key:    previousNftInventory.Key,
@@ -155,15 +164,40 @@ func UpdatePremiumTileNftsRpc(
 					return "", err
 				}
 			} else {
-				//you must transfer ownership
-				err := collections_inventories.TransferOwnership(ctx, logger, db, nk, collections_inventories.TransferOwnershipParams{
-					FromUserId: userId,
-					ToUserId:   object.UserId,
-					Key:        object.Key,
+				//the nft still existed, so that has 2 case, the first is the owner inside the application
+				newUserId, err := collections_config.GetUserIdByMetadata(ctx, logger, db, nk, collections_config.GetUserIdByMetadataParams{
+					Metadata: collections_config.Metadata{
+						ChainKey:       metadata.ChainKey,
+						Network:        metadata.Network,
+						AccountAddress: data.OwnerAddress,
+					},
 				})
 				if err != nil {
 					logger.Error(err.Error())
 					return "", err
+				}
+				if newUserId != "" {
+					//has, do transfer ownership
+					err := collections_inventories.TransferOwnership(ctx, logger, db, nk, collections_inventories.TransferOwnershipParams{
+						FromUserId: userId,
+						ToUserId:   newUserId,
+						Key:        previousNftInventory.Key,
+					})
+					if err != nil {
+						logger.Error(err.Error())
+						return "", err
+					}
+				} else {
+					logger.Info("called this is correct")
+					//nah, destroy
+					err := collections_inventories.DeleteUnique(ctx, logger, db, nk, collections_inventories.DeleteUniqueParams{
+						UserId: userId,
+						Key:    previousNftInventory.Key,
+					})
+					if err != nil {
+						logger.Error(err.Error())
+						return "", err
+					}
 				}
 			}
 		}

@@ -9,27 +9,33 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type GetNftsByTokenIdsInput struct {
-	TokenIds []int  `json:"tokenIds"`
-	Network  string `json:"network"`
-	NftKey   string `json:"nftKey"`
-	ChainKey string `json:"chainKey"`
+type GetNftsByOwnerAddressInput struct {
+	AccountAddress string `json:"accountAddress"`
+	Network        string `json:"network"`
+	NftKey         string `json:"nftKey"`
+	ChainKey       string `json:"chainKey"`
 }
 
-type GetNftsByTokenIdsArgs struct {
-	Input GetNftsByTokenIdsInput `json:"input"`
+type GetNftsByOwnerAddressFilter struct {
+	Skip int `json:"skip"`
+	Take int `json:"take"`
 }
 
-type GetNftsByTokenIdsResponse struct {
-	Records []NftData `json:"records"`
-	Count   int       `json:"count"`
+type GetNftByOwnerAddressArgs struct {
+	Input  GetNftsByOwnerAddressInput  `json:"input"`
+	Filter GetNftsByOwnerAddressFilter `json:"filter"`
 }
 
-func GetNftsByTokenIds(
+type GetNftsByOwnerAddressResponse struct {
+	Records []NftDataResponse `json:"records"`
+	Count   int               `json:"count"`
+}
+
+func GetNftsByOwnerAddress(
 	ctx context.Context,
 	logger runtime.Logger,
-	args GetNftsByTokenIdsArgs,
-) (*GetNftsByTokenIdsResponse, error) {
+	args GetNftByOwnerAddressArgs,
+) (*GetNftsByOwnerAddressResponse, error) {
 	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
 	if !ok {
 		logger.Error("Cannot get environment variables")
@@ -42,8 +48,9 @@ func GetNftsByTokenIds(
 	}
 	client := graphql.NewClient(url, nil)
 
-	query := `query Query($args: GetNftsByTokenIdsArgs!) {
-  nftsByTokenIds(args: $args) {
+	query := `query Query($args: GetNftsByOwnerAddressArgs!) {
+  nftsByOwnerAddress(args: $args) {
+    count,
     records {
       tokenId,
       tokenURI,
@@ -55,7 +62,7 @@ func GetNftsByTokenIds(
 		"args": args,
 	}
 	result := struct {
-		NftsByTokenIds GetNftsByTokenIdsResponse `json:"nftsByTokenIds"`
+		NftsByOwnerAddress GetNftsByOwnerAddressResponse `json:"nftsByOwnerAddress"`
 	}{}
 
 	err := client.WithDebug(true).Exec(context.Background(),
@@ -67,5 +74,5 @@ func GetNftsByTokenIds(
 		logger.Error(err.Error())
 		return nil, err
 	}
-	return &result.NftsByTokenIds, nil
+	return &result.NftsByOwnerAddress, nil
 }

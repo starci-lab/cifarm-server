@@ -113,7 +113,8 @@ func ReadManyByUserId(
 	params ReadManyByUserIdParams,
 ) (*api.StorageObjects, error) {
 	name := STORAGE_INDEX_BY_USER_ID
-	query := fmt.Sprintf("+userId:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
+	logger.Info("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
+	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, collections_common.MAX_ENTRIES, order)

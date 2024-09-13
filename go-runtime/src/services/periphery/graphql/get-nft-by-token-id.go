@@ -9,27 +9,22 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type GetNftsByTokenIdsInput struct {
-	TokenIds []int  `json:"tokenIds"`
+type GetNftByTokenIdInput struct {
+	TokenId  int    `json:"tokenId"`
 	Network  string `json:"network"`
 	NftKey   string `json:"nftKey"`
 	ChainKey string `json:"chainKey"`
 }
 
-type GetNftsByTokenIdsArgs struct {
-	Input GetNftsByTokenIdsInput `json:"input"`
+type GetNftByTokenIdArgs struct {
+	Input GetNftByTokenIdInput `json:"input"`
 }
 
-type GetNftsByTokenIdsResponse struct {
-	Records []NftDataResponse `json:"records"`
-	Count   int               `json:"count"`
-}
-
-func GetNftsByTokenIds(
+func GetNftByTokenId(
 	ctx context.Context,
 	logger runtime.Logger,
-	args GetNftsByTokenIdsArgs,
-) (*GetNftsByTokenIdsResponse, error) {
+	args GetNftByTokenIdArgs,
+) (*NftDataResponse, error) {
 	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
 	if !ok {
 		logger.Error("Cannot get environment variables")
@@ -41,21 +36,19 @@ func GetNftsByTokenIds(
 		return nil, errors.New("CIFARM_PERIPHERY_GRAPHQL_URL not found in environment variables")
 	}
 	client := graphql.NewClient(url, nil)
-
-	query := `query Query($args: GetNftsByTokenIdsArgs!) {
-  nftsByTokenIds(args: $args) {
-    records {
-      tokenId,
-      tokenURI,
-	  ownerAddress
-    }
+	logger.Info("%v", args.Input.TokenId)
+	query := `query Query($args: GetNftByTokenIdArgs!) {
+  nftByTokenId(args: $args) {
+    ownerAddress,
+    tokenId,
+    tokenURI
   }
 }`
 	variables := map[string]interface{}{
 		"args": args,
 	}
 	result := struct {
-		NftsByTokenIds GetNftsByTokenIdsResponse `json:"nftsByTokenIds"`
+		NftByTokenId NftDataResponse `json:"nftByTokenId"`
 	}{}
 
 	err := client.WithDebug(true).Exec(context.Background(),
@@ -67,5 +60,6 @@ func GetNftsByTokenIds(
 		logger.Error(err.Error())
 		return nil, err
 	}
-	return &result.NftsByTokenIds, nil
+	logger.Info(result.NftByTokenId.OwnerAddress)
+	return &result.NftByTokenId, nil
 }
