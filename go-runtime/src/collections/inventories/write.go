@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -150,21 +151,28 @@ func TransferOwnership(
 		logger.Error(err.Error())
 		return err
 	}
+	if object == nil {
+		errMsg := "inventory not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+	//we do destroy placed items
 
-	value, err := json.Marshal(object.Value)
+	err = DeleteUnique(ctx, logger, db, nk, DeleteUniqueParams{
+		Key:    object.Key,
+		UserId: params.FromUserId,
+	})
+
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-
-	//we do destroy placed items
-
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
 			Key:             object.Key,
 			UserID:          params.ToUserId,
-			Value:           string(value),
+			Value:           object.Value,
 			PermissionRead:  int(object.PermissionRead),
 			PermissionWrite: int(object.PermissionWrite),
 		},

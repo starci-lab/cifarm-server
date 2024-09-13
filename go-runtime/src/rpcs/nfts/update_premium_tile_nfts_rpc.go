@@ -164,6 +164,7 @@ func UpdatePremiumTileNftsRpc(
 					return "", err
 				}
 			} else {
+				logger.Info(data.OwnerAddress)
 				//the nft still existed, so that has 2 case, the first is the owner inside the application
 				newUserId, err := collections_config.GetUserIdByMetadata(ctx, logger, db, nk, collections_config.GetUserIdByMetadataParams{
 					Metadata: collections_config.Metadata{
@@ -176,6 +177,7 @@ func UpdatePremiumTileNftsRpc(
 					logger.Error(err.Error())
 					return "", err
 				}
+				logger.Info(newUserId)
 				if newUserId != "" {
 					//has, do transfer ownership
 					err := collections_inventories.TransferOwnership(ctx, logger, db, nk, collections_inventories.TransferOwnershipParams{
