@@ -15,13 +15,17 @@ type WriteParams struct {
 	Key        string     `json:"key"`
 }
 
+type WriteResult struct {
+	Key string `json:"key"`
+}
+
 func Write(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	params WriteParams,
-) error {
+) (*WriteResult, error) {
 	if params.Key == "" {
 		key := uuid.NewString()
 		params.Key = key
@@ -31,26 +35,28 @@ func Write(
 	value, err := json.Marshal(params.PlacedItem)
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return nil, err
 	}
 
-	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+	acks, err := nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
 			Key:             params.Key,
 			UserID:          params.UserId,
 			Value:           string(value),
-			PermissionRead:  1,
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		},
 	})
 
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &WriteResult{
+		Key: acks[0].Key,
+	}, nil
 }
 
 type WriteManyParams struct {
@@ -81,7 +87,7 @@ func WriteMany(
 			Key:             key,
 			Value:           string(value),
 			UserID:          params.UserId,
-			PermissionRead:  1,
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		}
 		writes = append(writes, write)

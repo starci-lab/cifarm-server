@@ -43,7 +43,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		}
 	}
 
-	err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+	_, err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *params.PlacedItem,
 		UserId:     params.UserId,
 		Key:        params.Key,

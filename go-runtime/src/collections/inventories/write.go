@@ -2,6 +2,7 @@ package collections_inventories
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_placed_items "cifarm-server/src/collections/placed_items"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -156,7 +157,6 @@ func TransferOwnership(
 		logger.Error(errMsg)
 		return errors.New(errMsg)
 	}
-	//we do destroy placed items
 
 	err = DeleteUnique(ctx, logger, db, nk, DeleteUniqueParams{
 		Key:    object.Key,
@@ -173,6 +173,72 @@ func TransferOwnership(
 			Key:             object.Key,
 			UserID:          params.ToUserId,
 			Value:           object.Value,
+			PermissionRead:  int(object.PermissionRead),
+			PermissionWrite: int(object.PermissionWrite),
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = collections_placed_items.DeleteByInventoryKey(ctx, logger, db, nk, collections_placed_items.DeleteByInventoryKeyParams{
+		InventoryKey: params.Key,
+		UserId:       params.FromUserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+type UpdateIsPlacedParams struct {
+	Key      string `json:"key"`
+	IsPlaced bool   `json:"isPlaced"`
+	UserId   string `json:"userId"`
+}
+
+func UpdateIsPlaced(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params UpdateIsPlacedParams,
+) error {
+	object, err := ReadByKey(ctx, logger, db, nk, ReadByKeyParams{
+		Key:    params.Key,
+		UserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		errMsg := "inventory not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+	inventory, err := collections_common.ToValue[Inventory](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	inventory.IsPlaced = params.IsPlaced
+	value, err := json.Marshal(inventory)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             object.Key,
+			UserID:          params.UserId,
+			Value:           string(value),
 			PermissionRead:  int(object.PermissionRead),
 			PermissionWrite: int(object.PermissionWrite),
 		},

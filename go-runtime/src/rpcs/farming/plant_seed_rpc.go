@@ -51,15 +51,15 @@ func PlantSeedRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+	if object == nil {
+		errMsg := "inventory not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
 	inventory, err := collections_common.ToValue[collections_inventories.Inventory](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
-	}
-	if inventory == nil {
-		errMsg := "inventory not found"
-		logger.Error(errMsg)
-		return "", errors.New(errMsg)
 	}
 	if inventory.Type != collections_inventories.TYPE_SEED {
 		errMsg := "inventory not plant seed"
@@ -134,7 +134,7 @@ func PlantSeedRpc(
 		Seed:                     *seed,
 	}
 	placedItem.IsPlanted = true
-	err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *placedItem,
 		UserId:     userId,
 		Key:        placedItemKey,

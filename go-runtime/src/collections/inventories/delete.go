@@ -2,6 +2,7 @@ package collections_inventories
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_placed_items "cifarm-server/src/collections/placed_items"
 	"context"
 	"database/sql"
 	"errors"
@@ -91,12 +92,19 @@ func DeleteUnique(ctx context.Context,
 			UserID:     params.UserId,
 		},
 	})
-
-	//also delete the placedItems
-
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
+
+	err = collections_placed_items.DeleteByInventoryKey(ctx, logger, db, nk, collections_placed_items.DeleteByInventoryKeyParams{
+		InventoryKey: params.Key,
+		UserId:       params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	return nil
 }

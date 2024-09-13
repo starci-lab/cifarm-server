@@ -87,3 +87,34 @@ func ReadByFilters1(
 
 	return objects, err
 }
+
+type ReadByInventoryKeyParams struct {
+	InventoryKey string `json:"inventoryKey"`
+}
+
+func ReadByInventoryKey(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadByInventoryKeyParams,
+) (*api.StorageObject, error) {
+
+	name := STORAGE_INDEX_BY_INVENTORY_KEY
+	query := fmt.Sprintf(`+value.inventoryKey:%s`, params.InventoryKey)
+	maxEntries := 1
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, maxEntries, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects.Objects) == 0 {
+		return nil, nil
+	}
+
+	object := objects.Objects[0]
+	return object, nil
+}

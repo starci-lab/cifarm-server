@@ -19,7 +19,7 @@ type ConstructBuildingRpcParams struct {
 }
 
 type ConstructBuildingRpcResponse struct {
-	Cost int64 `json:"cost"`
+	BuildingKey string `json:"buildingKey"`
 }
 
 func ConstructBuildingRpc(ctx context.Context,
@@ -68,7 +68,7 @@ func ConstructBuildingRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
-	err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+	result, err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: collections_placed_items.PlacedItem{
 			ReferenceKey: params.Key,
 			Position:     params.Position,
@@ -81,7 +81,7 @@ func ConstructBuildingRpc(ctx context.Context,
 		return "", err
 	}
 	value, err := json.Marshal(ConstructBuildingRpcResponse{
-		Cost: building.Price,
+		BuildingKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

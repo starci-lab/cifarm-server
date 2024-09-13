@@ -43,15 +43,48 @@ func DeleteMany(ctx context.Context,
 	nk runtime.NakamaModule,
 	params DeleteManyParams,
 ) error {
-	var writes []*runtime.StorageDelete
+	var deletes []*runtime.StorageDelete
 	for _, key := range params.Keys {
-		writes = append(writes, &runtime.StorageDelete{
+		deletes = append(deletes, &runtime.StorageDelete{
 			Collection: COLLECTION_NAME,
 			Key:        key,
 			UserID:     params.UserId,
 		})
 	}
-	err := nk.StorageDelete(ctx, writes)
+	err := nk.StorageDelete(ctx, deletes)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type DeleteByInventoryKeyParams struct {
+	InventoryKey string `json:"inventoryKey"`
+	UserId       string `json:"userId"`
+}
+
+func DeleteByInventoryKey(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params DeleteByInventoryKeyParams,
+) error {
+	object, err := ReadByInventoryKey(ctx, logger, db, nk, ReadByInventoryKeyParams{
+		InventoryKey: params.InventoryKey,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	err = nk.StorageDelete(ctx, []*runtime.StorageDelete{
+		{
+			Key:        object.Key,
+			Collection: COLLECTION_NAME,
+			UserID:     params.UserId,
+		},
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err
