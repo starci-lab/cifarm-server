@@ -32,7 +32,7 @@ func Write(
 			Key:             KEY_METADATA,
 			UserID:          params.UserId,
 			Value:           string(value),
-			PermissionRead:  1,
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		},
 	})

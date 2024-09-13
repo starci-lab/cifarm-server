@@ -39,6 +39,8 @@ func WriteOrTransferedFrom(
 		}
 		if object == nil {
 			//nft not found in database => create new since new token is minted
+			logger.Debug("Case 1.1: Nft not found in datate, so that we create new: %v", nftResponse.TokenId)
+
 			err := collections_inventories.WriteUnique(ctx, logger, db, nk, collections_inventories.WriteUniqueParams{
 				UserId: params.UserId,
 				Inventory: collections_inventories.Inventory{
@@ -55,6 +57,8 @@ func WriteOrTransferedFrom(
 			}
 		} else {
 			//nft found, mean that it is previously owned by other => do transfer ownership
+			logger.Debug("Case 1.2: Nft found in database, mean that it is previously owned by other, do transfer ownership: %v", nftResponse.TokenId)
+
 			if object.UserId != params.UserId {
 				err := collections_inventories.TransferOwnership(ctx, logger, db, nk, collections_inventories.TransferOwnershipParams{
 					FromUserId: object.UserId,
@@ -120,6 +124,8 @@ func DeleteOrTransferTo(
 			}
 			if data == nil {
 				//not found, mean it cannot be queried on chain => it have been burned
+				logger.Debug("Case 2.1: Cannot be queried on chain: %v", previousNftInventory.TokenId)
+
 				err := collections_inventories.DeleteUnique(ctx, logger, db, nk, collections_inventories.DeleteUniqueParams{
 					UserId: params.UserId,
 					Key:    previousNftInventory.Key,
@@ -131,7 +137,13 @@ func DeleteOrTransferTo(
 
 				return nil
 			}
+
 			//the nft is still existed on chain, so that will 2 case
+			logger.Debug("Case 2.2: Existed on chain, but you already transfer it: %v", previousNftInventory.TokenId)
+
+			logger.Info("kici %s", data.OwnerAddress)
+			logger.Info("kici %s", params.Metadata.ChainKey)
+			logger.Info("kici %s", params.Metadata.Network)
 			newUserId, err := collections_config.GetUserIdByMetadata(ctx, logger, db, nk, collections_config.GetUserIdByMetadataParams{
 				Metadata: collections_config.Metadata{
 					ChainKey:       params.Metadata.ChainKey,
@@ -139,12 +151,15 @@ func DeleteOrTransferTo(
 					AccountAddress: data.OwnerAddress,
 				},
 			})
+			logger.Info("hentai %s", newUserId)
 			if err != nil {
 				logger.Error(err.Error())
 				return err
 			}
 			if newUserId != "" {
 				//case 1, still existed in the database, so that we do transfer ownership
+				logger.Debug("Case 2.2.1: The nft is still in the database, so that we do transfer ownership: %v", previousNftInventory.TokenId)
+
 				err := collections_inventories.TransferOwnership(ctx, logger, db, nk, collections_inventories.TransferOwnershipParams{
 					FromUserId: params.UserId,
 					ToUserId:   newUserId,
@@ -157,6 +172,8 @@ func DeleteOrTransferTo(
 				return nil
 			}
 			//nah, mean that it have been transfer to out-of-system address, just delete it
+			logger.Debug("Case 2.2.2: The nft has transfered to out-of-system address, just delete it: %v", previousNftInventory.TokenId)
+
 			err = collections_inventories.DeleteUnique(ctx, logger, db, nk, collections_inventories.DeleteUniqueParams{
 				UserId: params.UserId,
 				Key:    previousNftInventory.Key,
