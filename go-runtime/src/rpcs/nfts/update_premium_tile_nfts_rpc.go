@@ -141,9 +141,6 @@ func DeleteOrTransferTo(
 			//the nft is still existed on chain, so that will 2 case
 			logger.Debug("Case 2.2: Existed on chain, but you already transfer it: %v", previousNftInventory.TokenId)
 
-			logger.Info("kici %s", data.OwnerAddress)
-			logger.Info("kici %s", params.Metadata.ChainKey)
-			logger.Info("kici %s", params.Metadata.Network)
 			newUserId, err := collections_config.GetUserIdByMetadata(ctx, logger, db, nk, collections_config.GetUserIdByMetadataParams{
 				Metadata: collections_config.Metadata{
 					ChainKey:       params.Metadata.ChainKey,
