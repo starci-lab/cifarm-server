@@ -61,7 +61,7 @@ func UpdatePremiumTileNftsRpc(
 				AccountAddress: metadata.AccountAddress,
 				ChainKey:       metadata.ChainKey,
 				Network:        metadata.Network,
-				NftKey:         "premiumTile",
+				NftKey:         collections_inventories.NFT_PREMIUM_TILE,
 			},
 		})
 
@@ -152,7 +152,7 @@ func UpdatePremiumTileNftsRpc(
 							TokenId:  previousNftInventory.TokenId,
 							ChainKey: metadata.ChainKey,
 							Network:  metadata.Network,
-							NftKey:   "premiumTile",
+							NftKey:   collections_inventories.NFT_PREMIUM_TILE,
 						},
 					})
 				if err != nil {
