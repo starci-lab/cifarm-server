@@ -75,6 +75,11 @@ func PlantSeedRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+	if object == nil {
+		errMsg := "object cannot be nil"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
 	placedItemKey := object.Key
 
 	placedItem, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)

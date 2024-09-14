@@ -19,7 +19,7 @@ func SetupSeeds(
 		{
 			Key:                 collections_seeds.KEY_CARROT,
 			Price:               50,
-			GrowthStageDuration: 60 * 60, //1 hours
+			GrowthStageDuration: 10, //1 hours //prev: 60 * 60
 			GrowthStages:        5,
 			Premium:             false,
 			Perennial:           false,
@@ -29,7 +29,7 @@ func SetupSeeds(
 		{
 			Key:                         collections_seeds.KEY_POTATO,
 			Price:                       100,
-			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours
+			GrowthStageDuration:         60, //2.5 hours  60 * 60 * 2.5
 			GrowthStages:                5,
 			Premium:                     false,
 			Perennial:                   false,

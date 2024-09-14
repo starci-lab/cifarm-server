@@ -46,12 +46,7 @@ func AfterAuthenticate(
 		logger.Error(err.Error())
 		return err
 	}
-	config, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-	if config == nil {
+	if object == nil {
 		err = collections_config.WriteMetadata(ctx, logger, db, nk,
 			collections_config.WriteMetadataParams{
 				Metadata: collections_config.Metadata{

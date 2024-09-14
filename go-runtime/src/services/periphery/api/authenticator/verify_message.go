@@ -14,11 +14,13 @@ type VerifyMessageRequestBody struct {
 	PublicKey string `json:"publicKey"`
 	Signature string `json:"signature"`
 	ChainKey  string `json:"chainKey"`
+	Network   string `json:"network"`
 }
 
 type VerifyMessageResponseData struct {
-	Result  bool   `json:"result"`
-	Address string `json:"address"`
+	Result           bool   `json:"result"`
+	Address          string `json:"address"`
+	AuthenticationId string `json:"authenticationId"`
 }
 
 type VerifyMessageResponse struct {

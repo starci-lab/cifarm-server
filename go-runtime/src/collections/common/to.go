@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -17,7 +18,9 @@ func ToValue[TValue any](
 	object *api.StorageObject,
 ) (*TValue, error) {
 	if object == nil {
-		return nil, nil
+		errMsg := "object cannot be nil"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 	var data *TValue
 	err := json.Unmarshal([]byte(object.Value), &data)
@@ -25,7 +28,6 @@ func ToValue[TValue any](
 		logger.Error(err.Error())
 		return nil, err
 	}
-
 	return data, nil
 }
 

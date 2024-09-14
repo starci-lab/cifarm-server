@@ -92,10 +92,12 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				currentUserId = visitState.UserId
 			}
 
+			logger.Debug(currentUserId)
 			//if currentId == "", means that you are in your home
 			if currentUserId == "" {
 				currentUserId = presence.GetUserId()
 			}
+			logger.Debug("after %s", currentUserId)
 
 			objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadsParams{
 				UserId: currentUserId,
@@ -104,6 +106,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				logger.Error(err.Error())
 				return err
 			}
+			logger.Debug("cuong %v", len(objects))
 
 			values, err := collections_common.ToValues2[collections_placed_items.PlacedItem](ctx, logger, db, nk, objects)
 			if err != nil {
