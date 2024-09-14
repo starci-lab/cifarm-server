@@ -6,6 +6,7 @@ import (
 	rpcs_farming "cifarm-server/src/rpcs/farming"
 	rpcs_nfts "cifarm-server/src/rpcs/nfts"
 	rpcs_shop "cifarm-server/src/rpcs/shop"
+	rpcs_users "cifarm-server/src/rpcs/users"
 	"context"
 	"database/sql"
 
@@ -39,6 +40,11 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	}
 
 	err = rpcs_nfts.Initialize(ctx, logger, db, nk, initializer)
+	if err != nil {
+		return err
+	}
+
+	err = rpcs_users.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}

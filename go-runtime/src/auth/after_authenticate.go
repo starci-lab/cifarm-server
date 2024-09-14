@@ -52,8 +52,8 @@ func AfterAuthenticate(
 		return err
 	}
 	if config == nil {
-		err = collections_config.Write(ctx, logger, db, nk,
-			collections_config.WriteParams{
+		err = collections_config.WriteMetadata(ctx, logger, db, nk,
+			collections_config.WriteMetadataParams{
 				Metadata: collections_config.Metadata{
 					ChainKey:       chain,
 					AccountAddress: address,
