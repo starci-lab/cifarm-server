@@ -2,6 +2,7 @@ package matches_central
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	"context"
 	"database/sql"
@@ -73,8 +74,31 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	}
 	for _, presence := range matchState.Presences {
 		go func() error {
-			objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadsParams{
+			object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
 				UserId: presence.GetUserId(),
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+			visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+
+			//check which home user the player current in
+			var currentUserId string
+			if visitState.UserId == "" {
+				//their home
+				currentUserId = presence.GetUserId()
+			} else {
+				//other home
+				currentUserId = visitState.UserId
+			}
+
+			objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadsParams{
+				UserId: currentUserId,
 			})
 			if err != nil {
 				logger.Error(err.Error())
@@ -90,7 +114,9 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			wrapped := WrappedPlacedItems{
 				PlacedItems: values,
 			}
-			data, err := json.Marshal(wrapped)
+
+			var data []byte
+			data, err = json.Marshal(wrapped)
 			if err != nil {
 				logger.Error(err.Error())
 				return err

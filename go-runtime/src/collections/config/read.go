@@ -9,16 +9,16 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadMetadataByKeyParams struct {
+type ReadMetadataParams struct {
 	UserId string `json:"userId"`
 }
 
-func ReadMetadataByKey(
+func ReadMetadata(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadMetadataByKeyParams,
+	params ReadMetadataParams,
 ) (*api.StorageObject, error) {
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{
@@ -72,16 +72,16 @@ func GetUserIdByMetadata(
 	return result.UserId, nil
 }
 
-type ReadVisitStateByKeyParams struct {
+type ReadVisitStateParams struct {
 	UserId string `json:"userId"`
 }
 
-func ReadVisitStateByKey(
+func ReadVisitState(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadVisitStateByKeyParams,
+	params ReadVisitStateParams,
 ) (*api.StorageObject, error) {
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{

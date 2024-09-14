@@ -39,7 +39,7 @@ func AfterAuthenticate(
 	address := in.Account.Vars["accountAddress"]
 	network := in.Account.Vars["network"]
 
-	object, err := collections_config.ReadMetadataByKey(ctx, logger, db, nk, collections_config.ReadMetadataByKeyParams{
+	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
 		UserId: userId,
 	})
 	if err != nil {

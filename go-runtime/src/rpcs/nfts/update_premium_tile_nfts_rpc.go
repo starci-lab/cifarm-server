@@ -205,7 +205,7 @@ func UpdatePremiumTileNftsRpc(
 		return "", errors.New(errMsg)
 	}
 
-	object, err := collections_config.ReadMetadataByKey(ctx, logger, db, nk, collections_config.ReadMetadataByKeyParams{
+	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
 		UserId: userId,
 	})
 	if err != nil {
