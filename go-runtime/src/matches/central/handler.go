@@ -81,20 +81,20 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 				logger.Error(err.Error())
 				return err
 			}
-			visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
-			if err != nil {
-				logger.Error(err.Error())
-				return err
+
+			var currentUserId string
+			if object != nil {
+				visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
+				if err != nil {
+					logger.Error(err.Error())
+					return err
+				}
+				currentUserId = visitState.UserId
 			}
 
-			//check which home user the player current in
-			var currentUserId string
-			if visitState.UserId == "" {
-				//their home
+			//if currentId == "", means that you are in your home
+			if currentUserId == "" {
 				currentUserId = presence.GetUserId()
-			} else {
-				//other home
-				currentUserId = visitState.UserId
 			}
 
 			objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadsParams{
