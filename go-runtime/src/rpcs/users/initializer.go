@@ -17,5 +17,16 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	if err != nil {
 		return err
 	}
+
+	err = initializer.RegisterRpc("visit_rpc", VisitRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("thief_plant", ThiefPlantRpc)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
