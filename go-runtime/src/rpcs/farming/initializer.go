@@ -17,5 +17,20 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	if err != nil {
 		return err
 	}
+
+	err = initializer.RegisterRpc("harvest", HarvestRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("use_herbicide", UseHerbicideRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("use_pestiside", UsePestisideRpc)
+	if err != nil {
+		return err
+	}
 	return nil
 }

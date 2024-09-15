@@ -108,3 +108,37 @@ func WriteCentralMatchInfo(
 	}
 	return nil
 }
+
+type WriteSpeedUpParams struct {
+	SpeedUp SpeedUp `json:"speedUp"`
+}
+
+func WriteSpeedUp(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteSpeedUpParams,
+) error {
+	value, err := json.Marshal(params.SpeedUp)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_SPEEDUP,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

@@ -210,7 +210,7 @@ func BuyTileRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
-	err = collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
+	_, err = collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
 			ReferenceKey: data.Key,
 			Quantity:     1,

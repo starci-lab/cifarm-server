@@ -77,7 +77,7 @@ func BuyAnimalRpc(ctx context.Context,
 		return "", err
 	}
 
-	err = collections_inventories.Write(ctx,
+	_, err = collections_inventories.Write(ctx,
 		logger, db, nk,
 		collections_inventories.WriteParams{
 			Inventory: collections_inventories.Inventory{

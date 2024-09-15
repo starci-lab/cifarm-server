@@ -5,6 +5,7 @@ import (
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -63,9 +64,21 @@ func Delete(ctx context.Context,
 		return nil
 	}
 	inventory.Quantity -= params.Quantity
-	err = Write(ctx, logger, db, nk, WriteParams{
-		Inventory: *inventory,
-		UserId:    params.UserId,
+	value, err := json.Marshal(inventory)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             object.Key,
+			UserID:          object.UserId,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
 	})
 	if err != nil {
 		logger.Error(err.Error())

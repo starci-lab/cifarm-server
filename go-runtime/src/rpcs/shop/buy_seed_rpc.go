@@ -19,7 +19,7 @@ type BuySeedRpcParams struct {
 }
 
 type BuySeedRpcResponse struct {
-	TotalCost int64 `json:"totalCost"`
+	Key string `json:"key"`
 }
 
 func BuySeedRpc(ctx context.Context,
@@ -74,7 +74,7 @@ func BuySeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	err = collections_inventories.Write(ctx,
+	result, err := collections_inventories.Write(ctx,
 		logger, db, nk,
 		collections_inventories.WriteParams{
 			Inventory: collections_inventories.Inventory{
@@ -90,7 +90,7 @@ func BuySeedRpc(ctx context.Context,
 	}
 
 	value, err := json.Marshal(BuySeedRpcResponse{
-		TotalCost: totalCost,
+		Key: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

@@ -44,11 +44,12 @@ func Run(
 			time.Second,
 		),
 		gocron.NewTask(
-			func() {
+			func() error {
 				go Process(ctx, logger, db, nk, timeSinceLastUptime)
 				if timeSinceLastUptime > 0 {
 					timeSinceLastUptime = 0
 				}
+				return nil
 			},
 		),
 	)

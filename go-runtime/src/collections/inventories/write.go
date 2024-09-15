@@ -17,49 +17,57 @@ type WriteParams struct {
 	UserId    string    `json:"userId"`
 }
 
+type WriteResult struct {
+	Key string `json:"key"`
+}
+
 func Write(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	params WriteParams,
-) error {
+) (*WriteResult, error) {
 	object, err := ReadByReferenceKey(ctx, logger, db, nk, ReadByReferenceKeyParams{
 		ReferenceKey: params.Inventory.ReferenceKey,
 		UserId:       params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return nil, err
 	}
 
 	if object != nil {
 		inventory, err := collections_common.ToValue[Inventory](ctx, logger, db, nk, object)
 		if err != nil {
 			logger.Error(err.Error())
-			return err
+			return nil, err
 		}
 		inventory.Quantity += params.Inventory.Quantity
 		data, err := json.Marshal(inventory)
 		if err != nil {
 			logger.Error(err.Error())
-			return err
+			return nil, err
 		}
-		_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		acks, err := nk.StorageWrite(ctx, []*runtime.StorageWrite{
 			{
 				Collection:      COLLECTION_NAME,
 				Key:             object.Key,
 				UserID:          params.UserId,
 				Value:           string(data),
-				PermissionRead:  1,
+				PermissionRead:  2,
 				PermissionWrite: 0,
 			},
 		})
 		if err != nil {
 			logger.Error(err.Error())
-			return err
+			return nil, err
 		}
-		return nil
+
+		result := &WriteResult{
+			Key: acks[0].Key,
+		}
+		return result, nil
 	}
 
 	key := uuid.NewString()
@@ -70,9 +78,9 @@ func Write(
 	)
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return nil, err
 	}
-	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+	acks, err := nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
 			Key:             key,
@@ -84,10 +92,13 @@ func Write(
 	})
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return nil, err
 	}
 
-	return nil
+	result := &WriteResult{
+		Key: acks[0].Key,
+	}
+	return result, nil
 }
 
 type WriteUniqueParams struct {

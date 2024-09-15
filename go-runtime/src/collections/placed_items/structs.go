@@ -17,6 +17,7 @@ type SeedGrowthInfo struct {
 	IsInfested               bool                   `json:"isInfested"`
 	IsWeedy                  bool                   `json:"isWeedy"`
 	Seed                     collections_seeds.Seed `json:"seed"`
+	NeedWater                bool                   `json:"needWater"`
 }
 
 type PlacedItem struct {

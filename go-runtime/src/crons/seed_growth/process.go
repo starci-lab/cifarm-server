@@ -49,8 +49,15 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		Key:        params.Key,
 	})
 	if err != nil {
-		logger.Error(err.Error())
-		return err
+		//mean that the user do not exist
+		err := collections_system.DeleteUser(ctx, logger, db, nk, collections_system.DeleteUserParams{
+			UserId: params.UserId,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		return nil
 	}
 	return nil
 }
@@ -117,10 +124,36 @@ func Process(
 		logger.Error(err.Error())
 		return err
 	}
+	var speedUpTime int64
+	object, err = collections_system.ReadSpeedUp(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object != nil {
+		speedUp, err := collections_common.ToValue[collections_system.SpeedUp](ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		speedUpTime = speedUp.Time
+	}
+	if speedUpTime > 0 {
+		err := collections_system.WriteSpeedUp(ctx, logger, db, nk, collections_system.WriteSpeedUpParams{
+			SpeedUp: collections_system.SpeedUp{
+				Time: 0,
+			},
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+	}
+
 	for _, userId := range users.UserIds {
 		go HandleSeedGrowth(ctx, logger, db, nk, HandleSeedGrowthParams{
 			UserId:        userId,
-			TimeInSeconds: 1 + timeSinceLastUptime,
+			TimeInSeconds: 1 + timeSinceLastUptime + speedUpTime,
 		})
 	}
 
