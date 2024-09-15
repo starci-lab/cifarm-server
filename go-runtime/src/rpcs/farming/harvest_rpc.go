@@ -4,6 +4,7 @@ import (
 	collections_common "cifarm-server/src/collections/common"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_tiles "cifarm-server/src/collections/tiles"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -80,6 +81,7 @@ func HarvestRpc(
 			ReferenceKey: tile.SeedGrowthInfo.Seed.Key,
 			Type:         collections_inventories.TYPE_PLANT_HAVERSTED,
 			Quantity:     tile.SeedGrowthInfo.HarvestQuantityRemaining,
+			IsPremium:    tile.ReferenceKey == collections_tiles.KEY_PREMIUM,
 		},
 		UserId: userId,
 	})
