@@ -31,7 +31,7 @@ func WriteUsers(
 			Collection:      COLLECTION_NAME,
 			Key:             KEY_USERS,
 			Value:           string(value),
-			PermissionRead:  0,
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		},
 	})

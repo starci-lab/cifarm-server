@@ -24,7 +24,7 @@ func SetupSystem(
 	}
 
 	users := collections_system.Users{
-		UserIds: []string{},
+		UserIds: nil,
 	}
 
 	err = collections_system.WriteUsers(ctx, logger, db, nk, collections_system.WriteUsersParams{
