@@ -1,4 +1,4 @@
-package rpcs_profiles
+package rpcs_assets
 
 import (
 	"context"

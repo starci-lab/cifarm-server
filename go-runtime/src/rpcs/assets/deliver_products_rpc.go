@@ -1,4 +1,4 @@
-package rpcs_profiles
+package rpcs_assets
 
 import (
 	collections_common "cifarm-server/src/collections/common"
