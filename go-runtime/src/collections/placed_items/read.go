@@ -10,7 +10,7 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadsParams struct {
+type ReadManyParams struct {
 	UserId string `json:"userId"`
 }
 
@@ -19,7 +19,7 @@ func ReadMany(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadsParams,
+	params ReadManyParams,
 ) ([]*api.StorageObject, error) {
 	objects, _, err := nk.StorageList(ctx, params.UserId, params.UserId, COLLECTION_NAME, collections_common.MAX_ENTRIES, "")
 	if err != nil {
@@ -117,24 +117,4 @@ func ReadByInventoryKey(
 
 	object := objects.Objects[0]
 	return object, nil
-}
-
-type ReadByUserIdParams struct {
-	UserId string `json:"userId"`
-}
-
-func ReadByUserId(
-	ctx context.Context,
-	logger runtime.Logger,
-	db *sql.DB,
-	nk runtime.NakamaModule,
-	params ReadByUserIdParams,
-) ([]*api.StorageObject, error) {
-	objects, _, err := nk.StorageList(ctx, params.UserId, params.UserId, COLLECTION_NAME, collections_common.MAX_ENTRIES_LIST, "")
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
-	return objects, err
 }

@@ -29,7 +29,7 @@ func ListPlacedItemsRpc(
 		return "", errors.New(errMsg)
 	}
 
-	objects, err := collections_placed_items.ReadByUserId(ctx, logger, db, nk, collections_placed_items.ReadByUserIdParams{
+	objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadManyParams{
 		UserId: userId,
 	})
 	if err != nil {
