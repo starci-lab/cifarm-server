@@ -6,6 +6,7 @@ import (
 	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
+	"math/rand/v2"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -19,9 +20,20 @@ type ExecuteGrowthLogicParams struct {
 
 func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params ExecuteGrowthLogicParams,
 ) error {
-	if params.PlacedItem.FullyMatured {
+	if !params.PlacedItem.IsPlanted {
+		//do nothing via nothing planted
 		return nil
 	}
+	if params.PlacedItem.FullyMatured {
+		//do nothing via fully matured
+		return nil
+	}
+
+	if params.PlacedItem.SeedGrowthInfo.NeedWater {
+		//do nothing via being need watering
+		return nil
+	}
+
 	params.PlacedItem.SeedGrowthInfo.TotalTimeElapsed += params.TimeInSeconds
 	params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed += params.TimeInSeconds
 
@@ -34,7 +46,29 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		if params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed >= params.PlacedItem.SeedGrowthInfo.Seed.GrowthStageDuration {
 			params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed -= params.PlacedItem.SeedGrowthInfo.Seed.GrowthStageDuration
 			params.PlacedItem.SeedGrowthInfo.CurrentStage += 1
+
+			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
+				//50% chance to be drain
+				if rand.Float64() < 0.5 {
+					params.PlacedItem.SeedGrowthInfo.NeedWater = true
+				}
+			}
+
+			if params.PlacedItem.SeedGrowthInfo.CurrentStage == 4 {
+				//50% to be infested or weedly, chance maybe difference via better tiles
+				if rand.Float64() < 0.5 {
+					params.PlacedItem.SeedGrowthInfo.IsWeedy = true
+				} else {
+					params.PlacedItem.SeedGrowthInfo.IsInfested = true
+				}
+			}
+
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == params.PlacedItem.SeedGrowthInfo.Seed.GrowthStages {
+				if params.PlacedItem.SeedGrowthInfo.IsInfested || params.PlacedItem.SeedGrowthInfo.IsWeedy {
+					//reduce quantity
+					newQuantity := (params.PlacedItem.SeedGrowthInfo.Seed.MaxHarvestQuantity + params.PlacedItem.SeedGrowthInfo.Seed.MinHarvestQuantity) / 2
+					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = newQuantity
+				}
 				params.PlacedItem.FullyMatured = true
 				break
 			}
