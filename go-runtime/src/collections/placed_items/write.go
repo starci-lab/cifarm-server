@@ -26,10 +26,11 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) (*WriteResult, error) {
-	if params.Key == "" {
-		key := uuid.NewString()
-		params.Key = key
+	key := params.Key
+	if key == "" {
+		key = uuid.NewString()
 	}
+	params.PlacedItem.Key = ""
 
 	value, err := json.Marshal(params.PlacedItem)
 	if err != nil {
@@ -40,7 +41,7 @@ func Write(
 	acks, err := nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             params.Key,
+			Key:             key,
 			UserID:          params.UserId,
 			Value:           string(value),
 			PermissionRead:  2,

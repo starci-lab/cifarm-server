@@ -75,6 +75,8 @@ func UsePestisideRpc(
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *tile,
+		UserId:     userId,
+		Key:        tile.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
