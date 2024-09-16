@@ -142,6 +142,7 @@ func DeliverProductsRpc(
 				ReferenceKey: inventory.ReferenceKey,
 				Quantity:     inventory.Quantity,
 				Type:         productType,
+				IsPremium:    true,
 			},
 			UserId: userId,
 		})
