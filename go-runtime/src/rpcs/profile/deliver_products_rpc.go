@@ -2,12 +2,13 @@ package rpcs_profiles
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
+	collections_delivering_products "cifarm-server/src/collections/delivering_products"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -47,6 +48,14 @@ func Ensure(
 	for index, queriedInventory := range queriedInventories {
 		// nếu số lượng trong cơ sở dữ liệu bé hơn
 		if queriedInventory.Quantity < params.Inventories[index].Quantity {
+			errMsg := fmt.Sprintf("quantity not enough: %s", queriedInventory.Key)
+			logger.Error(errMsg)
+			return false, nil
+		}
+		//nếu mà nó không deliveriable được
+		if !queriedInventory.Deliverable {
+			errMsg := fmt.Sprintf("not deliverialbe: %s", queriedInventory.Key)
+			logger.Error(errMsg)
 			return false, nil
 		}
 	}
@@ -93,46 +102,48 @@ func DeliverProductsRpc(
 		return "", errors.New(errMsg)
 	}
 
-	//update the state of delivery
-	object, err := collections_config.ReadDeliveryState(ctx, logger, db, nk, collections_config.ReadDeliveryStateParams{
-		UserId: userId,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
-	if object != nil {
-		deliveryState, err := collections_common.ToValue[collections_config.DeliveryState](ctx, logger, db, nk, object)
+	for _, inventory := range params.Inventories {
+		//query again to track data
+		object, err := collections_inventories.ReadByKey(ctx, logger, db, nk, collections_inventories.ReadByKeyParams{
+			UserId: userId,
+			Key:    inventory.Key,
+		})
 		if err != nil {
 			logger.Error(err.Error())
 			return "", err
 		}
-		if deliveryState.Delivering {
-			errMsg := "products delivering"
-			logger.Error(errMsg)
-			return "", errors.New(errMsg)
+		query, err := collections_common.ToValue[collections_inventories.Inventory](ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return "", err
 		}
-	}
-	deliveryState := collections_config.DeliveryState{
-		Delivering: true,
-	}
 
-	err = collections_config.WriteDeliveryState(ctx, logger, db, nk, collections_config.WriteDeliveryStateParams{
-		UserId:        userId,
-		DeliveryState: deliveryState,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
+		//delete the previous
+		err = collections_inventories.Delete(ctx, logger, db, nk, collections_inventories.DeleteParams{
+			Key:      inventory.Key,
+			Quantity: inventory.Quantity,
+			UserId:   userId,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return "", err
+		}
 
-	for _, inventory := range params.Inventories {
-		//process writes
-		inventory.IsDelivering = true
-		_, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
-			Inventory: inventory,
-			UserId:    userId,
+		//write new delivering products
+		var productType int
+		switch query.Type {
+		case collections_inventories.TYPE_HARVESTED_PLANT:
+			productType = 1
+		default:
+		}
+
+		_, err = collections_delivering_products.Write(ctx, logger, db, nk, collections_delivering_products.WriteParams{
+			DeliveringProduct: collections_delivering_products.DeliveringProduct{
+				ReferenceKey: inventory.ReferenceKey,
+				Quantity:     inventory.Quantity,
+				Type:         productType,
+			},
+			UserId: userId,
 		})
 		if err != nil {
 			logger.Error(err.Error())

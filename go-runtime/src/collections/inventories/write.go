@@ -28,6 +28,7 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) (*WriteResult, error) {
+	//read only non delivering
 	object, err := ReadByReferenceKey(ctx, logger, db, nk, ReadByReferenceKeyParams{
 		ReferenceKey: params.Inventory.ReferenceKey,
 		UserId:       params.UserId,

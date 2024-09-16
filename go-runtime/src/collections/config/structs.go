@@ -11,8 +11,3 @@ type VisitState struct {
 	Key    string `json:"key"`
 	UserId string `json:"userId"`
 }
-
-type DeliveryState struct {
-	Key        string `json:"key"`
-	Delivering bool   `json:"delivering"`
-}

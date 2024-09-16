@@ -93,7 +93,6 @@ func RegisterAvailable(
 	key := ""
 	fields := []string{
 		"isPlaced",
-		"delivering",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

@@ -138,7 +138,7 @@ func ReadManyAvailable(
 	params ReadManyAvailableParams,
 ) (*api.StorageObjects, error) {
 	name := STORAGE_INDEX_AVAILABLE
-	query := fmt.Sprintf("+user_id:%s +value.isPlaced:F +value.delivering:F", params.UserId)
+	query := fmt.Sprintf("+user_id:%s +value.isPlaced:F", params.UserId)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, collections_common.MAX_ENTRIES, order)
@@ -179,4 +179,8 @@ func ReadMany(
 	}
 
 	return objects, nil
+}
+
+type ReadManyDeliveringParams struct {
+	UserId string `json:"userId"`
 }
