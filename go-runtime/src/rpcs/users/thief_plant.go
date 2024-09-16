@@ -117,6 +117,7 @@ func ThiefPlantRpc(
 			Type:         collections_inventories.TYPE_HARVESTED_PLANT,
 			Quantity:     theifQuantity,
 			IsPremium:    tile.ReferenceKey == collections_tiles.KEY_PREMIUM,
+			Deliverable:  true,
 		},
 		UserId: userId,
 	})

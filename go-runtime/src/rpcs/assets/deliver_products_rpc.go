@@ -29,7 +29,6 @@ func Ensure(
 	for _, inventory := range params.Inventories {
 		keys = append(keys, inventory.Key)
 	}
-
 	objects, err := collections_inventories.ReadMany(ctx, logger, db, nk, collections_inventories.ReadManyParams{
 		UserId: params.UserId,
 		Keys:   keys,
@@ -64,6 +63,10 @@ func Ensure(
 
 type DeliverProductsRpcParams struct {
 	Inventories []collections_inventories.Inventory `json:"inventories"`
+}
+
+type DeliverProductsRpcResponse struct {
+	Keys []string `json:"keys"`
 }
 
 func DeliverProductsRpc(
@@ -102,6 +105,7 @@ func DeliverProductsRpc(
 		return "", errors.New(errMsg)
 	}
 
+	var keys []string
 	for _, inventory := range params.Inventories {
 		//query again to track data
 		object, err := collections_inventories.ReadByKey(ctx, logger, db, nk, collections_inventories.ReadByKeyParams{
@@ -137,9 +141,9 @@ func DeliverProductsRpc(
 		default:
 		}
 
-		_, err = collections_delivering_products.Write(ctx, logger, db, nk, collections_delivering_products.WriteParams{
+		result, err := collections_delivering_products.Write(ctx, logger, db, nk, collections_delivering_products.WriteParams{
 			DeliveringProduct: collections_delivering_products.DeliveringProduct{
-				ReferenceKey: inventory.ReferenceKey,
+				ReferenceKey: query.ReferenceKey,
 				Quantity:     inventory.Quantity,
 				Type:         productType,
 				IsPremium:    true,
@@ -150,7 +154,16 @@ func DeliverProductsRpc(
 			logger.Error(err.Error())
 			return "", err
 		}
+
+		keys = append(keys, result.Key)
 	}
 
-	return "", nil
+	value, err := json.Marshal(DeliverProductsRpcResponse{
+		Keys: keys,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	return string(value), err
 }

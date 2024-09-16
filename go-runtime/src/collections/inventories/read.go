@@ -24,7 +24,6 @@ func ReadByReferenceKey(
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX_BY_REFERENCE_KEY
 	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
-	logger.Warn("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	collections_buildings "cifarm-server/src/collections/buildings"
 	collections_common "cifarm-server/src/collections/common"
 	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
@@ -83,6 +84,22 @@ func AfterAuthenticate(
 		err = collections_placed_items.WriteMany(ctx, logger, db, nk, collections_placed_items.WriteManyParams{
 			PlacedItems: placedItems,
 			UserId:      userId,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
+		_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+			PlacedItem: collections_placed_items.PlacedItem{
+				ReferenceKey: collections_buildings.KEY_HOME,
+				Position: collections_placed_items.Position{
+					X: 0,
+					Y: 3,
+				},
+				Type: collections_placed_items.TYPE_BUILDING,
+			},
+			UserId: userId,
 		})
 		if err != nil {
 			logger.Error(err.Error())

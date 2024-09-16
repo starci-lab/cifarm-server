@@ -24,6 +24,9 @@ func SetupBuildings(
 			Key:   collections_buildings.KEY_PASTURE,
 			Price: 2500,
 		},
+		{
+			Key: collections_buildings.KEY_HOME,
+		},
 	}
 
 	err := collections_buildings.WriteMany(ctx, logger, db, nk, collections_buildings.WriteManyParams{
