@@ -12,10 +12,10 @@ const (
 )
 
 const (
-	TYPE_SEED            = 0
-	TYPE_TILE            = 1
-	TYPE_ANIMAL          = 2
-	TYPE_PLANT_HARVESTED = 3
+	TYPE_SEED    = 0
+	TYPE_TILE    = 1
+	TYPE_ANIMAL  = 2
+	TYPE_PRODUCT = 3
 )
 
 const (

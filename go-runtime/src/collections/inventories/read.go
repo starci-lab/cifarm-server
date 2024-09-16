@@ -114,7 +114,6 @@ func ReadManyByUserId(
 	params ReadManyByUserIdParams,
 ) (*api.StorageObjects, error) {
 	name := STORAGE_INDEX_BY_USER_ID
-	logger.Info("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
 	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
 	order := []string{}
 
@@ -143,6 +142,37 @@ func ReadManyByUserIdNonPlaced(
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, collections_common.MAX_ENTRIES, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return objects, nil
+}
+
+type ReadManyParams struct {
+	UserId string   `json:"userId"`
+	Keys   []string `json:"keys"`
+}
+
+func ReadMany(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadManyParams,
+) ([]*api.StorageObject, error) {
+	var reads []*runtime.StorageRead
+	for _, key := range params.Keys {
+		read := runtime.StorageRead{
+			Collection: COLLECTION_NAME,
+			Key:        key,
+			UserID:     params.UserId,
+		}
+		reads = append(reads, &read)
+	}
+
+	objects, err := nk.StorageRead(ctx, reads)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

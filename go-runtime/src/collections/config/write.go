@@ -79,3 +79,39 @@ func WriteVisitState(
 	}
 	return nil
 }
+
+type WriteDeliveryStateParams struct {
+	DeliveryState DeliveryState `json:"deliveryState"`
+	UserId        string        `json:"userId"`
+}
+
+func WriteDeliveryState(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteDeliveryStateParams,
+) error {
+	value, err := json.Marshal(params.DeliveryState)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_DELIVERY_STATE,
+			UserID:          params.UserId,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

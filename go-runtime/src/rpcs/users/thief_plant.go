@@ -114,7 +114,7 @@ func ThiefPlantRpc(
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
 			ReferenceKey: tile.SeedGrowthInfo.Seed.Key,
-			Type:         collections_inventories.TYPE_PLANT_HARVESTED,
+			Type:         collections_inventories.TYPE_PRODUCT,
 			Quantity:     theifQuantity,
 			IsPremium:    tile.ReferenceKey == collections_tiles.KEY_PREMIUM,
 		},

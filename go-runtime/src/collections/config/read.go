@@ -102,3 +102,34 @@ func ReadVisitState(
 	object := objects[0]
 	return object, nil
 }
+
+type ReadDeliveryStateParams struct {
+	UserId string `json:"userId"`
+}
+
+func ReadDeliveryState(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadDeliveryStateParams,
+) (*api.StorageObject, error) {
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Collection: COLLECTION_NAME,
+			Key:        KEY_DELIVERY_STATE,
+			UserID:     params.UserId,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects) == 0 {
+		return nil, nil
+	}
+
+	object := objects[0]
+	return object, nil
+}

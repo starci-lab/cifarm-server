@@ -5,8 +5,9 @@ const (
 )
 
 const (
-	KEY_METADATA    = "Metadata"
-	KEY_VISIT_STATE = "VisitState"
+	KEY_METADATA       = "Metadata"
+	KEY_VISIT_STATE    = "VisitState"
+	KEY_DELIVERY_STATE = "DeliveryState"
 )
 
 const (
