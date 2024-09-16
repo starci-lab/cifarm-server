@@ -23,7 +23,7 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = RegisterByUserIdNonPlaced(ctx, logger, db, nk, initializer)
+	err = RegisterAvailable(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}

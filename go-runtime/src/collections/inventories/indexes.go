@@ -81,18 +81,19 @@ func RegisterByUserId(
 	return nil
 }
 
-func RegisterByUserIdNonPlaced(
+func RegisterAvailable(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := STORAGE_INDEX_BY_USER_ID_NON_PLACED
+	name := STORAGE_INDEX_AVAILABLE
 	collection := COLLECTION_NAME
 	key := ""
 	fields := []string{
 		"isPlaced",
+		"delivering",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

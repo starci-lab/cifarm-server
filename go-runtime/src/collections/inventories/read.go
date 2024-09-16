@@ -126,19 +126,19 @@ func ReadManyByUserId(
 	return objects, nil
 }
 
-type ReadManyByUserIdNonPlacedParams struct {
+type ReadManyAvailableParams struct {
 	UserId string `json:"userId"`
 }
 
-func ReadManyByUserIdNonPlaced(
+func ReadManyAvailable(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadManyByUserIdNonPlacedParams,
+	params ReadManyAvailableParams,
 ) (*api.StorageObjects, error) {
-	name := STORAGE_INDEX_BY_USER_ID_NON_PLACED
-	query := fmt.Sprintf("+user_id:%s +value.isPlaced:F", params.UserId)
+	name := STORAGE_INDEX_AVAILABLE
+	query := fmt.Sprintf("+user_id:%s +value.isPlaced:F +value.delivering:F", params.UserId)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, collections_common.MAX_ENTRIES, order)

@@ -5,10 +5,10 @@ const (
 )
 
 const (
-	STORAGE_INDEX_BY_REFERENCE_KEY      = "InventoriesStorageIndexByReferenceKey"
-	STORAGE_INDEX_BY_TOKEN_ID           = "InventoriesStorageIndexByTokenId"
-	STORAGE_INDEX_BY_USER_ID            = "InventoriesStorageIndexByUserId"
-	STORAGE_INDEX_BY_USER_ID_NON_PLACED = "InventoriesStorageIndexByUserIdNonPlaced"
+	STORAGE_INDEX_BY_REFERENCE_KEY = "InventoriesStorageIndexByReferenceKey"
+	STORAGE_INDEX_BY_TOKEN_ID      = "InventoriesStorageIndexByTokenId"
+	STORAGE_INDEX_BY_USER_ID       = "InventoriesStorageIndexByUserId"
+	STORAGE_INDEX_AVAILABLE        = "InventoriesStorageAvailable"
 )
 
 const (

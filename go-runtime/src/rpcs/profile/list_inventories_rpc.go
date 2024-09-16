@@ -29,7 +29,7 @@ func ListInventoriesRpc(
 		return "", errors.New(errMsg)
 	}
 
-	objects, err := collections_inventories.ReadManyByUserIdNonPlaced(ctx, logger, db, nk, collections_inventories.ReadManyByUserIdNonPlacedParams{
+	objects, err := collections_inventories.ReadManyAvailable(ctx, logger, db, nk, collections_inventories.ReadManyAvailableParams{
 		UserId: userId,
 	})
 	if err != nil {
