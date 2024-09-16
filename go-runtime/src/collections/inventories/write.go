@@ -71,7 +71,6 @@ func Write(
 	}
 
 	key := uuid.NewString()
-	params.Inventory.Key = key
 
 	data, err := json.Marshal(
 		params.Inventory,
@@ -115,7 +114,6 @@ func WriteUnique(
 	params WriteUniqueParams,
 ) error {
 	key := uuid.NewString()
-	params.Inventory.Key = key
 	params.Inventory.Unique = true
 
 	value, err := json.Marshal(params.Inventory)

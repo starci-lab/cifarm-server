@@ -22,7 +22,6 @@ func Write(
 	params WriteParams,
 ) error {
 	key := uuid.NewString()
-	params.DailyReward.Key = key
 
 	value, err := json.Marshal(params.DailyReward)
 	if err != nil {

@@ -21,6 +21,7 @@ func WriteMany(
 ) error {
 	var writes []*runtime.StorageWrite
 	for _, tool := range params.Tools {
+		tool.Key = ""
 		value, err := json.Marshal(tool)
 		if err != nil {
 			continue

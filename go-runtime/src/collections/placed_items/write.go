@@ -29,7 +29,6 @@ func Write(
 	if params.Key == "" {
 		key := uuid.NewString()
 		params.Key = key
-		params.PlacedItem.Key = key
 	}
 
 	value, err := json.Marshal(params.PlacedItem)
