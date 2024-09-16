@@ -74,9 +74,9 @@ func BuySeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	result, err := collections_inventories.Write(ctx,
+	result, err := collections_inventories.WriteSeed(ctx,
 		logger, db, nk,
-		collections_inventories.WriteParams{
+		collections_inventories.WriteSeedParams{
 			Inventory: collections_inventories.Inventory{
 				ReferenceKey: params.Key,
 				Quantity:     params.Quantity,

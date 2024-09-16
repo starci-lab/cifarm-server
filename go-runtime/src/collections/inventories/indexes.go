@@ -32,6 +32,31 @@ func RegisterByReferenceKey(
 	return nil
 }
 
+func RegisterSeedByReferenceKey(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	initializer runtime.Initializer,
+) error {
+	name := STORAGE_INDEX_SEED_BY_REFERENCE_KEY
+	collection := COLLECTION_NAME
+	key := ""
+	fields := []string{
+		"referenceKey",
+		"type",
+	}
+	sortableFields := []string{}
+	maxEntries := collections_common.MAX_ENTRIES
+	indexOnly := false
+	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
 func RegisterByTokenId(
 	ctx context.Context,
 	logger runtime.Logger,

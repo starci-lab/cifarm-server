@@ -39,6 +39,35 @@ func ReadByReferenceKey(
 	return object, nil
 }
 
+type ReadSeedParams struct {
+	ReferenceKey string `json:"referenceKey"`
+	UserId       string `json:"userId"`
+}
+
+func ReadSeed(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadSeedParams,
+) (*api.StorageObject, error) {
+	name := STORAGE_INDEX_SEED_BY_REFERENCE_KEY
+	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.type:%v", params.UserId, params.ReferenceKey, TYPE_SEED)
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects.Objects) == 0 {
+		return nil, nil
+	}
+	var object = objects.Objects[0]
+	return object, nil
+}
+
 type ReadByKeyParams struct {
 	Key    string `json:"key"`
 	UserId string `json:"userId"`
