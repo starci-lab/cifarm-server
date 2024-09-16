@@ -102,10 +102,10 @@ func ThiefPlantRpc(
 
 	//fn to calculate
 	theifQuantity := 1
-	randomInteger := rand.Intn(99) + 1
-	if randomInteger > 90 {
+	random := rand.Float64()
+	if random > 0.95 {
 		theifQuantity = 3
-	} else if randomInteger > 60 {
+	} else if random > 0.8 {
 		theifQuantity = 2
 	}
 	theifQuantity = int(math.Min(float64(maximunTheifQuantity), float64(theifQuantity)))
