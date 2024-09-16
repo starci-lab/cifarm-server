@@ -79,7 +79,7 @@ func HarvestPlantRpc(
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
 			ReferenceKey: tile.SeedGrowthInfo.Seed.Key,
-			Type:         collections_inventories.TYPE_PLANT_HAVERSTED,
+			Type:         collections_inventories.TYPE_PLANT_HARVESTED,
 			Quantity:     tile.SeedGrowthInfo.HarvestQuantityRemaining,
 			IsPremium:    tile.ReferenceKey == collections_tiles.KEY_PREMIUM,
 		},
