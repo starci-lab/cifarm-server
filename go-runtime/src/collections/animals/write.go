@@ -21,6 +21,7 @@ func WriteMany(
 ) error {
 	var writes []*runtime.StorageWrite
 	for _, animal := range params.Animals {
+		key := animal.Key
 		animal.Key = ""
 		value, err := json.Marshal(animal)
 		if err != nil {
@@ -29,7 +30,7 @@ func WriteMany(
 		}
 
 		write := &runtime.StorageWrite{
-			Key:             animal.Key,
+			Key:             key,
 			Collection:      COLLECTION_NAME,
 			Value:           string(value),
 			PermissionRead:  2,

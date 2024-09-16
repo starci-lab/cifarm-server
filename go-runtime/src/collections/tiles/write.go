@@ -21,6 +21,7 @@ func WriteMany(
 ) error {
 	var writes []*runtime.StorageWrite
 	for _, tile := range params.Tiles {
+		key := tile.Key
 		tile.Key = ""
 		value, err := json.Marshal(tile)
 		if err != nil {
@@ -29,7 +30,7 @@ func WriteMany(
 
 		write := &runtime.StorageWrite{
 			Collection:      COLLECTION_NAME,
-			Key:             tile.Key,
+			Key:             key,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

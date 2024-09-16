@@ -21,7 +21,9 @@ func WriteMany(
 ) error {
 	var writes []*runtime.StorageWrite
 	for _, bulding := range params.Buldings {
+		key := bulding.Key
 		bulding.Key = ""
+
 		value, err := json.Marshal(bulding)
 		if err != nil {
 			logger.Error(err.Error())
@@ -29,7 +31,7 @@ func WriteMany(
 		}
 
 		write := &runtime.StorageWrite{
-			Key:             bulding.Key,
+			Key:             key,
 			Collection:      COLLECTION_NAME,
 			Value:           string(value),
 			PermissionRead:  2,
