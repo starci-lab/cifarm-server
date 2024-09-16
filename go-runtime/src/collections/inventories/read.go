@@ -101,20 +101,20 @@ func ReadByTokenId(
 	return object, nil
 }
 
-type ReadManyByUserIdParams struct {
+type ReadManyUniqueParams struct {
 	UserId       string `json:"userId"`
 	ReferenceKey string `json:"referenceKey"`
 }
 
-func ReadManyByUserId(
+func ReadManyUnique(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadManyByUserIdParams,
+	params ReadManyUniqueParams,
 ) (*api.StorageObjects, error) {
-	name := STORAGE_INDEX_BY_USER_ID
-	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
+	name := STORAGE_INDEX_UNIQUE
+	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.unique:T", params.UserId, params.ReferenceKey)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, collections_common.MAX_ENTRIES, order)

@@ -64,11 +64,12 @@ func RegisterByUserId(
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := STORAGE_INDEX_BY_USER_ID
+	name := STORAGE_INDEX_UNIQUE
 	collection := COLLECTION_NAME
 	key := ""
 	fields := []string{
 		"referenceKey",
+		"unique",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

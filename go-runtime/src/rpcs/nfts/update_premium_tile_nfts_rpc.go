@@ -237,7 +237,7 @@ func UpdatePremiumTileNftsRpc(
 	}
 
 	//previous users nft owned
-	objects, err := collections_inventories.ReadManyByUserId(ctx, logger, db, nk, collections_inventories.ReadManyByUserIdParams{
+	objects, err := collections_inventories.ReadManyUnique(ctx, logger, db, nk, collections_inventories.ReadManyUniqueParams{
 		UserId:       userId,
 		ReferenceKey: collections_tiles.KEY_PREMIUM,
 	})
