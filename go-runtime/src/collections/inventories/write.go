@@ -15,6 +15,7 @@ import (
 type WriteParams struct {
 	Inventory Inventory `json:"inventory"`
 	UserId    string    `json:"userId"`
+	Type      int       `json:"type"`
 }
 
 type WriteResult struct {
@@ -30,95 +31,6 @@ func Write(
 ) (*WriteResult, error) {
 	//read only non delivering
 	object, err := ReadByReferenceKey(ctx, logger, db, nk, ReadByReferenceKeyParams{
-		ReferenceKey: params.Inventory.ReferenceKey,
-		UserId:       params.UserId,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
-	if object != nil {
-		inventory, err := collections_common.ToValue[Inventory](ctx, logger, db, nk, object)
-		if err != nil {
-			logger.Error(err.Error())
-			return nil, err
-		}
-		inventory.Quantity += params.Inventory.Quantity
-		data, err := json.Marshal(inventory)
-		if err != nil {
-			logger.Error(err.Error())
-			return nil, err
-		}
-		acks, err := nk.StorageWrite(ctx, []*runtime.StorageWrite{
-			{
-				Collection:      COLLECTION_NAME,
-				Key:             object.Key,
-				UserID:          params.UserId,
-				Value:           string(data),
-				PermissionRead:  2,
-				PermissionWrite: 0,
-			},
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return nil, err
-		}
-
-		result := &WriteResult{
-			Key: acks[0].Key,
-		}
-		return result, nil
-	}
-
-	key := uuid.NewString()
-
-	data, err := json.Marshal(
-		params.Inventory,
-	)
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-	acks, err := nk.StorageWrite(ctx, []*runtime.StorageWrite{
-		{
-			Collection:      COLLECTION_NAME,
-			Key:             key,
-			UserID:          params.UserId,
-			Value:           string(data),
-			PermissionRead:  1,
-			PermissionWrite: 0,
-		},
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
-	result := &WriteResult{
-		Key: acks[0].Key,
-	}
-	return result, nil
-}
-
-type WriteSeedParams struct {
-	Inventory Inventory `json:"inventory"`
-	UserId    string    `json:"userId"`
-}
-
-type WriteSeedResult struct {
-	Key string `json:"key"`
-}
-
-func WriteSeed(
-	ctx context.Context,
-	logger runtime.Logger,
-	db *sql.DB,
-	nk runtime.NakamaModule,
-	params WriteSeedParams,
-) (*WriteResult, error) {
-	//read only non delivering
-	object, err := ReadSeed(ctx, logger, db, nk, ReadSeedParams{
 		ReferenceKey: params.Inventory.ReferenceKey,
 		UserId:       params.UserId,
 	})
