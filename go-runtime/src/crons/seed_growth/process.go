@@ -83,15 +83,8 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		Key:        params.Key,
 	})
 	if err != nil {
-		//mean that the user do not exist
-		err := collections_system.DeleteUser(ctx, logger, db, nk, collections_system.DeleteUserParams{
-			UserId: params.UserId,
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return err
-		}
-		return nil
+		logger.Error(err.Error())
+		return err
 	}
 	return nil
 }

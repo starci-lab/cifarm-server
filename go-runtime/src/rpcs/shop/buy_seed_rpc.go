@@ -19,7 +19,7 @@ type BuySeedRpcParams struct {
 }
 
 type BuySeedRpcResponse struct {
-	SeedInventoryKey string `json:"seedInventoryKey"`
+	InventorySeedKey string `json:"inventorySeedKey"`
 }
 
 func BuySeedRpc(ctx context.Context,
@@ -90,7 +90,7 @@ func BuySeedRpc(ctx context.Context,
 	}
 
 	value, err := json.Marshal(BuySeedRpcResponse{
-		SeedInventoryKey: result.Key,
+		InventorySeedKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

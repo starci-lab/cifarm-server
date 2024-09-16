@@ -12,5 +12,11 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	if err != nil {
 		return err
 	}
+
+	err = initializer.RegisterRpc("list_placed_items", ListPlacedItemsRpc)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

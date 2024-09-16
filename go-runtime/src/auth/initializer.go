@@ -23,5 +23,10 @@ func Initialize(
 	if err != nil {
 		return err
 	}
+
+	err = initializer.RegisterAfterDeleteAccount(AfterDeleteAccount)
+	if err != nil {
+		return err
+	}
 	return nil
 }
