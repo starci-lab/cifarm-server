@@ -20,12 +20,12 @@ func SetupMarketPricings(
 		{
 			Key:           collections_seeds.KEY_CARROT,
 			BasicAmount:   4,
-			PremiumAmount: 4,
+			PremiumAmount: 0.04,
 		},
 		{
 			Key:           collections_seeds.KEY_POTATO,
 			BasicAmount:   8,
-			PremiumAmount: 8,
+			PremiumAmount: 0.08,
 		},
 	}
 
