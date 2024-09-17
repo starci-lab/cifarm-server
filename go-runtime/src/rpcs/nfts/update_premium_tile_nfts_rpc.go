@@ -110,6 +110,8 @@ func DeleteOrTransferTo(
 			data, err := services_periphery_graphql.GetNftByTokenId(
 				ctx,
 				logger,
+				db,
+				nk,
 				services_periphery_graphql.GetNftByTokenIdArgs{
 					Input: services_periphery_graphql.GetNftByTokenIdInput{
 						TokenId:  previousNftInventory.TokenId,
@@ -222,6 +224,8 @@ func UpdatePremiumTileNftsRpc(
 	data, err := services_periphery_graphql.GetNftsByOwnerAddress(
 		ctx,
 		logger,
+		db,
+		nk,
 		services_periphery_graphql.GetNftByOwnerAddressArgs{
 			Input: services_periphery_graphql.GetNftsByOwnerAddressInput{
 				AccountAddress: metadata.AccountAddress,

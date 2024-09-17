@@ -51,7 +51,7 @@ func BeforeAuthenticate(
 		Network:   network,
 	}
 
-	response, err := services_periphery_api_authenticator.VerifyMessage(ctx, logger, &body)
+	response, err := services_periphery_api_authenticator.VerifyMessage(ctx, logger, db, nk, &body)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

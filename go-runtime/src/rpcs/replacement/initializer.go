@@ -1,4 +1,4 @@
-package rpcs_tests
+package rpcs_replacement
 
 import (
 	"context"
@@ -8,11 +8,7 @@ import (
 )
 
 func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := initializer.RegisterRpc("test_speed_up", SpeedUpRpc)
-	if err != nil {
-		return err
-	}
-	err = initializer.RegisterRpc("test_delivery", DeliveryRpc)
+	err := initializer.RegisterRpc("move", MoveRpc)
 	if err != nil {
 		return err
 	}

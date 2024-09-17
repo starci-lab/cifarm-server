@@ -1,10 +1,10 @@
 package services_periphery_api_authenticator
 
 import (
-	cifarm_periphery "cifarm-server/src/services/periphery"
+	"cifarm-server/src/config"
 	services_uitls_api "cifarm-server/src/services/utils/api"
 	"context"
-	"errors"
+	"database/sql"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -28,16 +28,11 @@ type VerifyMessageResponse struct {
 	Data    VerifyMessageResponseData `json:"data"`
 }
 
-func VerifyMessage(ctx context.Context, logger runtime.Logger, body *VerifyMessageRequestBody) (response *VerifyMessageResponseData, err error) {
-	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
-	if !ok {
-		logger.Error("Cannot get environment variables")
-		return nil, errors.New("cannot get environment variables")
-	}
-	url, ok := vars[cifarm_periphery.CIFARM_PERIPHERY_API_URL]
-	if !ok {
-		logger.Error("CIFARM_PERIPHERY_API_URL not found in environment variables")
-		return nil, errors.New("CIFARM_PERIPHERY_API_URL not found in environment variables")
+func VerifyMessage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, body *VerifyMessageRequestBody) (response *VerifyMessageResponseData, err error) {
+	url, err := config.CifarmPeripheryApiUrl(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
 	}
 	url = url + "/authenticator/verify-message"
 	logger.Info("POST %v", url)

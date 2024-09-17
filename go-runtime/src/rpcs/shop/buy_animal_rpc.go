@@ -64,7 +64,7 @@ func BuyAnimalRpc(ctx context.Context,
 		return "", errors.New(errMsg)
 	}
 
-	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
+	err = _wallets.UpdateWalletGolds(ctx, logger, db, nk, _wallets.UpdateWalletGoldsParams{
 		Amount: -animal.OffspringPrice,
 		UserId: userId,
 		Metadata: map[string]interface{}{

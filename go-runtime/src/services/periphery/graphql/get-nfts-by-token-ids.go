@@ -1,9 +1,9 @@
 package services_periphery_graphql
 
 import (
-	cifarm_periphery "cifarm-server/src/services/periphery"
+	"cifarm-server/src/config"
 	"context"
-	"errors"
+	"database/sql"
 
 	"github.com/hasura/go-graphql-client"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -28,17 +28,14 @@ type GetNftsByTokenIdsResponse struct {
 func GetNftsByTokenIds(
 	ctx context.Context,
 	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
 	args GetNftsByTokenIdsArgs,
 ) (*GetNftsByTokenIdsResponse, error) {
-	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
-	if !ok {
-		logger.Error("Cannot get environment variables")
-		return nil, errors.New("cannot get environment variables")
-	}
-	url, ok := vars[cifarm_periphery.CIFARM_PERIPHERY_GRAPHQL_URL]
-	if !ok {
-		logger.Error("CIFARM_PERIPHERY_GRAPHQL_URL not found in environment variables")
-		return nil, errors.New("CIFARM_PERIPHERY_GRAPHQL_URL not found in environment variables")
+	url, err := config.CifarmPeripheryGraphqlUrl(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
 	}
 	client := graphql.NewClient(url, nil)
 
@@ -58,7 +55,7 @@ func GetNftsByTokenIds(
 		NftsByTokenIds GetNftsByTokenIdsResponse `json:"nftsByTokenIds"`
 	}{}
 
-	err := client.WithDebug(true).Exec(context.Background(),
+	err = client.WithDebug(true).Exec(context.Background(),
 		query,
 		&result,
 		variables,

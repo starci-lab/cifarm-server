@@ -85,3 +85,30 @@ func Delete(ctx context.Context,
 	}
 	return nil
 }
+
+type DeleteManyParams struct {
+	Keys   []string `json:"keys"`
+	UserId string   `json:"userId"`
+}
+
+func DeleteMany(ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params DeleteManyParams,
+) error {
+	var deletes []*runtime.StorageDelete
+	for _, key := range params.Keys {
+		deletes = append(deletes, &runtime.StorageDelete{
+			Collection: COLLECTION_NAME,
+			Key:        key,
+			UserID:     params.UserId,
+		})
+	}
+	err := nk.StorageDelete(ctx, deletes)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

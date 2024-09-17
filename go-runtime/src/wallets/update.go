@@ -7,20 +7,44 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type UpdateWalletParams struct {
+type UpdateWalletGoldsParams struct {
 	UserId   string
 	Amount   int64
 	Metadata map[string]interface{}
 }
 
-func UpdateWallet(ctx context.Context,
+func UpdateWalletGolds(ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params UpdateWalletParams,
+	params UpdateWalletGoldsParams,
 ) error {
 	changeset := map[string]int64{
 		WALLETS_KEY_GOLD: params.Amount,
+	}
+
+	_, _, err := nk.WalletUpdate(ctx, params.UserId, changeset, params.Metadata, true)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type UpdateWalletExperiencesParams struct {
+	UserId   string
+	Amount   int64
+	Metadata map[string]interface{}
+}
+
+func UpdateWalletExperiences(ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params UpdateWalletGoldsParams,
+) error {
+	changeset := map[string]int64{
+		WALLETS_KEY_EXPERIENCE: params.Amount,
 	}
 
 	_, _, err := nk.WalletUpdate(ctx, params.UserId, changeset, params.Metadata, true)

@@ -20,7 +20,7 @@ func RequestMessageRpc(
 	nk runtime.NakamaModule,
 	payload string,
 ) (string, error) {
-	response, err := services_periphery_api_authenticator.RequestMessage(ctx, logger)
+	response, err := services_periphery_api_authenticator.RequestMessage(ctx, logger, db, nk)
 	if err != nil {
 		return "", err
 	}

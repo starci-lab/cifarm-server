@@ -2,9 +2,12 @@ package crons_deliver
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_config "cifarm-server/src/collections/config"
 	collections_delivering_products "cifarm-server/src/collections/delivering_products"
 	collections_market_pricings "cifarm-server/src/collections/market-pricings"
 	collections_system "cifarm-server/src/collections/system"
+	"cifarm-server/src/config"
+	services_periphery_api_token "cifarm-server/src/services/periphery/api/token"
 	"cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -40,20 +43,24 @@ func Process(
 				logger.Error(err.Error())
 				return err
 			}
-			delivery_products, err := collections_common.ToValues2[collections_delivering_products.DeliveringProduct](ctx, logger, db, nk, objects)
+			deliveryProducts, err := collections_common.ToValues2[collections_delivering_products.DeliveringProduct](ctx, logger, db, nk, objects)
 			if err != nil {
 				logger.Error(err.Error())
 				return err
 			}
 
+			//delete all delivers
+			var keys []string
 			var totalGoldAmount int64
-			var totalTokenAmount float64
+			var totalUtilityTokenAmount float64
 
 			//get the key, delete the deliverings, then add money
-			for _, delivery_product := range delivery_products {
+			for _, deliveryProduct := range deliveryProducts {
+				keys = append(keys, deliveryProduct.Key)
+
 				//ref to the reference
 				marketPricingObject, err := collections_market_pricings.ReadByKey(ctx, logger, db, nk, collections_market_pricings.ReadByKeyParams{
-					Key: delivery_product.Key,
+					Key: deliveryProduct.Key,
 				})
 				if err != nil {
 					logger.Error(err.Error())
@@ -64,15 +71,25 @@ func Process(
 					logger.Error(err.Error())
 					return err
 				}
-				if !delivery_product.IsPremium {
-					totalGoldAmount += marketPricing.BasicAmount * int64(delivery_product.Quantity)
+				if !deliveryProduct.IsPremium {
+					totalGoldAmount += marketPricing.BasicAmount * int64(deliveryProduct.Quantity)
 				} else {
-					totalTokenAmount += marketPricing.PremiumAmount * float64(delivery_product.Quantity)
+					totalUtilityTokenAmount += marketPricing.PremiumAmount * float64(deliveryProduct.Quantity)
 				}
 			}
 
+			//delete
+			err = collections_delivering_products.DeleteMany(ctx, logger, db, nk, collections_delivering_products.DeleteManyParams{
+				UserId: userId,
+				Keys:   keys,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+
 			//update wallet
-			err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 				UserId: userId,
 				Amount: totalGoldAmount,
 				Metadata: map[string]interface{}{
@@ -84,7 +101,48 @@ func Process(
 				logger.Error(err.Error())
 				return err
 			}
+			//get the metadata
+			metadataObject, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+				UserId: userId,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+			metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, metadataObject)
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+
 			//the other one might call api to process mint, peripery might be a wait
+			minterPrivatekey, err := config.MinterPrivateKey(ctx, logger, db, nk)
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+			utilityTokenAddress, err := config.UtilityTokenAddress(ctx, logger, db, nk)
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+
+			//
+			//GasCheck is required (future plan)
+			//ect
+			//maybe do later with response, such as notifcation,...
+			_, err = services_periphery_api_token.Mint(ctx, logger, db, nk, &services_periphery_api_token.MintRequestBody{
+				TokenAddress:     utilityTokenAddress,
+				MinterPrivateKey: minterPrivatekey,
+				MintAmount:       totalUtilityTokenAmount,
+				ToAddress:        metadata.AccountAddress,
+				ChainKey:         metadata.ChainKey,
+				Network:          metadata.Network,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
 			return nil
 		}()
 	}

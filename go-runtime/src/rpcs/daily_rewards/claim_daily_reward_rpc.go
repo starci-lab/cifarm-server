@@ -74,7 +74,7 @@ func ClaimDailyRewardRpc(
 	if object == nil {
 		amount := int64(100)
 		days := 1
-		err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+		err := wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 			Amount: amount,
 			UserId: userId,
 			Metadata: map[string]interface{}{
@@ -130,7 +130,7 @@ func ClaimDailyRewardRpc(
 	days := dailyReward.Days
 	days++
 
-	err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+	err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 		Amount: amount,
 		UserId: userId,
 		Metadata: map[string]interface{}{

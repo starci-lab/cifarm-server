@@ -106,7 +106,7 @@ func AfterAuthenticate(
 			return err
 		}
 
-		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 			Amount: 500,
 			Metadata: map[string]interface{}{
 				"name": "Initial",
