@@ -132,7 +132,6 @@ func ThiefPlantRpc(
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *tile,
 		UserId:     userId,
-		Key:        object.Key,
 	})
 
 	if err != nil {

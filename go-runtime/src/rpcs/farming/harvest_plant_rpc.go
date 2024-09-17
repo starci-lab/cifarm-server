@@ -18,7 +18,7 @@ type HarvestPlantRpcParams struct {
 }
 
 type HarvestPlantRpcResponse struct {
-	HarvestPlantInventoryKey string `json:"harvestInventoryKey"`
+	HarvestedPlantInventoryKey string `json:"harvestedPlantInventoryKey"`
 }
 
 func HarvestPlantRpc(
@@ -63,6 +63,13 @@ func HarvestPlantRpc(
 		return "", err
 	}
 
+	value1, err := json.Marshal(tile)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	logger.Info(string(value1))
+
 	if !tile.IsPlanted {
 		errMsg := "tile is not being planted"
 		logger.Error(errMsg)
@@ -100,7 +107,6 @@ func HarvestPlantRpc(
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *tile,
 		UserId:     userId,
-		Key:        object.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -108,7 +114,7 @@ func HarvestPlantRpc(
 	}
 
 	value, err := json.Marshal(HarvestPlantRpcResponse{
-		HarvestPlantInventoryKey: result.Key,
+		HarvestedPlantInventoryKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

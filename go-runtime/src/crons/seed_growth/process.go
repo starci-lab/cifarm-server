@@ -15,7 +15,6 @@ type ExecuteGrowthLogicParams struct {
 	PlacedItem    *collections_placed_items.PlacedItem
 	TimeInSeconds int64
 	UserId        string
-	Key           string
 }
 
 func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params ExecuteGrowthLogicParams,
@@ -81,7 +80,6 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 	_, err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *params.PlacedItem,
 		UserId:     params.UserId,
-		Key:        params.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -123,7 +121,6 @@ func HandleSeedGrowth(
 				PlacedItem:    placedItem,
 				TimeInSeconds: params.TimeInSeconds,
 				UserId:        params.UserId,
-				Key:           object.Key,
 			})
 			if err != nil {
 				logger.Error(err.Error())

@@ -55,7 +55,6 @@ func MoveRpc(ctx context.Context,
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *placedItem,
 		UserId:     userId,
-		Key:        params.PlacedItemKey,
 	})
 	if err != nil {
 		logger.Error(err.Error())

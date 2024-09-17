@@ -80,7 +80,6 @@ func PlantSeedRpc(
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
-	placedItemKey := object.Key
 
 	placedItem, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)
 	if err != nil {
@@ -140,7 +139,6 @@ func PlantSeedRpc(
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *placedItem,
 		UserId:     userId,
-		Key:        placedItemKey,
 	})
 	if err != nil {
 		logger.Error(err.Error())

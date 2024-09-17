@@ -12,7 +12,6 @@ import (
 type WriteParams struct {
 	PlacedItem PlacedItem `json:"placedItem"`
 	UserId     string     `json:"userId"`
-	Key        string     `json:"key"`
 }
 
 type WriteResult struct {
@@ -26,7 +25,7 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) (*WriteResult, error) {
-	key := params.Key
+	key := params.PlacedItem.Key
 	if key == "" {
 		key = uuid.NewString()
 	}
