@@ -1,9 +1,8 @@
-package crons_last_server_uptime
+package crons_deliver
 
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/go-co-op/gocron/v2"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -22,9 +21,9 @@ func Run(
 	}
 
 	job, err := scheduler.NewJob(
-		gocron.DurationJob(
-			time.Second,
-		),
+		gocron.DailyJob(1, gocron.NewAtTimes(
+			gocron.NewAtTime(0, 0, 0),
+		)),
 		gocron.NewTask(
 			func() {
 				Process(ctx, logger, db, nk)

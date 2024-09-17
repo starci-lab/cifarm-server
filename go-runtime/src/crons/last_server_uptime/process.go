@@ -1,4 +1,4 @@
-package last_server_uptime
+package crons_last_server_uptime
 
 import (
 	collections_system "cifarm-server/src/collections/system"

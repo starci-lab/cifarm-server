@@ -39,5 +39,10 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		logger.Error(err.Error())
 		return err
 	}
+	err = SetupMarketPricings(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 	return nil
 }
