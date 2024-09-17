@@ -90,7 +90,6 @@ func AfterAuthenticate(
 				ReferenceKey: collections_tiles.KEY_STARTER,
 				Position:     position,
 				Type:         collections_placed_items.TYPE_TILE,
-				IsPlanted:    false,
 			})
 		}
 		placedItems = append(placedItems, collections_placed_items.PlacedItem{
