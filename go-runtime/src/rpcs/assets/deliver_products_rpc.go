@@ -66,7 +66,7 @@ type DeliverProductsRpcParams struct {
 }
 
 type DeliverProductsRpcResponse struct {
-	Keys []string `json:"keys"`
+	DeliveryProductKeys []string `json:"deliveryProductKeys"`
 }
 
 func DeliverProductsRpc(
@@ -137,7 +137,7 @@ func DeliverProductsRpc(
 		var productType int
 		switch query.Type {
 		case collections_inventories.TYPE_HARVESTED_PLANT:
-			productType = 1
+			productType = collections_delivering_products.TYPE_PLANT
 		default:
 		}
 
@@ -159,7 +159,7 @@ func DeliverProductsRpc(
 	}
 
 	value, err := json.Marshal(DeliverProductsRpcResponse{
-		Keys: keys,
+		DeliveryProductKeys: keys,
 	})
 	if err != nil {
 		logger.Error(err.Error())

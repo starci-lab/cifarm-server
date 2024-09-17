@@ -31,9 +31,10 @@ func HasEnoughTiles(
 		return false, errors.New(errMsg)
 	}
 
-	object, err := collections_inventories.ReadByReferenceKey(ctx, logger, db, nk, collections_inventories.ReadByReferenceKeyParams{
+	object, err := collections_inventories.Read(ctx, logger, db, nk, collections_inventories.ReadParams{
 		ReferenceKey: params.ReferenceKey,
 		UserId:       userId,
+		Type:         collections_inventories.TYPE_TILE,
 	},
 	)
 	if err != nil {

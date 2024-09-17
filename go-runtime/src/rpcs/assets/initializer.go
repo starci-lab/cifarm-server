@@ -12,7 +12,13 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	if err != nil {
 		return err
 	}
+
 	err = initializer.RegisterRpc("deliver_products", DeliverProductsRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("retain_products", RetainProductsRpc)
 	if err != nil {
 		return err
 	}
@@ -26,5 +32,6 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

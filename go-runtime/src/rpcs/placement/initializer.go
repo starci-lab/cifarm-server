@@ -1,4 +1,4 @@
-package rpcs_replacement
+package rpcs_placement
 
 import (
 	"context"
@@ -12,5 +12,16 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	if err != nil {
 		return err
 	}
+
+	err = initializer.RegisterRpc("place_tile", PlaceTileRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("recover_tile", RecoverTileRpc)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

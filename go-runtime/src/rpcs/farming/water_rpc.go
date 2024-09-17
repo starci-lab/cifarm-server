@@ -83,5 +83,5 @@ func WaterRpc(
 		return "", err
 	}
 
-	return "", err
+	return "", nil
 }

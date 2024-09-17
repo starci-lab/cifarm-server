@@ -15,7 +15,6 @@ import (
 type WriteParams struct {
 	Inventory Inventory `json:"inventory"`
 	UserId    string    `json:"userId"`
-	Type      int       `json:"type"`
 }
 
 type WriteResult struct {
@@ -30,9 +29,10 @@ func Write(
 	params WriteParams,
 ) (*WriteResult, error) {
 	//read only non delivering
-	object, err := ReadByReferenceKey(ctx, logger, db, nk, ReadByReferenceKeyParams{
+	object, err := Read(ctx, logger, db, nk, ReadParams{
 		ReferenceKey: params.Inventory.ReferenceKey,
 		UserId:       params.UserId,
+		Type:         params.Inventory.Type,
 	})
 	if err != nil {
 		logger.Error(err.Error())

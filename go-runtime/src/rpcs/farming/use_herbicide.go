@@ -83,5 +83,5 @@ func UseHerbicideRpc(
 		return "", err
 	}
 
-	return "", err
+	return "", nil
 }

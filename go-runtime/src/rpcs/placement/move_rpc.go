@@ -1,4 +1,4 @@
-package rpcs_replacement
+package rpcs_placement
 
 import (
 	collections_common "cifarm-server/src/collections/common"

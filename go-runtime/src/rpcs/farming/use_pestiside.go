@@ -83,5 +83,5 @@ func UsePestisideRpc(
 		return "", err
 	}
 
-	return "", err
+	return "", nil
 }
