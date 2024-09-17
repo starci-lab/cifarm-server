@@ -79,3 +79,39 @@ func WriteVisitState(
 	}
 	return nil
 }
+
+type WritePlayerStatsParams struct {
+	PlayerStats PlayerStats `json:"playerStats"`
+	UserId      string      `json:"userId"`
+}
+
+func WritePlayerStats(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WritePlayerStatsParams,
+) error {
+	value, err := json.Marshal(params.PlayerStats)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_PLAYER_STATS,
+			UserID:          params.UserId,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

@@ -48,6 +48,7 @@ func AfterAuthenticate(
 		return err
 	}
 	if object == nil {
+		//first time login
 		err = collections_config.WriteMetadata(ctx, logger, db, nk,
 			collections_config.WriteMetadataParams{
 				Metadata: collections_config.Metadata{
@@ -57,6 +58,18 @@ func AfterAuthenticate(
 				},
 				UserId: userId,
 			})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
+		err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+			UserId: userId,
+			PlayerStats: collections_config.PlayerStats{
+				Level:       1,
+				Experiences: 0,
+			},
+		})
 		if err != nil {
 			logger.Error(err.Error())
 			return err
@@ -80,26 +93,18 @@ func AfterAuthenticate(
 				IsPlanted:    false,
 			})
 		}
+		placedItems = append(placedItems, collections_placed_items.PlacedItem{
+			ReferenceKey: collections_buildings.KEY_HOME,
+			Position: collections_placed_items.Position{
+				X: 0,
+				Y: 3,
+			},
+			Type: collections_placed_items.TYPE_BUILDING,
+		})
 
 		err = collections_placed_items.WriteMany(ctx, logger, db, nk, collections_placed_items.WriteManyParams{
 			PlacedItems: placedItems,
 			UserId:      userId,
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return err
-		}
-
-		_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
-			PlacedItem: collections_placed_items.PlacedItem{
-				ReferenceKey: collections_buildings.KEY_HOME,
-				Position: collections_placed_items.Position{
-					X: 0,
-					Y: 3,
-				},
-				Type: collections_placed_items.TYPE_BUILDING,
-			},
-			UserId: userId,
 		})
 		if err != nil {
 			logger.Error(err.Error())
