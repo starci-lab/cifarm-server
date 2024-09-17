@@ -8,14 +8,14 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func RegisterByReferenceKey(
+func Register(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := STORAGE_INDEX_BY_REFERENCE_KEY
+	name := STORAGE_INDEX
 	collection := COLLECTION_NAME
 	key := ""
 	fields := []string{
