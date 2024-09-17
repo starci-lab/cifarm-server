@@ -63,14 +63,14 @@ func UseHerbicideRpc(
 		return "", errors.New(errMsg)
 	}
 
-	if !tile.SeedGrowthInfo.IsWeedy {
+	if tile.SeedGrowthInfo.PlantCurrentState != collections_placed_items.PLANT_CURRENT_STATE_IS_WEEDY {
 		errMsg := "plant is not weedy"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
 	//update tile status
-	tile.SeedGrowthInfo.IsWeedy = false
+	tile.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NORMAL
 
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{

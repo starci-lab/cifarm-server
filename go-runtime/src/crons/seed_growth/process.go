@@ -29,7 +29,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		return nil
 	}
 
-	if params.PlacedItem.SeedGrowthInfo.NeedWater {
+	if params.PlacedItem.SeedGrowthInfo.PlantCurrentState == collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER {
 		//do nothing via being need watering
 		return nil
 	}
@@ -50,21 +50,22 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
 				//50% chance to be drain
 				if rand.Float64() < 0.5 {
-					params.PlacedItem.SeedGrowthInfo.NeedWater = true
+					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER
 				}
 			}
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == 4 {
 				//50% to be infested or weedly, chance maybe difference via better tiles
 				if rand.Float64() < 0.5 {
-					params.PlacedItem.SeedGrowthInfo.IsWeedy = true
+					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_WEEDY
 				} else {
-					params.PlacedItem.SeedGrowthInfo.IsInfested = true
+					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_INFESTED
 				}
 			}
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == params.PlacedItem.SeedGrowthInfo.Seed.GrowthStages {
-				if params.PlacedItem.SeedGrowthInfo.IsInfested || params.PlacedItem.SeedGrowthInfo.IsWeedy {
+				if params.PlacedItem.SeedGrowthInfo.PlantCurrentState == collections_placed_items.PLANT_CURRENT_STATE_IS_WEEDY ||
+					params.PlacedItem.SeedGrowthInfo.PlantCurrentState == collections_placed_items.PLANT_CURRENT_STATE_IS_INFESTED {
 					//reduce quantity
 					newQuantity := (params.PlacedItem.SeedGrowthInfo.Seed.MaxHarvestQuantity + params.PlacedItem.SeedGrowthInfo.Seed.MinHarvestQuantity) / 2
 					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = newQuantity

@@ -134,8 +134,6 @@ func PlantSeedRpc(
 		CurrentStageTimeElapsed:  0,
 		TotalTimeElapsed:         0,
 		HarvestQuantityRemaining: seed.MaxHarvestQuantity,
-		IsInfested:               false,
-		IsWeedy:                  false,
 		Seed:                     *seed,
 	}
 	placedItem.IsPlanted = true

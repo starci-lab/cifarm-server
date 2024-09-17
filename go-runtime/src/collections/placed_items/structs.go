@@ -14,10 +14,8 @@ type SeedGrowthInfo struct {
 	CurrentStageTimeElapsed  int64                  `json:"currentStageTimeElapsed"`
 	TotalTimeElapsed         int64                  `json:"totalTimeElapsed"`
 	HarvestQuantityRemaining int                    `json:"harvestQuantityRemaining"`
-	IsInfested               bool                   `json:"isInfested"`
-	IsWeedy                  bool                   `json:"isWeedy"`
 	Seed                     collections_seeds.Seed `json:"seed"`
-	NeedWater                bool                   `json:"needWater"`
+	PlantCurrentState        int                    `json:"plantCurrentState"`
 }
 
 type PlacedItem struct {
