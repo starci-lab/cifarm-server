@@ -18,11 +18,6 @@ type SearchUsersByValueResult struct {
 	Accounts []Account `json:"accounts"`
 }
 
-type Account struct {
-	UserId   string `json:"userId"`
-	Username string `json:"username"`
-}
-
 func SearchUsersByValue(
 	ctx context.Context,
 	logger runtime.Logger,
@@ -30,9 +25,7 @@ func SearchUsersByValue(
 	nk runtime.NakamaModule,
 	params SearchUsersByValueParams,
 ) (*SearchUsersByValueResult, error) {
-	query := `SELECT id, username FROM users WHERE username ILIKE concat('%', $1::TEXT, '%')
-			  EXCEPT
-              SELECT id, username FROM users WHERE id IN ($2);`
+	query := `SELECT id, username FROM users WHERE username ILIKE concat('%', $1::TEXT, '%') AND id NOT IN ($2);`
 	rows, err := db.Query(query, params.Value, params.UserId)
 	if err != nil {
 		logger.Error(err.Error())

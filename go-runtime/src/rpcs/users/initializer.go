@@ -33,5 +33,10 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
+	err = initializer.RegisterRpc("visit_random_user", VisitRandomUserRpc)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
