@@ -1,4 +1,4 @@
-package rpcs_users
+package rpcs_community
 
 import (
 	collections_common "cifarm-server/src/collections/common"

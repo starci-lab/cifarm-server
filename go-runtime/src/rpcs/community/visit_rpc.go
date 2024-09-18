@@ -1,16 +1,21 @@
-package rpcs_users
+package rpcs_community
 
 import (
-	collections_common "cifarm-server/src/collections/common"
 	collections_config "cifarm-server/src/collections/config"
+	"cifarm-server/src/friends"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func ReturnRpc(
+type VisitRpcParams struct {
+	UserId string `json:"userId"`
+}
+
+func VisitRpc(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -23,29 +28,32 @@ func ReturnRpc(
 		return "", errors.New(errMsg)
 	}
 
-	object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
-		UserId: userId,
+	var params *VisitRpcParams
+	err := json.Unmarshal([]byte(payload), &params)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	result, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
+		UserId:       userId,
+		FriendUserId: params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-
-	visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
-	if visitState.UserId == "" {
-		errMsg := "not visit"
+	if !result {
+		errMsg := "not your friend"
 		logger.Error(errMsg)
-		return "", err
+		return "", errors.New(errMsg)
 	}
-	visitState.UserId = ""
 
+	visitState := collections_config.VisitState{
+		UserId: params.UserId,
+	}
 	err = collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
-		VisitState: *visitState,
+		VisitState: visitState,
 		UserId:     userId,
 	})
 	if err != nil {

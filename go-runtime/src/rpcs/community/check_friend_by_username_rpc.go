@@ -1,4 +1,4 @@
-package rpcs_users
+package rpcs_community
 
 import (
 	"cifarm-server/src/friends"

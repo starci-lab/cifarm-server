@@ -1,4 +1,4 @@
-package rpcs_users
+package rpcs_community
 
 type User struct {
 	UserId   string `json:"userId"`

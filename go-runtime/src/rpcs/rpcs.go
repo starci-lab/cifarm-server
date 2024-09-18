@@ -3,13 +3,13 @@ package rpcs
 import (
 	rpcs_assets "cifarm-server/src/rpcs/assets"
 	rpcs_auth "cifarm-server/src/rpcs/auth"
+	rpcs_community "cifarm-server/src/rpcs/community"
 	rpcs_daily_rewards "cifarm-server/src/rpcs/daily_rewards"
 	rpcs_farming "cifarm-server/src/rpcs/farming"
 	rpcs_nfts "cifarm-server/src/rpcs/nfts"
 	rpcs_placement "cifarm-server/src/rpcs/placement"
 	rpcs_shop "cifarm-server/src/rpcs/shop"
 	rpcs_tests "cifarm-server/src/rpcs/tests"
-	rpcs_users "cifarm-server/src/rpcs/users"
 	"context"
 	"database/sql"
 
@@ -47,7 +47,7 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = rpcs_users.Initialize(ctx, logger, db, nk, initializer)
+	err = rpcs_community.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
 	}
