@@ -15,7 +15,7 @@ type SearchUsersByValueParams struct {
 }
 
 type SearchUsersByValueResult struct {
-	Accounts []Account `json:"accounts"`
+	Users []User `json:"users"`
 }
 
 func SearchUsersByValue(
@@ -25,7 +25,7 @@ func SearchUsersByValue(
 	nk runtime.NakamaModule,
 	params SearchUsersByValueParams,
 ) (*SearchUsersByValueResult, error) {
-	query := `SELECT id, username FROM users WHERE username ILIKE concat('%', $1::TEXT, '%') AND id NOT IN ($2);`
+	query := `SELECT id, username FROM users WHERE username ILIKE concat('%', $1::TEXT, '%') AND id NOT IN ($2, '00000000-0000-0000-0000-000000000000'::UUID);`
 	rows, err := db.Query(query, params.Value, params.UserId)
 	if err != nil {
 		logger.Error(err.Error())
@@ -33,17 +33,17 @@ func SearchUsersByValue(
 	}
 	defer rows.Close()
 
-	var accounts []Account
+	var users []User
 	for rows.Next() {
-		var account Account
-		if err := rows.Scan(&account.UserId, &account.Username); err != nil {
+		var user User
+		if err := rows.Scan(&user.UserId, &user.Username); err != nil {
 			logger.Error(err.Error())
 			return nil, err
 		}
-		accounts = append(accounts, account)
+		users = append(users, user)
 	}
 	return &SearchUsersByValueResult{
-		Accounts: accounts,
+		Users: users,
 	}, nil
 }
 
@@ -52,7 +52,7 @@ type SearchUsersRpcParams struct {
 }
 
 type SearchUsersRpcResponse struct {
-	Accounts []Account `json:"accounts"`
+	Users []User `json:"users"`
 }
 
 func SearchUserRpc(
@@ -89,7 +89,7 @@ func SearchUserRpc(
 		return "", err
 	}
 
-	value, err := json.Marshal(SearchUsersRpcResponse{Accounts: result.Accounts})
+	value, err := json.Marshal(SearchUsersRpcResponse{Users: result.Users})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
