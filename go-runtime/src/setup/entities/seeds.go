@@ -37,6 +37,50 @@ func SetupSeeds(
 			MaxHarvestQuantity:          23,
 			NextGrowthStageAfterHarvest: 1,
 		},
+		{
+			Key:                         collections_seeds.KEY_CUCUMBER,
+			Price:                       100,
+			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
+			GrowthStages:                5,
+			Premium:                     false,
+			Perennial:                   false,
+			MinHarvestQuantity:          16,
+			MaxHarvestQuantity:          23,
+			NextGrowthStageAfterHarvest: 1,
+		},
+		{
+			Key:                         collections_seeds.KEY_PINEAPPLE,
+			Price:                       100,
+			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
+			GrowthStages:                5,
+			Premium:                     false,
+			Perennial:                   false,
+			MinHarvestQuantity:          16,
+			MaxHarvestQuantity:          23,
+			NextGrowthStageAfterHarvest: 1,
+		},
+		{
+			Key:                         collections_seeds.KEY_WATERMELON,
+			Price:                       100,
+			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
+			GrowthStages:                5,
+			Premium:                     false,
+			Perennial:                   false,
+			MinHarvestQuantity:          16,
+			MaxHarvestQuantity:          23,
+			NextGrowthStageAfterHarvest: 1,
+		},
+		{
+			Key:                         collections_seeds.KEY_PINEAPPLE,
+			Price:                       100,
+			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
+			GrowthStages:                5,
+			Premium:                     false,
+			Perennial:                   false,
+			MinHarvestQuantity:          16,
+			MaxHarvestQuantity:          23,
+			NextGrowthStageAfterHarvest: 1,
+		},
 	}
 
 	err := collections_seeds.WriteMany(ctx, logger, db, nk, collections_seeds.WriteManyParams{
