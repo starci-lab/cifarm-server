@@ -6,4 +6,5 @@ type DeliveringProduct struct {
 	Type         int    `json:"type"`
 	Quantity     int    `json:"quantity"`
 	IsPremium    bool   `json:"isPremium"`
+	Index        int    `json:"index"`
 }
