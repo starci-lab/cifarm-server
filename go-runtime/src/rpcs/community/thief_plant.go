@@ -6,7 +6,6 @@ import (
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_tiles "cifarm-server/src/collections/tiles"
-	"cifarm-server/src/friends"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -24,6 +23,7 @@ type ThiefPlantRpcParams struct {
 
 type ThiefPlantRpcResponse struct {
 	TheifPlantInventoryKey string `json:"thiefPlantInventoryKey"`
+	TheifQuantity          int    `json:"theifQuantity"`
 }
 
 func ThiefPlantRpc(
@@ -46,24 +46,30 @@ func ThiefPlantRpc(
 		return "", err
 	}
 
-	check, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
-		UserId:       userId,
-		FriendUserId: params.UserId,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
-	if !check {
-		errMsg := "not your friend"
+	if userId == params.UserId {
+		errMsg := "you cannot theif your plants"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
+	// check, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
+	// 	UserId:       userId,
+	// 	FriendUserId: params.UserId,
+	// })
+	// if err != nil {
+	// 	logger.Error(err.Error())
+	// 	return "", err
+	// }
+
+	// if !check {
+	// 	errMsg := "not your friend"
+	// 	logger.Error(errMsg)
+	// 	return "", errors.New(errMsg)
+	// }
+
 	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemTileKey,
-		UserId: userId,
+		UserId: params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -94,7 +100,7 @@ func ThiefPlantRpc(
 		return "", errors.New(errMsg)
 	}
 
-	maximunTheifQuantity := tile.SeedGrowthInfo.HarvestQuantityRemaining - tile.SeedGrowthInfo.Seed.MaxHarvestQuantity
+	maximunTheifQuantity := tile.SeedGrowthInfo.HarvestQuantityRemaining - tile.SeedGrowthInfo.Seed.MinHarvestQuantity
 	if maximunTheifQuantity == 0 {
 		errMsg := "cannot thief anymore"
 		logger.Error(errMsg)
@@ -129,10 +135,11 @@ func ThiefPlantRpc(
 
 	//giam san luong
 	tile.SeedGrowthInfo.HarvestQuantityRemaining -= theifQuantity
+	logger.Debug("%s", tile.SeedGrowthInfo.HarvestQuantityRemaining)
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *tile,
-		UserId:     userId,
+		UserId:     params.UserId,
 	})
 
 	if err != nil {
@@ -151,6 +158,7 @@ func ThiefPlantRpc(
 
 	value, err := json.Marshal(ThiefPlantRpcResponse{
 		TheifPlantInventoryKey: result.Key,
+		TheifQuantity:          theifQuantity,
 	})
 	if err != nil {
 		logger.Error(err.Error())

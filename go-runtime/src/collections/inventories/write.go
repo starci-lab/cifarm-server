@@ -87,7 +87,7 @@ func Write(
 			Key:             key,
 			UserID:          params.UserId,
 			Value:           string(data),
-			PermissionRead:  1,
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		},
 	})
