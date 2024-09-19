@@ -86,55 +86,9 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	}
 	for _, presence := range matchState.Presences {
 		go func() error {
-			object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
-				UserId: presence.GetUserId(),
+			err := BroadcastPlacedItems(ctx, logger, db, nk, BroadcastPlacedItemsParams{
+				presence: presence,
 			})
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
-
-			var currentUserId string
-			if object != nil {
-				visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
-				if err != nil {
-					logger.Error(err.Error())
-					return err
-				}
-				currentUserId = visitState.UserId
-			}
-
-			if currentUserId == "" {
-				currentUserId = presence.GetUserId()
-			}
-
-			objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadManyParams{
-				UserId: currentUserId,
-			})
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
-
-			values, err := collections_common.ToValues2[collections_placed_items.PlacedItem](ctx, logger, db, nk, objects)
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
-
-			wrapped := WrappedPlacedItems{
-				PlacedItems: values,
-			}
-
-			var data []byte
-			data, err = json.Marshal(wrapped)
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
-			err = dispatcher.BroadcastMessage(OP_CODE_PLACED_ITEMS_STATE, data, []runtime.Presence{
-				presence,
-			}, nil, true)
 			if err != nil {
 				logger.Error(err.Error())
 				return err
@@ -161,12 +115,33 @@ func (m *Match) MatchSignal(ctx context.Context, logger runtime.Logger, db *sql.
 		}
 	}
 
-	object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
-		UserId: data,
+	err := BroadcastPlacedItems(ctx, logger, db, nk, BroadcastPlacedItemsParams{
+		presence:   presence,
+		dispatcher: dispatcher,
 	})
 	if err != nil {
 		logger.Error(err.Error())
-		return state, ""
+		return err, ""
+	}
+	return state, ""
+}
+
+func (m *Match) MatchTerminate(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, graceSeconds int) interface{} {
+	return state
+}
+
+type BroadcastPlacedItemsParams struct {
+	presence   runtime.Presence
+	dispatcher runtime.MatchDispatcher
+}
+
+func BroadcastPlacedItems(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastPlacedItemsParams) error {
+	object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
+		UserId: params.presence.GetUserId(),
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
 	}
 
 	var currentUserId string
@@ -174,13 +149,13 @@ func (m *Match) MatchSignal(ctx context.Context, logger runtime.Logger, db *sql.
 		visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
 		if err != nil {
 			logger.Error(err.Error())
-			return state, ""
+			return err
 		}
 		currentUserId = visitState.UserId
 	}
 
 	if currentUserId == "" {
-		currentUserId = data
+		currentUserId = params.presence.GetUserId()
 	}
 
 	objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadManyParams{
@@ -188,35 +163,31 @@ func (m *Match) MatchSignal(ctx context.Context, logger runtime.Logger, db *sql.
 	})
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, ""
+		return err
 	}
 
 	values, err := collections_common.ToValues2[collections_placed_items.PlacedItem](ctx, logger, db, nk, objects)
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, ""
+		return err
 	}
 
 	wrapped := WrappedPlacedItems{
 		PlacedItems: values,
 	}
 
-	_data, err := json.Marshal(wrapped)
+	var data []byte
+	data, err = json.Marshal(wrapped)
 	if err != nil {
 		logger.Error(err.Error())
-		return nil, ""
+		return err
 	}
-
-	err = dispatcher.BroadcastMessage(OP_CODE_PLACED_ITEMS_STATE, _data, []runtime.Presence{
-		presence,
+	err = params.dispatcher.BroadcastMessage(OP_CODE_PLACED_ITEMS_STATE, data, []runtime.Presence{
+		params.presence,
 	}, nil, true)
 	if err != nil {
 		logger.Error(err.Error())
-		return state, ""
+		return err
 	}
-	return state, ""
-}
-
-func (m *Match) MatchTerminate(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, graceSeconds int) interface{} {
-	return state
+	return nil
 }
