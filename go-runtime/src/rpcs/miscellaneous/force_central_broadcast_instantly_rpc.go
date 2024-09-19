@@ -10,7 +10,7 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func FetchCentralInstantlyRpc(
+func ForceCentralBroadcastInstantlyRpc(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
