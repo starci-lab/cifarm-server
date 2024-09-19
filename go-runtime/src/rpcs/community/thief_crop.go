@@ -16,17 +16,17 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ThiefPlantRpcParams struct {
+type ThiefCropRpcParams struct {
 	UserId            string `json:"userId"`
 	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
-type ThiefPlantRpcResponse struct {
-	TheifPlantInventoryKey string `json:"thiefPlantInventoryKey"`
-	TheifQuantity          int    `json:"theifQuantity"`
+type ThiefCropRpcResponse struct {
+	ThiefCropInventoryKey string `json:"thiefCropInventoryKey"`
+	ThiefQuantity         int    `json:"thiefQuantity"`
 }
 
-func ThiefPlantRpc(
+func ThiefCropRpc(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -39,7 +39,7 @@ func ThiefPlantRpc(
 		return "", errors.New(errMsg)
 	}
 
-	var params *ThiefPlantRpcParams
+	var params *ThiefCropRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
 	if err != nil {
 		logger.Error(err.Error())
@@ -100,7 +100,7 @@ func ThiefPlantRpc(
 		return "", errors.New(errMsg)
 	}
 
-	maximunTheifQuantity := tile.SeedGrowthInfo.HarvestQuantityRemaining - tile.SeedGrowthInfo.Seed.MinHarvestQuantity
+	maximunTheifQuantity := tile.SeedGrowthInfo.HarvestQuantityRemaining - tile.SeedGrowthInfo.Crop.MinHarvestQuantity
 	if maximunTheifQuantity == 0 {
 		errMsg := "cannot thief anymore"
 		logger.Error(errMsg)
@@ -108,21 +108,21 @@ func ThiefPlantRpc(
 	}
 
 	//fn to calculate
-	theifQuantity := 1
+	thiefQuantity := 1
 	random := rand.Float64()
 	if random > 0.95 {
-		theifQuantity = 3
+		thiefQuantity = 3
 	} else if random > 0.8 {
-		theifQuantity = 2
+		thiefQuantity = 2
 	}
-	theifQuantity = int(math.Min(float64(maximunTheifQuantity), float64(theifQuantity)))
+	thiefQuantity = int(math.Min(float64(maximunTheifQuantity), float64(thiefQuantity)))
 
 	//check kinh nghiệm, check các thứ, ...
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
-			ReferenceKey: tile.SeedGrowthInfo.Seed.Key,
+			ReferenceKey: tile.SeedGrowthInfo.Crop.Key,
 			Type:         collections_inventories.TYPE_HARVESTED_PLANT,
-			Quantity:     theifQuantity,
+			Quantity:     thiefQuantity,
 			IsPremium:    tile.ReferenceKey == collections_tiles.KEY_PREMIUM,
 			Deliverable:  true,
 		},
@@ -134,7 +134,7 @@ func ThiefPlantRpc(
 	}
 
 	//giam san luong
-	tile.SeedGrowthInfo.HarvestQuantityRemaining -= theifQuantity
+	tile.SeedGrowthInfo.HarvestQuantityRemaining -= thiefQuantity
 	logger.Debug("%s", tile.SeedGrowthInfo.HarvestQuantityRemaining)
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
@@ -156,9 +156,9 @@ func ThiefPlantRpc(
 		return "", err
 	}
 
-	value, err := json.Marshal(ThiefPlantRpcResponse{
-		TheifPlantInventoryKey: result.Key,
-		TheifQuantity:          theifQuantity,
+	value, err := json.Marshal(ThiefCropRpcResponse{
+		ThiefCropInventoryKey: result.Key,
+		ThiefQuantity:         thiefQuantity,
 	})
 	if err != nil {
 		logger.Error(err.Error())

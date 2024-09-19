@@ -1,7 +1,7 @@
-package collections_seeds
+package collections_crops
 
 const (
-	COLLECTION_NAME = "Seeds"
+	COLLECTION_NAME = "Crops"
 )
 
 const (

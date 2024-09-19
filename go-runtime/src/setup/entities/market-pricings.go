@@ -1,8 +1,8 @@
 package setup_entities
 
 import (
+	collections_crops "cifarm-server/src/collections/crops"
 	collections_market_pricings "cifarm-server/src/collections/market-pricings"
-	collections_seeds "cifarm-server/src/collections/seeds"
 	"context"
 	"database/sql"
 
@@ -18,12 +18,12 @@ func SetupMarketPricings(
 
 	marketPricings := []collections_market_pricings.MarketPricing{
 		{
-			Key:           collections_seeds.KEY_CARROT,
+			Key:           collections_crops.KEY_CARROT,
 			BasicAmount:   4,
 			PremiumAmount: 0.04,
 		},
 		{
-			Key:           collections_seeds.KEY_POTATO,
+			Key:           collections_crops.KEY_POTATO,
 			BasicAmount:   8,
 			PremiumAmount: 0.08,
 		},

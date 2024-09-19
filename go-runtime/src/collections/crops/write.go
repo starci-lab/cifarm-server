@@ -1,4 +1,4 @@
-package collections_seeds
+package collections_crops
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 )
 
 type WriteManyParams struct {
-	Seeds []Seed `json:"seeds"`
+	Crops []Crop `json:"crops"`
 }
 
 func WriteMany(
@@ -20,10 +20,10 @@ func WriteMany(
 	params WriteManyParams,
 ) error {
 	var writes []*runtime.StorageWrite
-	for _, seed := range params.Seeds {
-		key := seed.Key
-		seed.Key = ""
-		value, err := json.Marshal(seed)
+	for _, crop := range params.Crops {
+		key := crop.Key
+		crop.Key = ""
+		value, err := json.Marshal(crop)
 		if err != nil {
 			continue
 		}

@@ -1,23 +1,22 @@
 package setup_entities
 
 import (
-	collections_seeds "cifarm-server/src/collections/seeds"
+	collections_crops "cifarm-server/src/collections/crops"
 	"context"
 	"database/sql"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func SetupSeeds(
+func SetupCrops(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) error {
-
-	seeds := []collections_seeds.Seed{
+	crops := []collections_crops.Crop{
 		{
-			Key:                       collections_seeds.KEY_CARROT,
+			Key:                       collections_crops.KEY_CARROT,
 			Price:                     50,
 			GrowthStageDuration:       60 * 60, //1 hours
 			GrowthStages:              5,
@@ -29,7 +28,7 @@ func SetupSeeds(
 			PremiumHarvestExperiences: 60,
 		},
 		{
-			Key:                         collections_seeds.KEY_POTATO,
+			Key:                         collections_crops.KEY_POTATO,
 			Price:                       100,
 			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
 			GrowthStages:                5,
@@ -42,7 +41,7 @@ func SetupSeeds(
 			PremiumHarvestExperiences:   110,
 		},
 		{
-			Key:                         collections_seeds.KEY_CUCUMBER,
+			Key:                         collections_crops.KEY_CUCUMBER,
 			Price:                       100,
 			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
 			GrowthStages:                5,
@@ -55,7 +54,7 @@ func SetupSeeds(
 			PremiumHarvestExperiences:   110,
 		},
 		{
-			Key:                         collections_seeds.KEY_PINEAPPLE,
+			Key:                         collections_crops.KEY_PINEAPPLE,
 			Price:                       100,
 			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
 			GrowthStages:                5,
@@ -68,7 +67,7 @@ func SetupSeeds(
 			PremiumHarvestExperiences:   110,
 		},
 		{
-			Key:                         collections_seeds.KEY_WATERMELON,
+			Key:                         collections_crops.KEY_WATERMELON,
 			Price:                       100,
 			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
 			GrowthStages:                5,
@@ -81,7 +80,7 @@ func SetupSeeds(
 			PremiumHarvestExperiences:   110,
 		},
 		{
-			Key:                         collections_seeds.KEY_PINEAPPLE,
+			Key:                         collections_crops.KEY_PINEAPPLE,
 			Price:                       100,
 			GrowthStageDuration:         60 * 60 * 2.5, //2.5 hours  60 * 60 * 2.5
 			GrowthStages:                5,
@@ -95,8 +94,8 @@ func SetupSeeds(
 		},
 	}
 
-	err := collections_seeds.WriteMany(ctx, logger, db, nk, collections_seeds.WriteManyParams{
-		Seeds: seeds,
+	err := collections_crops.WriteMany(ctx, logger, db, nk, collections_crops.WriteManyParams{
+		Crops: crops,
 	})
 	if err != nil {
 		logger.Error(err.Error())

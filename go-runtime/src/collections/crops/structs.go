@@ -1,6 +1,6 @@
-package collections_seeds
+package collections_crops
 
-type Seed struct {
+type Crop struct {
 	Key                         string `json:"key"`
 	GrowthStageDuration         int64  `json:"growthStageDuration"`
 	GrowthStages                int    `json:"growthStages"`

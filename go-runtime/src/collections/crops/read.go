@@ -1,4 +1,4 @@
-package collections_seeds
+package collections_crops
 
 import (
 	"context"

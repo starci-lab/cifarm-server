@@ -2,8 +2,8 @@ package rpcs_shop
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_crops "cifarm-server/src/collections/crops"
 	collections_inventories "cifarm-server/src/collections/inventories"
-	collections_seeds "cifarm-server/src/collections/seeds"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -41,26 +41,26 @@ func BuySeedRpc(ctx context.Context,
 		return "", err
 	}
 
-	object, err := collections_seeds.ReadByKey(ctx, logger, db, nk, collections_seeds.ReadByKeyParams{
+	object, err := collections_crops.ReadByKey(ctx, logger, db, nk, collections_crops.ReadByKeyParams{
 		Key: params.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	seed, err := collections_common.ToValue[collections_seeds.Seed](ctx, logger, db, nk, object)
+	crop, err := collections_common.ToValue[collections_crops.Crop](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	if seed == nil {
-		errMsg := "seed not found"
+	if crop == nil {
+		errMsg := "crop not found"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	totalCost := int64(seed.Price) * int64(params.Quantity)
+	totalCost := int64(crop.Price) * int64(params.Quantity)
 	err = _wallets.UpdateWalletGolds(ctx, logger, db, nk, _wallets.UpdateWalletGoldsParams{
 		Amount: -totalCost,
 		UserId: userId,

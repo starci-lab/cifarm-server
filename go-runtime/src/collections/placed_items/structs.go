@@ -1,7 +1,7 @@
 package collections_placed_items
 
 import (
-	collections_seeds "cifarm-server/src/collections/seeds"
+	collections_crops "cifarm-server/src/collections/crops"
 )
 
 type Position struct {
@@ -14,7 +14,7 @@ type SeedGrowthInfo struct {
 	CurrentStageTimeElapsed  int64                  `json:"currentStageTimeElapsed"`
 	TotalTimeElapsed         int64                  `json:"totalTimeElapsed"`
 	HarvestQuantityRemaining int                    `json:"harvestQuantityRemaining"`
-	Seed                     collections_seeds.Seed `json:"seed"`
+	Crop                     collections_crops.Crop `json:"crop"`
 	PlantCurrentState        int                    `json:"plantCurrentState"`
 }
 

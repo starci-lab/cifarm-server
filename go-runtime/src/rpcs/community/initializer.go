@@ -23,7 +23,7 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = initializer.RegisterRpc("thief_plant", ThiefPlantRpc)
+	err = initializer.RegisterRpc("thief_crop", ThiefCropRpc)
 	if err != nil {
 		return err
 	}

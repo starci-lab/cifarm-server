@@ -14,15 +14,15 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type HarvestPlantRpcParams struct {
+type HarvestCropRpcParams struct {
 	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
-type HarvestPlantRpcResponse struct {
+type HarvestCropRpcResponse struct {
 	HarvestedPlantInventoryKey string `json:"harvestedPlantInventoryKey"`
 }
 
-func HarvestPlantRpc(
+func HarvestCropRpc(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -36,7 +36,7 @@ func HarvestPlantRpc(
 		return "", errors.New(errMsg)
 	}
 
-	var params *HarvestPlantRpcParams
+	var params *HarvestCropRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
 	if err != nil {
 		logger.Error(err.Error())
@@ -87,7 +87,7 @@ func HarvestPlantRpc(
 	//write to inventories the havested items
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
-			ReferenceKey: tile.SeedGrowthInfo.Seed.Key,
+			ReferenceKey: tile.SeedGrowthInfo.Crop.Key,
 			Type:         collections_inventories.TYPE_HARVESTED_PLANT,
 			Quantity:     tile.SeedGrowthInfo.HarvestQuantityRemaining,
 			IsPremium:    isPremium,
@@ -102,9 +102,9 @@ func HarvestPlantRpc(
 
 	var experiences int64
 	if isPremium {
-		experiences = tile.SeedGrowthInfo.Seed.PremiumHarvestExperiences
+		experiences = tile.SeedGrowthInfo.Crop.PremiumHarvestExperiences
 	} else {
-		experiences = tile.SeedGrowthInfo.Seed.BasicHarvestExperiences
+		experiences = tile.SeedGrowthInfo.Crop.BasicHarvestExperiences
 	}
 
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
@@ -131,7 +131,7 @@ func HarvestPlantRpc(
 		return "", err
 	}
 
-	value, err := json.Marshal(HarvestPlantRpcResponse{
+	value, err := json.Marshal(HarvestCropRpcResponse{
 		HarvestedPlantInventoryKey: result.Key,
 	})
 	if err != nil {
