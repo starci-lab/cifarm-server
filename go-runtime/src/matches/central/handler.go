@@ -55,6 +55,18 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 	}
 
 	for i := 0; i < len(presences); i++ {
+		//when user leave, reset their visit state
+		err := collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
+			VisitState: collections_config.VisitState{
+				UserId: "",
+			},
+			UserId: presences[i].GetUserId(),
+		})
+
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 		delete(matchState.Presences, presences[i].GetSessionId())
 	}
 

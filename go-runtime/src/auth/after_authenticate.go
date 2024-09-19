@@ -47,6 +47,19 @@ func AfterAuthenticate(
 		logger.Error(err.Error())
 		return err
 	}
+
+	//reset visit state to home
+	err = collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
+		VisitState: collections_config.VisitState{
+			UserId: "",
+		},
+		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	if object == nil {
 		//first time login
 		err = collections_config.WriteMetadata(ctx, logger, db, nk,
