@@ -109,6 +109,7 @@ func HarvestPlantRpc(
 
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		Amount: experiences,
+		UserId: userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
