@@ -19,7 +19,7 @@ type HarvestCropRpcParams struct {
 }
 
 type HarvestCropRpcResponse struct {
-	HarvestedPlantInventoryKey string `json:"harvestedPlantInventoryKey"`
+	HarvestedCropInventoryKey string `json:"harvestedCropInventoryKey"`
 }
 
 func HarvestCropRpc(
@@ -132,7 +132,7 @@ func HarvestCropRpc(
 	}
 
 	value, err := json.Marshal(HarvestCropRpcResponse{
-		HarvestedPlantInventoryKey: result.Key,
+		HarvestedCropInventoryKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
