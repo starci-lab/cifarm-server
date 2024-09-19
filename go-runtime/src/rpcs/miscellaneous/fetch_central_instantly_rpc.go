@@ -5,6 +5,7 @@ import (
 	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -16,6 +17,12 @@ func FetchCentralInstantlyRpc(
 	nk runtime.NakamaModule,
 	payload string,
 ) (string, error) {
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
 	object, err := collections_system.ReadCentralMatchInfo(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
@@ -26,7 +33,7 @@ func FetchCentralInstantlyRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
-	_, err = nk.MatchSignal(ctx, centralMatchInfo.MatchId, "")
+	_, err = nk.MatchSignal(ctx, centralMatchInfo.MatchId, userId)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err

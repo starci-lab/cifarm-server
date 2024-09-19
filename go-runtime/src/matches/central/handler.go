@@ -153,23 +153,16 @@ func (m *Match) MatchSignal(ctx context.Context, logger runtime.Logger, db *sql.
 		return state, ""
 	}
 
-	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
-	if !ok {
-		errMsg := "user ID not found"
-		logger.Error(errMsg)
-		return state, ""
-	}
-
 	var presence runtime.Presence
 	for _, _presence := range matchState.Presences {
-		if _presence.GetUserId() == userId {
+		if _presence.GetUserId() == data {
 			presence = _presence
 			break
 		}
 	}
 
 	object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
-		UserId: userId,
+		UserId: data,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -187,7 +180,7 @@ func (m *Match) MatchSignal(ctx context.Context, logger runtime.Logger, db *sql.
 	}
 
 	if currentUserId == "" {
-		currentUserId = userId
+		currentUserId = data
 	}
 
 	objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadManyParams{
