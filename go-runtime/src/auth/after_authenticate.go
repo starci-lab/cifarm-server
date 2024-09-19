@@ -66,8 +66,9 @@ func AfterAuthenticate(
 		err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
 			UserId: userId,
 			PlayerStats: collections_config.PlayerStats{
-				Level:       1,
-				Experiences: 0,
+				Level:           1,
+				Experiences:     0,
+				ExperienceQuota: 50,
 			},
 		})
 		if err != nil {
