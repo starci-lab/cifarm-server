@@ -14,8 +14,8 @@ import (
 )
 
 type EnsureParams struct {
-	UserId      string                              `json:"userId"`
-	Inventories []collections_inventories.Inventory `json:"inventories"`
+	UserId               string               `json:"userId"`
+	InventoryWithIndexes []InventoryWithIndex `json:"inventoryWithIndexes"`
 }
 
 func Ensure(
@@ -26,8 +26,8 @@ func Ensure(
 	params EnsureParams,
 ) (bool, error) {
 	var keys []string
-	for _, inventory := range params.Inventories {
-		keys = append(keys, inventory.Key)
+	for _, inventoryWithIndex := range params.InventoryWithIndexes {
+		keys = append(keys, inventoryWithIndex.Inventory.Key)
 	}
 	objects, err := collections_inventories.ReadMany(ctx, logger, db, nk, collections_inventories.ReadManyParams{
 		UserId: params.UserId,
@@ -46,7 +46,7 @@ func Ensure(
 
 	for index, queriedInventory := range queriedInventories {
 		// nếu số lượng trong cơ sở dữ liệu bé hơn
-		if queriedInventory.Quantity < params.Inventories[index].Quantity {
+		if queriedInventory.Quantity < params.InventoryWithIndexes[index].Inventory.Quantity {
 			errMsg := fmt.Sprintf("quantity not enough: %s", queriedInventory.Key)
 			logger.Error(errMsg)
 			return false, nil
@@ -61,8 +61,12 @@ func Ensure(
 	return true, nil
 }
 
+type InventoryWithIndex struct {
+	Index     int                               `json:"index"`
+	Inventory collections_inventories.Inventory `json:"inventory"`
+}
 type DeliverProductsRpcParams struct {
-	Inventories []collections_inventories.Inventory `json:"inventories"`
+	InventoryWithIndexes []InventoryWithIndex `json:"inventoryWithIndexes"`
 }
 
 type DeliverProductsRpcResponse struct {
@@ -92,8 +96,8 @@ func DeliverProductsRpc(
 
 	//ensure enough item to deliver
 	ensure, err := Ensure(ctx, logger, db, nk, EnsureParams{
-		UserId:      userId,
-		Inventories: params.Inventories,
+		UserId:               userId,
+		InventoryWithIndexes: params.InventoryWithIndexes,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -106,11 +110,11 @@ func DeliverProductsRpc(
 	}
 
 	var keys []string
-	for _, inventory := range params.Inventories {
+	for _, inventoryWithIndex := range params.InventoryWithIndexes {
 		//query again to track data
 		object, err := collections_inventories.ReadByKey(ctx, logger, db, nk, collections_inventories.ReadByKeyParams{
 			UserId: userId,
-			Key:    inventory.Key,
+			Key:    inventoryWithIndex.Inventory.Key,
 		})
 		if err != nil {
 			logger.Error(err.Error())
@@ -124,8 +128,8 @@ func DeliverProductsRpc(
 
 		//delete the previous
 		err = collections_inventories.Delete(ctx, logger, db, nk, collections_inventories.DeleteParams{
-			Key:      inventory.Key,
-			Quantity: inventory.Quantity,
+			Key:      inventoryWithIndex.Inventory.Key,
+			Quantity: inventoryWithIndex.Inventory.Quantity,
 			UserId:   userId,
 		})
 		if err != nil {
@@ -144,9 +148,10 @@ func DeliverProductsRpc(
 		result, err := collections_delivering_products.Write(ctx, logger, db, nk, collections_delivering_products.WriteParams{
 			DeliveringProduct: collections_delivering_products.DeliveringProduct{
 				ReferenceKey: query.ReferenceKey,
-				Quantity:     inventory.Quantity,
+				Quantity:     inventoryWithIndex.Inventory.Quantity,
 				Type:         productType,
 				IsPremium:    true,
+				Index:        inventoryWithIndex.Index,
 			},
 			UserId: userId,
 		})
