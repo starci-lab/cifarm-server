@@ -48,6 +48,7 @@ type ReadByKeyParams struct {
 	UserId string `json:"userId"`
 }
 
+// c
 func ReadByKey(
 	ctx context.Context,
 	logger runtime.Logger,
