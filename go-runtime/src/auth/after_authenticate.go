@@ -48,7 +48,7 @@ func AfterAuthenticate(
 		return err
 	}
 
-	//reset visit state to home
+	//when user auth, reset visit state to home
 	err = collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
 		VisitState: collections_config.VisitState{
 			UserId: "",
