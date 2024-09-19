@@ -146,6 +146,81 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 }
 
 func (m *Match) MatchSignal(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, data string) (interface{}, string) {
+	matchState, ok := state.(*MatchState)
+	if !ok {
+		errMsg := "state not a valid lobby state object"
+		logger.Error(errMsg)
+		return state, ""
+	}
+
+	userId, ok := ctx.Value(runtime.RUNTIME_CTX_USER_ID).(string)
+	if !ok {
+		errMsg := "user ID not found"
+		logger.Error(errMsg)
+		return state, ""
+	}
+
+	var presence runtime.Presence
+	for _, _presence := range matchState.Presences {
+		if _presence.GetUserId() == userId {
+			presence = _presence
+			break
+		}
+	}
+
+	object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
+		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return state, ""
+	}
+
+	var currentUserId string
+	if object != nil {
+		visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return state, ""
+		}
+		currentUserId = visitState.UserId
+	}
+
+	if currentUserId == "" {
+		currentUserId = userId
+	}
+
+	objects, err := collections_placed_items.ReadMany(ctx, logger, db, nk, collections_placed_items.ReadManyParams{
+		UserId: currentUserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, ""
+	}
+
+	values, err := collections_common.ToValues2[collections_placed_items.PlacedItem](ctx, logger, db, nk, objects)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, ""
+	}
+
+	wrapped := WrappedPlacedItems{
+		PlacedItems: values,
+	}
+
+	_data, err := json.Marshal(wrapped)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, ""
+	}
+
+	err = dispatcher.BroadcastMessage(OP_CODE_PLACED_ITEMS_STATE, _data, []runtime.Presence{
+		presence,
+	}, nil, true)
+	if err != nil {
+		logger.Error(err.Error())
+		return state, ""
+	}
 	return state, ""
 }
 
