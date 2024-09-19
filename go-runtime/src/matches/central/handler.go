@@ -87,7 +87,8 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	for _, presence := range matchState.Presences {
 		go func() error {
 			err := BroadcastPlacedItems(ctx, logger, db, nk, BroadcastPlacedItemsParams{
-				presence: presence,
+				presence:   presence,
+				dispatcher: dispatcher,
 			})
 			if err != nil {
 				logger.Error(err.Error())
