@@ -2,7 +2,6 @@ package rpcs_community
 
 import (
 	collections_config "cifarm-server/src/collections/config"
-	"cifarm-server/src/friends"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -33,20 +32,6 @@ func VisitRpc(
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
-	}
-
-	result, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
-		UserId:       userId,
-		FriendUserId: params.UserId,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	if !result {
-		errMsg := "not your friend"
-		logger.Error(errMsg)
-		return "", errors.New(errMsg)
 	}
 
 	visitState := collections_config.VisitState{
