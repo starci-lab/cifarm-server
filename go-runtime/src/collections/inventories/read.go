@@ -27,7 +27,7 @@ func Read(
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX
 	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.type:%v +value.isPremium:%s",
-		params.UserId, params.ReferenceKey, params.Type, utils.GetStorageQueryBoolValue(params.IsPremium))
+		params.UserId, params.ReferenceKey, params.Type, utils.BoolToStorageQuery(params.IsPremium))
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)

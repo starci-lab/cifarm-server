@@ -18,7 +18,7 @@ func SliceToString(slice []int) string {
 	return sb.String()
 }
 
-func GetStorageQueryBoolValue(value bool) string {
+func BoolToStorageQuery(value bool) string {
 	if value {
 		return "T"
 	}
