@@ -149,6 +149,7 @@ func IncreaseExperiences(ctx context.Context,
 			playerStats.Level += 1
 			playerStats.ExperienceQuota = 50 + int64(playerStats.Level-1)*50
 		} else {
+			playerStats.Experiences = totalExperiences
 			break
 		}
 	}

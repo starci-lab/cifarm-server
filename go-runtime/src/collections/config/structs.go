@@ -13,7 +13,8 @@ type VisitState struct {
 }
 
 type PlayerStats struct {
-	Experiences     int64 `json:"experiences"`
-	ExperienceQuota int64 `json:"experienceQuota"`
-	Level           int   `json:"level"`
+	Key             string `json:"key"`
+	Experiences     int64  `json:"experiences"`
+	ExperienceQuota int64  `json:"experienceQuota"`
+	Level           int    `json:"level"`
 }
