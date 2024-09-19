@@ -103,9 +103,12 @@ func Write(
 }
 
 type WriteUniqueParams struct {
-	Inventory      Inventory `json:"inventory"`
-	UserId         string    `json:"userId"`
-	PermissionRead int       `json:"permissionRead"`
+	Inventory Inventory `json:"inventory"`
+	UserId    string    `json:"userId"`
+}
+
+type WriteUniqueResult struct {
+	Key string `json:"key"`
 }
 
 func WriteUnique(
@@ -114,14 +117,17 @@ func WriteUnique(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	params WriteUniqueParams,
-) error {
-	key := uuid.NewString()
+) (*WriteUniqueResult, error) {
+	key := params.Inventory.Key
+	if key == "" {
+		key = uuid.NewString()
+	}
 	params.Inventory.Unique = true
 
 	value, err := json.Marshal(params.Inventory)
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return nil, err
 	}
 
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
@@ -130,16 +136,16 @@ func WriteUnique(
 			Key:             key,
 			UserID:          params.UserId,
 			Value:           string(value),
-			PermissionRead:  params.PermissionRead,
+			PermissionRead:  2,
 			PermissionWrite: 0,
 		},
 	})
 
 	if err != nil {
 		logger.Error(err.Error())
-		return err
+		return nil, err
 	}
-	return nil
+	return &WriteUniqueResult{Key: key}, nil
 }
 
 type TransferOwnershipParams struct {

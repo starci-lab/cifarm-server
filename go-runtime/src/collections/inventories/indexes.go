@@ -21,6 +21,7 @@ func Register(
 	fields := []string{
 		"referenceKey",
 		"type",
+		"isPremium",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

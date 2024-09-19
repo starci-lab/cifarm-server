@@ -83,7 +83,7 @@ func PlaceTileRpc(ctx context.Context,
 
 	//update the tile
 	inventory.IsPlaced = true
-	_, err = collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
+	_, err = collections_inventories.WriteUnique(ctx, logger, db, nk, collections_inventories.WriteUniqueParams{
 		Inventory: *inventory,
 		UserId:    userId,
 	})

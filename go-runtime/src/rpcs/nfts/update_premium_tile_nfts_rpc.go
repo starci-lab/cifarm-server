@@ -41,7 +41,7 @@ func WriteOrTransferedFrom(
 			//nft not found in database => create new since new token is minted
 			logger.Debug("Case 1.1: Nft not found in datate, so that we create new: %v", nftResponse.TokenId)
 
-			err := collections_inventories.WriteUnique(ctx, logger, db, nk, collections_inventories.WriteUniqueParams{
+			_, err := collections_inventories.WriteUnique(ctx, logger, db, nk, collections_inventories.WriteUniqueParams{
 				UserId: params.UserId,
 				Inventory: collections_inventories.Inventory{
 					ReferenceKey: collections_tiles.KEY_PREMIUM,
@@ -49,7 +49,6 @@ func WriteOrTransferedFrom(
 					TokenId:      nftResponse.TokenId,
 					Type:         collections_inventories.TYPE_TILE,
 				},
-				PermissionRead: 2,
 			})
 			if err != nil {
 				logger.Error(err.Error())

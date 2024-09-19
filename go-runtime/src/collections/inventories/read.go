@@ -14,6 +14,7 @@ type ReadParams struct {
 	ReferenceKey string `json:"referenceKey"`
 	UserId       string `json:"userId"`
 	Type         int    `json:"type"`
+	IsPremium    bool   `json:"isPremium"`
 }
 
 func Read(
@@ -24,7 +25,7 @@ func Read(
 	params ReadParams,
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX
-	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.type:%v", params.UserId, params.ReferenceKey, params.Type)
+	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.type:%v +value.isPremium:%v", params.UserId, params.ReferenceKey, params.Type, params.IsPremium)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
