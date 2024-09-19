@@ -21,6 +21,7 @@ func RegisterByReferenceKey(
 	fields := []string{
 		"referenceKey",
 		"index",
+		"isPremium",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

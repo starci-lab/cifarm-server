@@ -2,6 +2,7 @@ package collections_delivering_products
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	"cifarm-server/src/utils"
 	"context"
 	"database/sql"
 	"fmt"
@@ -14,6 +15,7 @@ type ReadParams struct {
 	ReferenceKey string `json:"referenceKey"`
 	UserId       string `json:"userId"`
 	Index        int    `json:"index"`
+	IsPremium    bool   `json:"isPremium"`
 }
 
 func Read(
@@ -24,7 +26,11 @@ func Read(
 	params ReadParams,
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX
-	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.index:%v", params.UserId, params.ReferenceKey, params.Index)
+	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.index:%v +value.isPremium:%s",
+		params.UserId,
+		params.ReferenceKey,
+		params.Index,
+		utils.BoolToStorageQuery(params.IsPremium))
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
