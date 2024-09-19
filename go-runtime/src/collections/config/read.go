@@ -107,12 +107,12 @@ type ReadPlayerStatsParams struct {
 	UserId string `json:"userId"`
 }
 
-func ReadPlayerStatsState(
+func ReadPlayerStats(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadVisitStateParams,
+	params ReadPlayerStatsParams,
 ) (*api.StorageObject, error) {
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{

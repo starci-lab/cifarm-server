@@ -1,6 +1,7 @@
 package collections_config
 
 import (
+	collections_common "cifarm-server/src/collections/common"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -109,6 +110,53 @@ func WritePlayerStats(
 		},
 	})
 
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type IncreaseExperiencesParams struct {
+	Amount int64  `json:"amount"`
+	UserId string `json:"userId"`
+}
+
+func IncreaseExperiences(ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params IncreaseExperiencesParams) error {
+	object, err := ReadPlayerStats(ctx, logger, db, nk, ReadPlayerStatsParams{
+		UserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	playerStats, err := collections_common.ToValue[PlayerStats](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	//each level need 50 exp, next level need 20 more
+	//50=>100=>150=>...
+	totalExperiences := playerStats.Experiences + int64(params.Amount)
+	for {
+		if totalExperiences >= playerStats.ExperienceQuota {
+			totalExperiences -= playerStats.ExperienceQuota
+			playerStats.Level += 1
+			playerStats.ExperienceQuota = 50 + int64(playerStats.Level-1)*50
+		} else {
+			break
+		}
+	}
+
+	err = WritePlayerStats(ctx, logger, db, nk, WritePlayerStatsParams{
+		PlayerStats: *playerStats,
+		UserId:      params.UserId,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err

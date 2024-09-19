@@ -13,3 +13,7 @@ const (
 const (
 	STORAGE_INDEX_USER_ID = "ConfigStorageIndexUserId"
 )
+
+const (
+	EXPERIENCE_FROM_ACTIVITY = 3
+)

@@ -10,4 +10,6 @@ type Seed struct {
 	NextGrowthStageAfterHarvest int    `json:"nextGrowthStageAfterHarvest"`
 	MinHarvestQuantity          int    `json:"minHarvestQuantity"`
 	MaxHarvestQuantity          int    `json:"maxHarvestQuantity"`
+	BasicHarvestExperiences     int64  `json:"basicHarvestExperiences"`
+	PremiumHarvestExperiences   int64  `json:"premiumHarvestExperiences"`
 }

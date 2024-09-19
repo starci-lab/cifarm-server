@@ -17,14 +17,16 @@ func SetupSeeds(
 
 	seeds := []collections_seeds.Seed{
 		{
-			Key:                 collections_seeds.KEY_CARROT,
-			Price:               50,
-			GrowthStageDuration: 60 * 60, //1 hours
-			GrowthStages:        5,
-			Premium:             false,
-			Perennial:           false,
-			MinHarvestQuantity:  14,
-			MaxHarvestQuantity:  20,
+			Key:                       collections_seeds.KEY_CARROT,
+			Price:                     50,
+			GrowthStageDuration:       60 * 60, //1 hours
+			GrowthStages:              5,
+			Premium:                   false,
+			Perennial:                 false,
+			MinHarvestQuantity:        14,
+			MaxHarvestQuantity:        20,
+			BasicHarvestExperiences:   12,
+			PremiumHarvestExperiences: 60,
 		},
 		{
 			Key:                         collections_seeds.KEY_POTATO,
@@ -36,6 +38,8 @@ func SetupSeeds(
 			MinHarvestQuantity:          16,
 			MaxHarvestQuantity:          23,
 			NextGrowthStageAfterHarvest: 1,
+			BasicHarvestExperiences:     21,
+			PremiumHarvestExperiences:   110,
 		},
 		{
 			Key:                         collections_seeds.KEY_CUCUMBER,
@@ -47,6 +51,8 @@ func SetupSeeds(
 			MinHarvestQuantity:          16,
 			MaxHarvestQuantity:          23,
 			NextGrowthStageAfterHarvest: 1,
+			BasicHarvestExperiences:     21,
+			PremiumHarvestExperiences:   110,
 		},
 		{
 			Key:                         collections_seeds.KEY_PINEAPPLE,
@@ -58,6 +64,8 @@ func SetupSeeds(
 			MinHarvestQuantity:          16,
 			MaxHarvestQuantity:          23,
 			NextGrowthStageAfterHarvest: 1,
+			BasicHarvestExperiences:     21,
+			PremiumHarvestExperiences:   110,
 		},
 		{
 			Key:                         collections_seeds.KEY_WATERMELON,
@@ -69,6 +77,8 @@ func SetupSeeds(
 			MinHarvestQuantity:          16,
 			MaxHarvestQuantity:          23,
 			NextGrowthStageAfterHarvest: 1,
+			BasicHarvestExperiences:     21,
+			PremiumHarvestExperiences:   110,
 		},
 		{
 			Key:                         collections_seeds.KEY_PINEAPPLE,
@@ -80,6 +90,8 @@ func SetupSeeds(
 			MinHarvestQuantity:          16,
 			MaxHarvestQuantity:          23,
 			NextGrowthStageAfterHarvest: 1,
+			BasicHarvestExperiences:     21,
+			PremiumHarvestExperiences:   110,
 		},
 	}
 

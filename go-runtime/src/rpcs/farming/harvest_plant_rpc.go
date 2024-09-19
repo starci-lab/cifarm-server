@@ -2,6 +2,7 @@ package rpcs_farming
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_config "cifarm-server/src/collections/config"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_tiles "cifarm-server/src/collections/tiles"
@@ -82,16 +83,32 @@ func HarvestPlantRpc(
 		return "", errors.New(errMsg)
 	}
 
+	isPremium := tile.ReferenceKey == collections_tiles.KEY_PREMIUM
 	//write to inventories the havested items
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
 			ReferenceKey: tile.SeedGrowthInfo.Seed.Key,
 			Type:         collections_inventories.TYPE_HARVESTED_PLANT,
 			Quantity:     tile.SeedGrowthInfo.HarvestQuantityRemaining,
-			IsPremium:    tile.ReferenceKey == collections_tiles.KEY_PREMIUM,
+			IsPremium:    isPremium,
 			Deliverable:  true,
 		},
 		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	var experiences int64
+	if isPremium {
+		experiences = tile.SeedGrowthInfo.Seed.PremiumHarvestExperiences
+	} else {
+		experiences = tile.SeedGrowthInfo.Seed.BasicHarvestExperiences
+	}
+
+	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
+		Amount: experiences,
 	})
 	if err != nil {
 		logger.Error(err.Error())

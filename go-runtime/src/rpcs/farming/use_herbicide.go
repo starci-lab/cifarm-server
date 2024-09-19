@@ -2,6 +2,7 @@ package rpcs_farming
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	"context"
 	"database/sql"
@@ -76,6 +77,15 @@ func UseHerbicideRpc(
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *tile,
 		UserId:     userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
+		UserId: userId,
+		Amount: collections_config.EXPERIENCE_FROM_ACTIVITY,
 	})
 	if err != nil {
 		logger.Error(err.Error())
