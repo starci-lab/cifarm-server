@@ -177,8 +177,7 @@ func BroadcastPlacedItems(ctx context.Context, logger runtime.Logger, db *sql.DB
 		PlacedItems: values,
 	}
 
-	var data []byte
-	data, err = json.Marshal(wrapped)
+	data, err := json.Marshal(wrapped)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
