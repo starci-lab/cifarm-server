@@ -25,7 +25,13 @@ func Read(
 	params ReadParams,
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX
-	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.type:%v +value.isPremium:%v", params.UserId, params.ReferenceKey, params.Type, params.IsPremium)
+	var boolValue string
+	if params.IsPremium {
+		boolValue = "T"
+	} else {
+		boolValue = "F"
+	}
+	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.type:%v +value.isPremium:%s", params.UserId, params.ReferenceKey, params.Type, boolValue)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
