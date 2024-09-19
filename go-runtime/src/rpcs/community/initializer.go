@@ -18,7 +18,7 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = initializer.RegisterRpc("visit_rpc", VisitRpc)
+	err = initializer.RegisterRpc("visit", VisitRpc)
 	if err != nil {
 		return err
 	}

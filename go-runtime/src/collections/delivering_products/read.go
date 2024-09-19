@@ -10,20 +10,21 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ReadByReferenceKeyParams struct {
+type ReadParams struct {
 	ReferenceKey string `json:"referenceKey"`
 	UserId       string `json:"userId"`
+	Index        int    `json:"index"`
 }
 
-func ReadByReferenceKey(
+func Read(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadByReferenceKeyParams,
+	params ReadParams,
 ) (*api.StorageObject, error) {
-	name := STORAGE_INDEX_BY_REFERENCE_KEY
-	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s", params.UserId, params.ReferenceKey)
+	name := STORAGE_INDEX
+	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.index:%v", params.UserId, params.ReferenceKey, params.Index)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)

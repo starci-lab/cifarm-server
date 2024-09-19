@@ -15,11 +15,12 @@ func RegisterByReferenceKey(
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := STORAGE_INDEX_BY_REFERENCE_KEY
+	name := STORAGE_INDEX
 	collection := COLLECTION_NAME
 	key := ""
 	fields := []string{
 		"referenceKey",
+		"index",
 	}
 	sortableFields := []string{}
 	maxEntries := collections_common.MAX_ENTRIES

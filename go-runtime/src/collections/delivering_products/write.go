@@ -26,9 +26,10 @@ func Write(
 	nk runtime.NakamaModule,
 	params WriteParams,
 ) (*WriteResult, error) {
-	object, err := ReadByReferenceKey(ctx, logger, db, nk, ReadByReferenceKeyParams{
+	object, err := Read(ctx, logger, db, nk, ReadParams{
 		ReferenceKey: params.DeliveringProduct.ReferenceKey,
 		UserId:       params.UserId,
+		Index:        params.DeliveringProduct.Index,
 	})
 	if err != nil {
 		logger.Error(err.Error())

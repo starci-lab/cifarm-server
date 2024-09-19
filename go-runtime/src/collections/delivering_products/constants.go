@@ -5,7 +5,7 @@ const (
 )
 
 const (
-	STORAGE_INDEX_BY_REFERENCE_KEY = "DeliveringProductsStorageIndexByReferenceKey"
+	STORAGE_INDEX = "DeliveringProductsStorageIndex"
 )
 
 const (
