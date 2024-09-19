@@ -17,3 +17,10 @@ func SliceToString(slice []int) string {
 	sb.WriteString("]")
 	return sb.String()
 }
+
+func GetStorageQueryBoolValue(value bool) string {
+	if value {
+		return "T"
+	}
+	return "F"
+}
