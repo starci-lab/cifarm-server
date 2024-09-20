@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"time"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -84,6 +85,7 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 		logger.Error(errMsg)
 		return errors.New(errMsg)
 	}
+
 	for _, presence := range matchState.Presences {
 		go func() error {
 			err := BroadcastPlacedItems(ctx, logger, db, nk, BroadcastPlacedItemsParams{
@@ -97,6 +99,21 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			return nil
 		}()
 	}
+
+	//broadcast next deli time
+	var presences []runtime.Presence
+	for _, presence := range matchState.Presences {
+		presences = append(presences, presence)
+	}
+	err := BroadcastNextDeliveryTime(ctx, logger, db, nk, BroadcastNextDeliveryTimeParams{
+		presences:  presences,
+		dispatcher: dispatcher,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	return state
 }
 
@@ -185,6 +202,37 @@ func BroadcastPlacedItems(ctx context.Context, logger runtime.Logger, db *sql.DB
 	err = params.dispatcher.BroadcastMessage(OP_CODE_PLACED_ITEMS_STATE, data, []runtime.Presence{
 		params.presence,
 	}, nil, true)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type NextDeliveryTime struct {
+	Time int64 `json:"time"`
+}
+
+type BroadcastNextDeliveryTimeParams struct {
+	presences  []runtime.Presence
+	dispatcher runtime.MatchDispatcher
+}
+
+func BroadcastNextDeliveryTime(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastNextDeliveryTimeParams) error {
+	now := time.Now()
+	nextInterval := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())
+
+	nextDeliveryTime := NextDeliveryTime{
+		Time: nextInterval.Unix() - now.Unix(),
+	}
+
+	data, err := json.Marshal(nextDeliveryTime)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = params.dispatcher.BroadcastMessage(OP_CODE_NEXT_DELIVERY_TIME, data, params.presences, nil, true)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
