@@ -58,7 +58,7 @@ func ReadLastServerUptime(
 	return object, nil
 }
 
-func ReadCentralMatchInfo(
+func ReadMatchInfo(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -67,7 +67,7 @@ func ReadCentralMatchInfo(
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{
 			Collection: COLLECTION_NAME,
-			Key:        KEY_CENTRAL_MATCH_INFO,
+			Key:        KEY_MATCH_INFO,
 		},
 	})
 	if err != nil {

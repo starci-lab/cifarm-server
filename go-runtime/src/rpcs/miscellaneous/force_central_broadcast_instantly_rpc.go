@@ -23,17 +23,17 @@ func ForceCentralBroadcastInstantlyRpc(
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
-	object, err := collections_system.ReadCentralMatchInfo(ctx, logger, db, nk)
+	object, err := collections_system.ReadMatchInfo(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	centralMatchInfo, err := collections_common.ToValue[collections_system.CentralMatchInfo](ctx, logger, db, nk, object)
+	matchInfo, err := collections_common.ToValue[collections_system.MatchInfo](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	_, err = nk.MatchSignal(ctx, centralMatchInfo.MatchId, userId)
+	_, err = nk.MatchSignal(ctx, matchInfo.CentralMatchId, userId)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err

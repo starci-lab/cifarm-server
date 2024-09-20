@@ -75,18 +75,18 @@ func WriteLastServerUptime(
 	return nil
 }
 
-type WriteCentralMatchInfoParams struct {
-	CentralMatchInfo CentralMatchInfo `json:"centralMatchInfo"`
+type WriteMatchInfoParams struct {
+	MatchInfo MatchInfo `json:"matchInfo"`
 }
 
-func WriteCentralMatchInfo(
+func WriteMatchInfo(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteCentralMatchInfoParams,
+	params WriteMatchInfoParams,
 ) error {
-	value, err := json.Marshal(params.CentralMatchInfo)
+	value, err := json.Marshal(params.MatchInfo)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -95,7 +95,7 @@ func WriteCentralMatchInfo(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             KEY_CENTRAL_MATCH_INFO,
+			Key:             KEY_MATCH_INFO,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

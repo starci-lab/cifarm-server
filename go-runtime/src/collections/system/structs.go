@@ -10,9 +10,10 @@ type LastServerUptime struct {
 	TimeInSeconds int64  `json:"timeInSeconds"`
 }
 
-type CentralMatchInfo struct {
-	Key     string `json:"key"`
-	MatchId string `json:"matchId"`
+type MatchInfo struct {
+	Key            string `json:"key"`
+	CentralMatchId string `json:"centralMatchId"`
+	TimerMatchId   string `json:"timerMatchId"`
 }
 
 type SpeedUp struct {
