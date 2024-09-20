@@ -2,7 +2,7 @@ package setup_entities
 
 import (
 	collections_crops "cifarm-server/src/collections/crops"
-	collections_market_pricings "cifarm-server/src/collections/market-pricings"
+	collections_market_pricings "cifarm-server/src/collections/market_pricings"
 	"context"
 	"database/sql"
 
