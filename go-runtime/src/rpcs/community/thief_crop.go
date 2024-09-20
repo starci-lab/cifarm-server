@@ -6,6 +6,7 @@ import (
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_tiles "cifarm-server/src/collections/tiles"
+	"cifarm-server/src/utils"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -95,7 +96,13 @@ func ThiefCropRpc(
 	}
 
 	if !tile.FullyMatured {
-		errMsg := "plant not fully matured"
+		errMsg := "crop not fully matured"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
+	if utils.Contains(tile.SeedGrowthInfo.ThiefedBy, userId) {
+		errMsg := "theif the crop before"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
@@ -134,8 +141,10 @@ func ThiefCropRpc(
 	}
 
 	//giam san luong
+	//add thang an trom vao list
 	tile.SeedGrowthInfo.HarvestQuantityRemaining -= thiefQuantity
-	logger.Debug("%s", tile.SeedGrowthInfo.HarvestQuantityRemaining)
+	tile.SeedGrowthInfo.ThiefedBy = append(tile.SeedGrowthInfo.ThiefedBy, userId)
+
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *tile,

@@ -16,6 +16,7 @@ type SeedGrowthInfo struct {
 	HarvestQuantityRemaining int                    `json:"harvestQuantityRemaining"`
 	Crop                     collections_crops.Crop `json:"crop"`
 	PlantCurrentState        int                    `json:"plantCurrentState"`
+	ThiefedBy                []string               `json:"thiefedBy"`
 }
 
 type PlacedItem struct {

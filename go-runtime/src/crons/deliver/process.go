@@ -4,7 +4,7 @@ import (
 	collections_common "cifarm-server/src/collections/common"
 	collections_config "cifarm-server/src/collections/config"
 	collections_delivering_products "cifarm-server/src/collections/delivering_products"
-	collections_market_pricings "cifarm-server/src/collections/market-pricings"
+	collections_market_pricings "cifarm-server/src/collections/market_pricings"
 	collections_system "cifarm-server/src/collections/system"
 	"cifarm-server/src/config"
 	services_periphery_api_token "cifarm-server/src/services/periphery/api/token"
