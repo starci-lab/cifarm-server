@@ -38,6 +38,7 @@ func VerifyMessage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 	logger.Info("POST %v", url)
 	_response, err := services_uitls_api.SendPostRequest[VerifyMessageRequestBody, VerifyMessageResponse](url, body)
 	if err != nil {
+		logger.Error(err.Error())
 		return nil, err
 	}
 	return &_response.Data, nil

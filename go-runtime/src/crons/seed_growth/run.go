@@ -22,16 +22,17 @@ func Run(
 		logger.Error(err.Error())
 		return err
 	}
-	lastServerUptime, err := collections_common.ToValue[collections_system.LastServerUptime](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
 	var timeSinceLastUptime int64
-	if lastServerUptime != nil {
+	if object != nil {
+		lastServerUptime, err := collections_common.ToValue[collections_system.LastServerUptime](ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 		timeSinceLastUptime = time.Now().Unix() - lastServerUptime.TimeInSeconds
+
+		logger.Info("time since last uptime: %vs", timeSinceLastUptime)
 	}
-	logger.Info("time since last uptime: %vs", timeSinceLastUptime)
 
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
