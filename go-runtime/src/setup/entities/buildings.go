@@ -17,12 +17,14 @@ func SetupBuildings(
 
 	buildings := []collections_buildings.Bulding{
 		{
-			Key:   collections_buildings.KEY_COOP,
-			Price: 1000,
+			Key:             collections_buildings.KEY_COOP,
+			Price:           1000,
+			AvailableInShop: true,
 		},
 		{
-			Key:   collections_buildings.KEY_PASTURE,
-			Price: 2500,
+			Key:             collections_buildings.KEY_PASTURE,
+			Price:           2500,
+			AvailableInShop: true,
 		},
 		{
 			Key: collections_buildings.KEY_HOME,
