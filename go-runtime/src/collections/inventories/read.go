@@ -89,6 +89,7 @@ func ReadByTokenId(
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX_BY_TOKEN_ID
 	//fixed
+	logger.Info(fmt.Sprintf("+value.tokenId:%s +value.referenceKey:%s", params.TokenId, params.ReferenceKey))
 	query := fmt.Sprintf("+value.tokenId:%s +value.referenceKey:%s", params.TokenId, params.ReferenceKey)
 	order := []string{}
 
