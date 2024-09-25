@@ -88,7 +88,7 @@ func ReadByTokenId(
 	params ReadByTokenIdParams,
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX_BY_TOKEN_ID
-	query := fmt.Sprintf("+value.tokenId:%v +value.referenceKey:%s", params.TokenId, params.ReferenceKey)
+	query := fmt.Sprintf("+value.tokenId:%s +value.referenceKey:%s", params.TokenId, params.ReferenceKey)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
