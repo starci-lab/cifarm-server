@@ -16,12 +16,5 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		logger.Error(err.Error())
 		return err
 	}
-	matchId, err := nk.MatchCreate(ctx, NAME, map[string]interface{}{})
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-
-	logger.Info(`Match started with id: %s`, matchId)
 	return nil
 }

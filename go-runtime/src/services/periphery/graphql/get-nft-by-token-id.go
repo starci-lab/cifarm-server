@@ -10,7 +10,7 @@ import (
 )
 
 type GetNftByTokenIdInput struct {
-	TokenId  int    `json:"tokenId"`
+	TokenId  string `json:"tokenId"`
 	Network  string `json:"network"`
 	NftKey   string `json:"nftKey"`
 	ChainKey string `json:"chainKey"`

@@ -1,7 +1,7 @@
 package services_periphery_graphql
 
 type NftDataResponse struct {
-	TokenId      int    `json:"tokenId"`
+	TokenId      string `json:"tokenId"`
 	TokenURI     string `json:"tokenURI"`
 	OwnerAddress string `json:"ownerAddress"`
 }

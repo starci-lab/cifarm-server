@@ -26,8 +26,8 @@ func WriteOrTransferedFrom(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	params WriteOrTransferedFromParams,
-) ([]int, error) {
-	var tokenIds []int
+) ([]string, error) {
+	var tokenIds []string
 	for _, nftResponse := range params.Nfts {
 		object, err := collections_inventories.ReadByTokenId(ctx, logger, db, nk, collections_inventories.ReadByTokenIdParams{
 			TokenId:      nftResponse.TokenId,
@@ -189,7 +189,7 @@ func DeleteOrTransferTo(
 }
 
 type UpdatePremiumTileNftsRpcResponse struct {
-	TokenIds []int `json:"tokenIds"`
+	TokenIds []string `json:"tokenIds"`
 }
 
 func UpdatePremiumTileNftsRpc(

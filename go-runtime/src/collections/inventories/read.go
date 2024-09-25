@@ -76,7 +76,7 @@ func ReadByKey(
 }
 
 type ReadByTokenIdParams struct {
-	TokenId      int    `json:"tokenId"`
+	TokenId      string `json:"tokenId"`
 	ReferenceKey string `json:"referenceKey"`
 }
 
