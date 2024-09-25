@@ -149,7 +149,7 @@ func DeleteOrTransferTo(
 					AccountAddress: data.OwnerAddress,
 				},
 			})
-			logger.Info("hentai %s", newUserId)
+
 			if err != nil {
 				logger.Error(err.Error())
 				return err
