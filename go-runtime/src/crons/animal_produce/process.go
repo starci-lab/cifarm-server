@@ -42,6 +42,7 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 		}
 	} else {
 		//do adult logic
+		params.PlacedItem.AnimalInfo.CurrentYieldTime += params.TimeInSeconds
 		if params.PlacedItem.AnimalInfo.CurrentYieldTime >= params.PlacedItem.AnimalInfo.Animal.YieldTime {
 			params.PlacedItem.AnimalInfo.CurrentYieldTime = 0
 			params.PlacedItem.AnimalInfo.HasYielded = true

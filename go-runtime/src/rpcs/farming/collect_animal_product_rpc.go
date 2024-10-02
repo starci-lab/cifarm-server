@@ -86,6 +86,7 @@ func CollectAnimalProductRpc(
 			Type:         collections_inventories.TYPE_ANIMAL_PRODUCT,
 			Deliverable:  true,
 		},
+		UserId: userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())

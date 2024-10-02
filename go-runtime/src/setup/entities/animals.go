@@ -20,7 +20,7 @@ func SetupAnimals(
 			Key:                       collections_animals.KEY_CHICKEN,
 			OffspringPrice:            1000,
 			IsNFT:                     false,
-			GrowthTime:                60 * 60 * 24 * 7, //7 days
+			GrowthTime:                60 * 60 * 24 * 3, //3 days
 			YieldTime:                 60 * 60 * 24,     //1 days
 			AvailableInShop:           true,
 			HungerTime:                60 * 60 * 12, //12 hours
@@ -32,8 +32,8 @@ func SetupAnimals(
 		{
 			Key:                       collections_animals.KEY_COW,
 			IsNFT:                     true,
-			GrowthTime:                60 * 60 * 24 * 14, //14 days
-			YieldTime:                 60 * 60 * 24 * 2,  //2 days
+			GrowthTime:                60 * 60 * 24 * 7, //7 days
+			YieldTime:                 60 * 60 * 24 * 2, //2 days
 			AvailableInShop:           false,
 			HungerTime:                60 * 60 * 12, //12 hours
 			MinHarvestQuantity:        14,

@@ -23,12 +23,13 @@ type SpeedUp struct {
 }
 
 type ActivityExperiences struct {
-	Water            int64 `json:"water"`
-	UsePestiside     int64 `json:"usePestiside"`
-	UseFertilizer    int64 `json:"useFertilizer"`
-	UseHerbicide     int64 `json:"useHerbicide"`
-	HelpUseHerbicide int64 `json:"helpUseHerbicide"`
-	HelpUsePestiside int64 `json:"helpUsePestiside"`
-	HelpWater        int64 `json:"helpWater"`
-	ThiefCrop        int64 `json:"thiefCrop"`
+	Key              string `json:"key"`
+	Water            int64  `json:"water"`
+	UsePestiside     int64  `json:"usePestiside"`
+	UseFertilizer    int64  `json:"useFertilizer"`
+	UseHerbicide     int64  `json:"useHerbicide"`
+	HelpUseHerbicide int64  `json:"helpUseHerbicide"`
+	HelpUsePestiside int64  `json:"helpUsePestiside"`
+	HelpWater        int64  `json:"helpWater"`
+	ThiefCrop        int64  `json:"thiefCrop"`
 }

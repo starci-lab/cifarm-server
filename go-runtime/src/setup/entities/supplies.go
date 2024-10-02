@@ -17,13 +17,13 @@ func SetupSupplies(
 	supplies := []collections_supplies.Supply{
 		{
 			Key:             collections_supplies.KEY_BASIC_FERTILIZER,
-			Price:           10,
+			Price:           50,
 			AvailableInShop: true,
 			Type:            collections_supplies.TYPE_FERTILIZER,
 		},
 		{
 			Key:             collections_supplies.KEY_CHICKEN_FEED,
-			Price:           10,
+			Price:           50,
 			AvailableInShop: true,
 			Type:            collections_supplies.TYPE_ANIMAL_FEED,
 		},
