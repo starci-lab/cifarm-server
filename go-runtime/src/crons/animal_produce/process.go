@@ -27,17 +27,21 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 		return nil
 	}
 
+	//increase time hungry
+	params.PlacedItem.AnimalInfo.CurrentHungryTime += params.TimeInSeconds
+
+	if params.PlacedItem.AnimalInfo.CurrentHungryTime >= params.PlacedItem.AnimalInfo.Animal.HungerTime {
+		params.PlacedItem.AnimalInfo.NeedFed = true
+	}
+
 	if !params.PlacedItem.AnimalInfo.IsAdult {
 		//do non-aldult logic
 		params.PlacedItem.AnimalInfo.CurrentGrowthTime += params.TimeInSeconds
-
 		if params.PlacedItem.AnimalInfo.CurrentGrowthTime >= params.PlacedItem.AnimalInfo.Animal.GrowthTime {
 			params.PlacedItem.AnimalInfo.IsAdult = true
 		}
 	} else {
 		//do adult logic
-		params.PlacedItem.AnimalInfo.CurrentYieldTime += params.TimeInSeconds
-
 		if params.PlacedItem.AnimalInfo.CurrentYieldTime >= params.PlacedItem.AnimalInfo.Animal.YieldTime {
 			params.PlacedItem.AnimalInfo.CurrentYieldTime = 0
 			params.PlacedItem.AnimalInfo.HasYielded = true
@@ -75,7 +79,7 @@ func HandleAnimalProcedure(
 		logger.Error(err.Error())
 		return err
 	}
-
+	logger.Info("objects: %v", len(objects.Objects))
 	for _, object := range objects.Objects {
 		go func() error {
 			placedItem, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)
@@ -127,12 +131,12 @@ func Process(
 			logger.Error(err.Error())
 			return err
 		}
-		speedUpTime = speedUp.Time
+		speedUpTime = speedUp.AnimalProcedureTime
 	}
 	if speedUpTime > 0 {
 		err := collections_system.WriteSpeedUp(ctx, logger, db, nk, collections_system.WriteSpeedUpParams{
 			SpeedUp: collections_system.SpeedUp{
-				Time: 0,
+				AnimalProcedureTime: 0,
 			},
 		})
 		if err != nil {

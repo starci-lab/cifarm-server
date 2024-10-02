@@ -87,6 +87,7 @@ func FeedAnimalRpc(
 
 	//update animal status
 	animal.AnimalInfo.NeedFed = false
+	animal.AnimalInfo.CurrentHungryTime = 0
 
 	//update the animal
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{

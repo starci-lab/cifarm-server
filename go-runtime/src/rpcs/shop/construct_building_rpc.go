@@ -19,7 +19,7 @@ type ConstructBuildingRpcParams struct {
 }
 
 type ConstructBuildingRpcResponse struct {
-	BuildingKey string `json:"buildingKey"`
+	PlacedItemBuildingKey string `json:"placedItemBuildingKey"`
 }
 
 func ConstructBuildingRpc(ctx context.Context,
@@ -74,7 +74,9 @@ func ConstructBuildingRpc(ctx context.Context,
 			Position:     params.Position,
 			Type:         collections_placed_items.TYPE_BUILDING,
 			BuildingInfo: collections_placed_items.BuildingInfo{
-				Building: *building,
+				Building:       *building,
+				CurrentUpgrade: 1,
+				Occupancy:      0,
 			},
 		},
 		UserId: userId,
@@ -84,7 +86,7 @@ func ConstructBuildingRpc(ctx context.Context,
 		return "", err
 	}
 	value, err := json.Marshal(ConstructBuildingRpcResponse{
-		BuildingKey: result.Key,
+		PlacedItemBuildingKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

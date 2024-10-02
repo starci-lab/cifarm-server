@@ -160,12 +160,12 @@ func Process(
 			logger.Error(err.Error())
 			return err
 		}
-		speedUpTime = speedUp.Time
+		speedUpTime = speedUp.SeedGrowthTime
 	}
 	if speedUpTime > 0 {
 		err := collections_system.WriteSpeedUp(ctx, logger, db, nk, collections_system.WriteSpeedUpParams{
 			SpeedUp: collections_system.SpeedUp{
-				Time: 0,
+				SeedGrowthTime: 0,
 			},
 		})
 		if err != nil {

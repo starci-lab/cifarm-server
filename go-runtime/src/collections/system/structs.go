@@ -17,8 +17,9 @@ type MatchInfo struct {
 }
 
 type SpeedUp struct {
-	Key  string `json:"key"`
-	Time int64  `json:"time"`
+	Key                 string `json:"key"`
+	AnimalProcedureTime int64  `json:"animalProcedureTime"`
+	SeedGrowthTime      int64  `json:"time"`
 }
 
 type ActivityExperiences struct {

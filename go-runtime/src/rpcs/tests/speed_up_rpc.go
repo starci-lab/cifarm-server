@@ -28,7 +28,8 @@ func SpeedUpRpc(ctx context.Context,
 
 	err = collections_system.WriteSpeedUp(ctx, logger, db, nk, collections_system.WriteSpeedUpParams{
 		SpeedUp: collections_system.SpeedUp{
-			Time: params.Time,
+			AnimalProcedureTime: params.Time,
+			SeedGrowthTime:      params.Time,
 		},
 	})
 	if err != nil {

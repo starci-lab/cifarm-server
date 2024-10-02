@@ -25,6 +25,7 @@ type SeedGrowthInfo struct {
 
 type AnimalInfo struct {
 	CurrentGrowthTime        int64                      `json:"currentGrowth"`
+	CurrentHungryTime        int64                      `json:"currentHungryTime"`
 	CurrentYieldTime         int64                      `json:"currentYieldTime"`
 	HasYielded               bool                       `json:"hasYielded"`
 	IsAdult                  bool                       `json:"isAdult"`
