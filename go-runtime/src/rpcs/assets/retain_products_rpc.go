@@ -73,7 +73,7 @@ func RetainProductsRpc(
 		var inventoryType int
 		switch query.Type {
 		case collections_delivering_products.TYPE_PLANT:
-			inventoryType = collections_inventories.TYPE_HARVESTED_PLANT
+			inventoryType = collections_inventories.TYPE_HARVESTED_CROP
 		default:
 		}
 

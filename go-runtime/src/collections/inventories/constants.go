@@ -12,11 +12,11 @@ const (
 )
 
 const (
-	TYPE_SEED            = 0
-	TYPE_TILE            = 1
-	TYPE_ANIMAL          = 2
-	TYPE_HARVESTED_PLANT = 3
-	TYPE_SUPPLY          = 4
+	TYPE_SEED           = 0
+	TYPE_TILE           = 1
+	TYPE_ANIMAL         = 2
+	TYPE_HARVESTED_CROP = 3
+	TYPE_SUPPLY         = 4
 )
 
 const (

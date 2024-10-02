@@ -19,7 +19,7 @@ type HarvestCropRpcParams struct {
 }
 
 type HarvestCropRpcResponse struct {
-	HarvestedCropInventoryKey string `json:"harvestedCropInventoryKey"`
+	InventoryHarvestedCropKey string `json:"inventoryHarvestedCropKey"`
 }
 
 func HarvestCropRpc(
@@ -88,7 +88,7 @@ func HarvestCropRpc(
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
 			ReferenceKey: tile.SeedGrowthInfo.Crop.Key,
-			Type:         collections_inventories.TYPE_HARVESTED_PLANT,
+			Type:         collections_inventories.TYPE_HARVESTED_CROP,
 			Quantity:     tile.SeedGrowthInfo.HarvestQuantityRemaining,
 			IsPremium:    isPremium,
 			Deliverable:  true,
@@ -132,7 +132,7 @@ func HarvestCropRpc(
 	}
 
 	value, err := json.Marshal(HarvestCropRpcResponse{
-		HarvestedCropInventoryKey: result.Key,
+		InventoryHarvestedCropKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

@@ -18,6 +18,11 @@ type ExecuteProcedureLogicParams struct {
 
 func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params ExecuteProcedureLogicParams,
 ) error {
+	if params.PlacedItem.AnimalInfo.NeedFed {
+		//need fed, do nothing
+		return nil
+	}
+
 	if !params.PlacedItem.AnimalInfo.IsAdult {
 		//do non-aldult logic
 		params.PlacedItem.AnimalInfo.CurrentGrowthTime += params.TimeInSeconds

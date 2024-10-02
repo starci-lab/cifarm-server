@@ -140,7 +140,7 @@ func DeliverProductsRpc(
 		//write new delivering products
 		var productType int
 		switch query.Type {
-		case collections_inventories.TYPE_HARVESTED_PLANT:
+		case collections_inventories.TYPE_HARVESTED_CROP:
 			productType = collections_delivering_products.TYPE_PLANT
 		default:
 		}

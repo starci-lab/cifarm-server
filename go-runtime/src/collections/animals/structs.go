@@ -7,4 +7,5 @@ type Animal struct {
 	Premium         bool   `json:"premium"`
 	GrowthTime      int64  `json:"growthTime"`
 	AvailableInShop bool   `json:"availableInShop"`
+	HungerTime      int64  `json:"hungerTime"`
 }

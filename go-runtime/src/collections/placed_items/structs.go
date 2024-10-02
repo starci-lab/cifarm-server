@@ -29,6 +29,7 @@ type AnimalInfo struct {
 	HasYielded        bool                       `json:"hasYielded"`
 	IsAdult           bool                       `json:"isAdult"`
 	Animal            collections_animals.Animal `json:"animal"`
+	NeedFed           bool                       `json:"needFed"`
 }
 
 type BuildingInfo struct {
