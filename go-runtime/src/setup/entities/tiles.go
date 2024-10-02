@@ -17,24 +17,37 @@ func SetupTiles(
 
 	tiles := []collections_tiles.Tile{
 		{
-			Key:          collections_tiles.KEY_STARTER,
-			Price:        0,
-			MaxOwnership: 6,
+			Key:             collections_tiles.KEY_STARTER,
+			Price:           0,
+			MaxOwnership:    6,
+			IsNFT:           false,
+			AvailableInShop: true,
 		},
 		{
-			Key:          collections_tiles.KEY_BASIC_1,
-			Price:        1000,
-			MaxOwnership: 10,
+			Key:             collections_tiles.KEY_BASIC_1,
+			Price:           1000,
+			MaxOwnership:    10,
+			IsNFT:           false,
+			AvailableInShop: true,
 		},
 		{
-			Key:          collections_tiles.KEY_BASIC_2,
-			Price:        2500,
-			MaxOwnership: 30,
+			Key:             collections_tiles.KEY_BASIC_2,
+			Price:           2500,
+			MaxOwnership:    30,
+			IsNFT:           false,
+			AvailableInShop: true,
 		},
 		{
-			Key:          collections_tiles.KEY_BASIC_3,
-			Price:        10000,
-			MaxOwnership: 9999,
+			Key:             collections_tiles.KEY_BASIC_3,
+			Price:           10000,
+			MaxOwnership:    9999,
+			IsNFT:           false,
+			AvailableInShop: true,
+		},
+		{
+			Key:             collections_tiles.KEY_NFT,
+			AvailableInShop: false,
+			IsNFT:           true,
 		},
 	}
 

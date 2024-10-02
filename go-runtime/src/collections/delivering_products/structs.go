@@ -5,6 +5,6 @@ type DeliveringProduct struct {
 	ReferenceKey string `json:"referenceKey"`
 	Type         int    `json:"type"`
 	Quantity     int    `json:"quantity"`
-	IsPremium    bool   `json:"isPremium"`
+	Premium      bool   `json:"premium"`
 	Index        int    `json:"index"`
 }

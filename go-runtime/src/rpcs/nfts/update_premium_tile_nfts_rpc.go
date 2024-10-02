@@ -31,7 +31,7 @@ func WriteOrTransferedFrom(
 	for _, nftResponse := range params.Nfts {
 		object, err := collections_inventories.ReadByTokenId(ctx, logger, db, nk, collections_inventories.ReadByTokenIdParams{
 			TokenId:      nftResponse.TokenId,
-			ReferenceKey: collections_tiles.KEY_PREMIUM,
+			ReferenceKey: collections_tiles.KEY_NFT,
 		})
 		if err != nil {
 			logger.Error(err.Error())
@@ -44,7 +44,7 @@ func WriteOrTransferedFrom(
 			_, err := collections_inventories.WriteUnique(ctx, logger, db, nk, collections_inventories.WriteUniqueParams{
 				UserId: params.UserId,
 				Inventory: collections_inventories.Inventory{
-					ReferenceKey: collections_tiles.KEY_PREMIUM,
+					ReferenceKey: collections_tiles.KEY_NFT,
 					Placeable:    true,
 					TokenId:      nftResponse.TokenId,
 					Type:         collections_inventories.TYPE_TILE,
@@ -242,7 +242,7 @@ func UpdatePremiumTileNftsRpc(
 	//previous users nft owned
 	objects, err := collections_inventories.ReadManyUnique(ctx, logger, db, nk, collections_inventories.ReadManyUniqueParams{
 		UserId:       userId,
-		ReferenceKey: collections_tiles.KEY_PREMIUM,
+		ReferenceKey: collections_tiles.KEY_NFT,
 	})
 	if err != nil {
 		logger.Error(err.Error())

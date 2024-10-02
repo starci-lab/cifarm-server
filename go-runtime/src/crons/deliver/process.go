@@ -71,7 +71,7 @@ func Process(
 					logger.Error(err.Error())
 					return err
 				}
-				if !deliveryProduct.IsPremium {
+				if !deliveryProduct.Premium {
 					totalGoldAmount += marketPricing.BasicAmount * int64(deliveryProduct.Quantity)
 				} else {
 					totalUtilityTokenAmount += marketPricing.PremiumAmount * float64(deliveryProduct.Quantity)

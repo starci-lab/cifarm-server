@@ -150,7 +150,7 @@ func DeliverProductsRpc(
 				ReferenceKey: query.ReferenceKey,
 				Quantity:     inventoryWithIndex.Inventory.Quantity,
 				Type:         productType,
-				IsPremium:    inventoryWithIndex.Inventory.IsPremium,
+				Premium:      inventoryWithIndex.Inventory.Premium,
 				Index:        inventoryWithIndex.Index,
 			},
 			UserId: userId,

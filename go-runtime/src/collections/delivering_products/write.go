@@ -30,7 +30,7 @@ func Write(
 		ReferenceKey: params.DeliveringProduct.ReferenceKey,
 		UserId:       params.UserId,
 		Index:        params.DeliveringProduct.Index,
-		IsPremium:    params.DeliveringProduct.IsPremium,
+		Premium:      params.DeliveringProduct.Premium,
 	})
 	if err != nil {
 		logger.Error(err.Error())

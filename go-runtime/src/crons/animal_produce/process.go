@@ -22,6 +22,10 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 		//need fed, do nothing
 		return nil
 	}
+	if params.PlacedItem.AnimalInfo.HasYielded {
+		//has yielded, do nothing
+		return nil
+	}
 
 	if !params.PlacedItem.AnimalInfo.IsAdult {
 		//do non-aldult logic

@@ -15,7 +15,7 @@ type ReadParams struct {
 	ReferenceKey string `json:"referenceKey"`
 	UserId       string `json:"userId"`
 	Index        int    `json:"index"`
-	IsPremium    bool   `json:"isPremium"`
+	Premium      bool   `json:"premium"`
 }
 
 func Read(
@@ -30,7 +30,7 @@ func Read(
 		params.UserId,
 		params.ReferenceKey,
 		params.Index,
-		utils.BoolToStorageQuery(params.IsPremium))
+		utils.BoolToStorageQuery(params.Premium))
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)

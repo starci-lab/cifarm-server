@@ -82,7 +82,7 @@ func RetainProductsRpc(
 				ReferenceKey: query.ReferenceKey,
 				Quantity:     deliveringProduct.Quantity,
 				Type:         inventoryType,
-				IsPremium:    query.IsPremium,
+				Premium:      query.Premium,
 			},
 			UserId: userId,
 		})

@@ -5,9 +5,9 @@ const (
 )
 
 const (
-	KEY_STARTER = "starter"
-	KEY_BASIC_1 = "basic1"
-	KEY_BASIC_2 = "basic2"
-	KEY_BASIC_3 = "basic3"
-	KEY_PREMIUM = "premium"
+	KEY_STARTER = "tileStarter"
+	KEY_BASIC_1 = "tileBasic1"
+	KEY_BASIC_2 = "tileBasic2"
+	KEY_BASIC_3 = "tileBasic3"
+	KEY_NFT     = "tileNft"
 )

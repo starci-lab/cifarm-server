@@ -24,12 +24,14 @@ type SeedGrowthInfo struct {
 }
 
 type AnimalInfo struct {
-	CurrentGrowthTime int64                      `json:"currentGrowth"`
-	CurrentYieldTime  int64                      `json:"currentYieldTime"`
-	HasYielded        bool                       `json:"hasYielded"`
-	IsAdult           bool                       `json:"isAdult"`
-	Animal            collections_animals.Animal `json:"animal"`
-	NeedFed           bool                       `json:"needFed"`
+	CurrentGrowthTime        int64                      `json:"currentGrowth"`
+	CurrentYieldTime         int64                      `json:"currentYieldTime"`
+	HasYielded               bool                       `json:"hasYielded"`
+	IsAdult                  bool                       `json:"isAdult"`
+	Animal                   collections_animals.Animal `json:"animal"`
+	NeedFed                  bool                       `json:"needFed"`
+	HarvestQuantityRemaining int                        `json:"harvestQuantityRemaining"`
+	ThiefedBy                []string                   `json:"thiefedBy"`
 }
 
 type BuildingInfo struct {
