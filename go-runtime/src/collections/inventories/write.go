@@ -33,6 +33,7 @@ func Write(
 		ReferenceKey: params.Inventory.ReferenceKey,
 		UserId:       params.UserId,
 		Type:         params.Inventory.Type,
+		Premium:      params.Inventory.Premium,
 	})
 	if err != nil {
 		logger.Error(err.Error())

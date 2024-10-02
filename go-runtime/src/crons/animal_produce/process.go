@@ -46,6 +46,7 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 		if params.PlacedItem.AnimalInfo.CurrentYieldTime >= params.PlacedItem.AnimalInfo.Animal.YieldTime {
 			params.PlacedItem.AnimalInfo.CurrentYieldTime = 0
 			params.PlacedItem.AnimalInfo.HasYielded = true
+			params.PlacedItem.AnimalInfo.HarvestQuantityRemaining = params.PlacedItem.AnimalInfo.Animal.MaxHarvestQuantity
 		}
 	}
 

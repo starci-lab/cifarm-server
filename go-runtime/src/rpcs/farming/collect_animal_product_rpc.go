@@ -81,9 +81,10 @@ func CollectAnimalProductRpc(
 	//create inventory
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
-			ReferenceKey: animal.Key,
+			ReferenceKey: animal.ReferenceKey,
 			Quantity:     animal.AnimalInfo.HarvestQuantityRemaining,
 			Type:         collections_inventories.TYPE_ANIMAL_PRODUCT,
+			Premium:      animal.AnimalInfo.Animal.IsNFT,
 			Deliverable:  true,
 		},
 		UserId: userId,
