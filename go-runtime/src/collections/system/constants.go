@@ -5,8 +5,9 @@ const (
 )
 
 const (
-	KEY_USERS              = "users"
-	KEY_LAST_SERVER_UPTIME = "lastServerUptime"
-	KEY_MATCH_INFO         = "matchInfo"
-	KEY_SPEEDUP            = "speedUp"
+	KEY_USERS                = "users"
+	KEY_LAST_SERVER_UPTIME   = "lastServerUptime"
+	KEY_MATCH_INFO           = "matchInfo"
+	KEY_SPEEDUP              = "speedUp"
+	KEY_ACTIVITY_EXPERIENCES = "activityExperiences"
 )

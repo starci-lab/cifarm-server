@@ -34,11 +34,18 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		logger.Error(err.Error())
 		return err
 	}
-	err = SetupSystem(ctx, logger, db, nk)
+
+	err = SetupSystemUsers(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
+	err = SetupSystemActivityExperiences(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	err = SetupMarketPricings(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
