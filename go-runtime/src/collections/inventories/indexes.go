@@ -21,10 +21,10 @@ func Register(
 	fields := []string{
 		"referenceKey",
 		"type",
-		"isPremium",
+		"premium",
 	}
 	sortableFields := []string{}
-	maxEntries := 1
+	maxEntries := collections_common.MAX_ENTRIES
 	indexOnly := false
 	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
 	if err != nil {

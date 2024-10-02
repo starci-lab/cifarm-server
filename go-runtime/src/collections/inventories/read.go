@@ -28,9 +28,11 @@ func Read(
 	name := STORAGE_INDEX
 	query := fmt.Sprintf("+user_id:%s +value.referenceKey:%s +value.type:%v +value.premium:%s",
 		params.UserId, params.ReferenceKey, params.Type, utils.BoolToStorageQuery(params.Premium))
+	logger.Info(query)
 	order := []string{}
 
 	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
+	logger.Debug("%v", len(objects.Objects))
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

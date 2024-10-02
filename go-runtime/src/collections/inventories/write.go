@@ -35,6 +35,7 @@ func Write(
 		Type:         params.Inventory.Type,
 		Premium:      params.Inventory.Premium,
 	})
+
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
