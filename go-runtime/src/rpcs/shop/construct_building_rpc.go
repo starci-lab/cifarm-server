@@ -47,7 +47,7 @@ func ConstructBuildingRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
-	building, err := collections_common.ToValue[collections_buildings.Bulding](ctx, logger, db, nk, object)
+	building, err := collections_common.ToValue[collections_buildings.Building](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -73,6 +73,9 @@ func ConstructBuildingRpc(ctx context.Context,
 			ReferenceKey: params.Key,
 			Position:     params.Position,
 			Type:         collections_placed_items.TYPE_BUILDING,
+			BuildingInfo: collections_placed_items.BuildingInfo{
+				Building: *building,
+			},
 		},
 		UserId: userId,
 	})

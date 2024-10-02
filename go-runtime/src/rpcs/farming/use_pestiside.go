@@ -58,7 +58,7 @@ func UsePestisideRpc(
 		return "", err
 	}
 
-	if !tile.IsPlanted {
+	if !tile.SeedGrowthInfo.IsPlanted {
 		errMsg := "tile is not being planted"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)

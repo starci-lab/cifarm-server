@@ -19,11 +19,11 @@ type ExecuteGrowthLogicParams struct {
 
 func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params ExecuteGrowthLogicParams,
 ) error {
-	if !params.PlacedItem.IsPlanted {
+	if !params.PlacedItem.SeedGrowthInfo.IsPlanted {
 		//do nothing via nothing planted
 		return nil
 	}
-	if params.PlacedItem.FullyMatured {
+	if params.PlacedItem.SeedGrowthInfo.FullyMatured {
 		//do nothing via fully matured
 		return nil
 	}
@@ -69,7 +69,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 					newQuantity := (params.PlacedItem.SeedGrowthInfo.Crop.MaxHarvestQuantity + params.PlacedItem.SeedGrowthInfo.Crop.MinHarvestQuantity) / 2
 					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = newQuantity
 				}
-				params.PlacedItem.FullyMatured = true
+				params.PlacedItem.SeedGrowthInfo.FullyMatured = true
 				break
 			}
 		} else {
@@ -101,8 +101,7 @@ func HandleSeedGrowth(
 	params HandleSeedGrowthParams,
 
 ) error {
-	objects, err := collections_placed_items.ReadByFilters1(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
-		Key:    params.UserId,
+	objects, err := collections_placed_items.ReadByFilters1(ctx, logger, db, nk, collections_placed_items.ReadByFilters1Params{
 		UserId: params.UserId,
 	})
 	if err != nil {

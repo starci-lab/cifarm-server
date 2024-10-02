@@ -94,7 +94,7 @@ func PlantSeedRpc(
 		return "", errors.New(errMsg)
 	}
 
-	if placedItem.IsPlanted {
+	if placedItem.SeedGrowthInfo.IsPlanted {
 		errMsg := "tile is planted"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
@@ -136,7 +136,7 @@ func PlantSeedRpc(
 		HarvestQuantityRemaining: crop.MaxHarvestQuantity,
 		Crop:                     *crop,
 	}
-	placedItem.IsPlanted = true
+	placedItem.SeedGrowthInfo.IsPlanted = true
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *placedItem,
 		UserId:     userId,

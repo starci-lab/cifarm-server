@@ -56,6 +56,11 @@ func RecoverTileRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
+	if placedItem.InventoryKey == "" {
+		errMsg := "placed item inventory key not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
 
 	if placedItem.Type != collections_placed_items.TYPE_TILE {
 		errMsg := "placed item not tile"

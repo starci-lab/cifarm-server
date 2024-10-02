@@ -71,9 +71,8 @@ func ReadByFilters1(
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params ReadByKeyParams,
+	params ReadByFilters1Params,
 ) (*api.StorageObjects, error) {
-
 	name := STORAGE_INDEX_BY_FILTERS_1
 	query := fmt.Sprintf("+user_id:%s +value.isPlanted:T -fullyMatured:T +value.type:%v", params.UserId, TYPE_TILE)
 	maxEntries := collections_common.MAX_ENTRIES
@@ -86,6 +85,36 @@ func ReadByFilters1(
 	}
 
 	return objects, err
+}
+
+type ReadByFilters2Params struct {
+	UserId string `json:"userId"`
+}
+
+func ReadByFilters2(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadByFilters2Params,
+) (*api.StorageObjects, error) {
+
+	name := STORAGE_INDEX_BY_FILTERS_2
+	query := fmt.Sprintf("+user_id:%s +value.type:%v", params.UserId, TYPE_ANIMAL)
+	maxEntries := collections_common.MAX_ENTRIES
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, maxEntries, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return objects, err
+}
+
+type ReadByFilters3Params struct {
+	UserId string `json:"userId"`
 }
 
 type ReadByInventoryKeyParams struct {

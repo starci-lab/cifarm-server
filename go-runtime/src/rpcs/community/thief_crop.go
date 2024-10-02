@@ -89,13 +89,13 @@ func ThiefCropRpc(
 		return "", err
 	}
 
-	if !tile.IsPlanted {
+	if !tile.SeedGrowthInfo.IsPlanted {
 		errMsg := "tile is not being planted"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	if !tile.FullyMatured {
+	if !tile.SeedGrowthInfo.FullyMatured {
 		errMsg := "crop not fully matured"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)

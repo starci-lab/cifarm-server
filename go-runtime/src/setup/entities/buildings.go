@@ -15,7 +15,7 @@ func SetupBuildings(
 	nk runtime.NakamaModule,
 ) error {
 
-	buildings := []collections_buildings.Bulding{
+	buildings := []collections_buildings.Building{
 		{
 			Key:             collections_buildings.KEY_COOP,
 			Price:           1000,
@@ -32,7 +32,7 @@ func SetupBuildings(
 	}
 
 	err := collections_buildings.WriteMany(ctx, logger, db, nk, collections_buildings.WriteManyParams{
-		Buldings: buildings,
+		Buildings: buildings,
 	})
 	if err != nil {
 		logger.Error(err.Error())

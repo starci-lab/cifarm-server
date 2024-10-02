@@ -9,7 +9,7 @@ import (
 )
 
 type WriteManyParams struct {
-	Buldings []Bulding `json:"buildings"`
+	Buildings []Building `json:"buildings"`
 }
 
 func WriteMany(
@@ -20,11 +20,11 @@ func WriteMany(
 	params WriteManyParams,
 ) error {
 	var writes []*runtime.StorageWrite
-	for _, bulding := range params.Buldings {
-		key := bulding.Key
-		bulding.Key = ""
+	for _, Building := range params.Buildings {
+		key := Building.Key
+		Building.Key = ""
 
-		value, err := json.Marshal(bulding)
+		value, err := json.Marshal(Building)
 		if err != nil {
 			logger.Error(err.Error())
 			return err

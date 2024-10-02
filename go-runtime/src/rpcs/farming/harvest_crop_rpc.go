@@ -71,13 +71,13 @@ func HarvestCropRpc(
 	}
 	logger.Info(string(value1))
 
-	if !tile.IsPlanted {
+	if !tile.SeedGrowthInfo.IsPlanted {
 		errMsg := "tile is not being planted"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	if !tile.FullyMatured {
+	if !tile.SeedGrowthInfo.FullyMatured {
 		errMsg := "plant not fully matured"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
@@ -117,8 +117,8 @@ func HarvestCropRpc(
 	}
 
 	//update tile status
-	tile.FullyMatured = false
-	tile.IsPlanted = false
+	tile.SeedGrowthInfo.FullyMatured = false
+	tile.SeedGrowthInfo.IsPlanted = false
 	tile.SeedGrowthInfo = collections_placed_items.SeedGrowthInfo{}
 
 	//update the tile

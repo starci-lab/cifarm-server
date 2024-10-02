@@ -4,6 +4,7 @@ import (
 	collections_animals "cifarm-server/src/collections/animals"
 	collections_common "cifarm-server/src/collections/common"
 	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_placed_items "cifarm-server/src/collections/placed_items"
 	_wallets "cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -14,11 +15,12 @@ import (
 )
 
 type BuyAnimalRpcParams struct {
-	Key string `json:"key"`
+	Key                   string `json:"key"`
+	PlacedItemBuildingKey string `json:"placedItemBuildingKey"`
 }
 
 type BuyAnimalRpcResponse struct {
-	Cost int64 `json:"cost"`
+	PlacedItemAnimalKey string `json:"placedItemAnimalKey"`
 }
 
 func BuyAnimalRpc(ctx context.Context,
@@ -47,6 +49,13 @@ func BuyAnimalRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
+
+	if object == nil {
+		errMsg := "animal not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
 	animal, err := collections_common.ToValue[collections_animals.Animal](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
@@ -58,17 +67,58 @@ func BuyAnimalRpc(ctx context.Context,
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
-	if animal.Premium {
-		errMsg := "cannot buy premium animal"
+	if !animal.AvailableInShop {
+		errMsg := "not available in shop"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
+	//check the parent building
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+		Key:    params.PlacedItemBuildingKey,
+		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	if object == nil {
+		errMsg := "parent building not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
+	building, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	//check whether the parent building is a building
+	if building.Type != collections_placed_items.TYPE_BUILDING {
+		errMsg := "parent building is not a building"
+		logger.Error(errMsg)
+		return "", err
+	}
+	//check animal type
+	if building.BuildingInfo.Building.AnimalKey != animal.Key {
+		errMsg := "animal type does not match"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+	//check ocupation
+	if building.BuildingInfo.Occupancy >= building.BuildingInfo.Building.UpgradeSummaries[building.BuildingInfo.CurrentUpgrade].Capacity {
+		errMsg := "building is full"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
+	//reduce money
 	err = _wallets.UpdateWalletGolds(ctx, logger, db, nk, _wallets.UpdateWalletGoldsParams{
 		Amount: -animal.OffspringPrice,
 		UserId: userId,
 		Metadata: map[string]interface{}{
-			"name": "Buy seeds",
+			"name": "Buy animal",
 			"key":  params.Key,
 		},
 	})
@@ -77,13 +127,17 @@ func BuyAnimalRpc(ctx context.Context,
 		return "", err
 	}
 
-	_, err = collections_inventories.Write(ctx,
+	// we place animal in the parent building
+	result, err := collections_placed_items.Write(ctx,
 		logger, db, nk,
-		collections_inventories.WriteParams{
-			Inventory: collections_inventories.Inventory{
-				ReferenceKey: params.Key,
-				Quantity:     1,
-				Type:         collections_inventories.TYPE_ANIMAL,
+		collections_placed_items.WriteParams{
+			PlacedItem: collections_placed_items.PlacedItem{
+				ReferenceKey:        params.Key,
+				ParentPlacedItemKey: building.Key,
+				AnimalInfo: collections_placed_items.AnimalInfo{
+					Animal: *animal,
+				},
+				Type: collections_inventories.TYPE_ANIMAL,
 			},
 			UserId: userId,
 		})
@@ -91,9 +145,21 @@ func BuyAnimalRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
+	//update occupancy
+	building.BuildingInfo.Occupancy++
+	_, err = collections_placed_items.Write(ctx,
+		logger, db, nk,
+		collections_placed_items.WriteParams{
+			PlacedItem: *building,
+			UserId:     userId,
+		})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
 	value, err := json.Marshal(BuyAnimalRpcResponse{
-		Cost: animal.OffspringPrice,
+		PlacedItemAnimalKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
