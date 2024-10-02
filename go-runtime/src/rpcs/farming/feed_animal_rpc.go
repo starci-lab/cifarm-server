@@ -5,6 +5,7 @@ import (
 	collections_config "cifarm-server/src/collections/config"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -97,9 +98,21 @@ func FeedAnimalRpc(
 		return "", err
 	}
 
+	//increase user experience
+	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: collections_config.EXPERIENCE_FROM_ACTIVITY,
+		Amount: activityExperiences.UseFertilizer,
 	})
 	if err != nil {
 		logger.Error(err.Error())

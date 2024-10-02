@@ -29,4 +29,5 @@ type ActivityExperiences struct {
 	HelpUseHerbicide int64 `json:"helpUseHerbicide"`
 	HelpUsePestiside int64 `json:"helpUsePestiside"`
 	HelpWater        int64 `json:"helpWater"`
+	ThiefCrop        int64 `json:"thiefCrop"`
 }

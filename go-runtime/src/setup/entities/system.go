@@ -54,6 +54,7 @@ func SetupSystemActivityExperiences(
 			HelpUseHerbicide: 3,
 			HelpUsePestiside: 3,
 			HelpWater:        3,
+			ThiefCrop:        3,
 		},
 	})
 	if err != nil {
