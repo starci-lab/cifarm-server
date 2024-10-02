@@ -2,7 +2,6 @@ package collections_buildings
 
 type Building struct {
 	Key              string                 `json:"key"`
-	Price            int64                  `json:"price"`
 	AvailableInShop  bool                   `json:"availableInShop"`
 	MaxUpgrade       int                    `json:"maxUpgrade"`
 	UpgradeSummaries map[int]UpgradeSummary `json:"upgradeSummaries"`

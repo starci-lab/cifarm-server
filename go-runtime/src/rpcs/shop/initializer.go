@@ -8,7 +8,12 @@ import (
 )
 
 func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := initializer.RegisterRpc("buy_seed", BuySeedRpc)
+	err := initializer.RegisterRpc("buy_seeds", BuySeedsRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("buy_supplies", BuySuppliesRpc)
 	if err != nil {
 		return err
 	}

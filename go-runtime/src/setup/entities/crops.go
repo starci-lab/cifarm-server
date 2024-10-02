@@ -26,6 +26,7 @@ func SetupCrops(
 			MaxHarvestQuantity:        20,
 			BasicHarvestExperiences:   12,
 			PremiumHarvestExperiences: 60,
+			AvailableInShop:           true,
 		},
 		{
 			Key:                         collections_crops.KEY_POTATO,
@@ -39,6 +40,7 @@ func SetupCrops(
 			NextGrowthStageAfterHarvest: 1,
 			BasicHarvestExperiences:     21,
 			PremiumHarvestExperiences:   110,
+			AvailableInShop:             true,
 		},
 		{
 			Key:                         collections_crops.KEY_CUCUMBER,
@@ -52,6 +54,7 @@ func SetupCrops(
 			NextGrowthStageAfterHarvest: 1,
 			BasicHarvestExperiences:     21,
 			PremiumHarvestExperiences:   110,
+			AvailableInShop:             true,
 		},
 		{
 			Key:                         collections_crops.KEY_PINEAPPLE,
@@ -65,6 +68,7 @@ func SetupCrops(
 			NextGrowthStageAfterHarvest: 1,
 			BasicHarvestExperiences:     21,
 			PremiumHarvestExperiences:   110,
+			AvailableInShop:             true,
 		},
 		{
 			Key:                         collections_crops.KEY_WATERMELON,
@@ -78,6 +82,7 @@ func SetupCrops(
 			NextGrowthStageAfterHarvest: 1,
 			BasicHarvestExperiences:     21,
 			PremiumHarvestExperiences:   110,
+			AvailableInShop:             true,
 		},
 		{
 			Key:                         collections_crops.KEY_PINEAPPLE,
@@ -91,6 +96,7 @@ func SetupCrops(
 			NextGrowthStageAfterHarvest: 1,
 			BasicHarvestExperiences:     21,
 			PremiumHarvestExperiences:   110,
+			AvailableInShop:             true,
 		},
 	}
 

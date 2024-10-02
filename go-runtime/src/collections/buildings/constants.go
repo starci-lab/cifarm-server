@@ -5,7 +5,7 @@ const (
 )
 
 const (
-	KEY_COOP    = "coop"
-	KEY_PASTURE = "pasture"
-	KEY_HOME    = "home"
+	KEY_CHICKEN_COOP = "chickenCoop"
+	KEY_COW_PASTURE  = "cowPasture"
+	KEY_HOME         = "home"
 )

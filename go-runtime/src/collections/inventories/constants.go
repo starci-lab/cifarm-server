@@ -16,6 +16,7 @@ const (
 	TYPE_TILE            = 1
 	TYPE_ANIMAL          = 2
 	TYPE_HARVESTED_PLANT = 3
+	TYPE_SUPPLY          = 4
 )
 
 const (

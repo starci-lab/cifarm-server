@@ -12,4 +12,5 @@ type Crop struct {
 	MaxHarvestQuantity          int    `json:"maxHarvestQuantity"`
 	BasicHarvestExperiences     int64  `json:"basicHarvestExperiences"`
 	PremiumHarvestExperiences   int64  `json:"premiumHarvestExperiences"`
+	AvailableInShop             bool   `json:"availableInShop"`
 }

@@ -67,6 +67,7 @@ func BuyAnimalRpc(ctx context.Context,
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
+
 	if !animal.AvailableInShop {
 		errMsg := "not available in shop"
 		logger.Error(errMsg)
