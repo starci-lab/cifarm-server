@@ -2,15 +2,13 @@ package crons_deliver
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_delivering_products "cifarm-server/src/collections/delivering_products"
 	collections_market_pricings "cifarm-server/src/collections/market_pricings"
 	collections_system "cifarm-server/src/collections/system"
-	"cifarm-server/src/config"
-	services_periphery_api_token "cifarm-server/src/services/periphery/api/token"
 	"cifarm-server/src/wallets"
 	"context"
 	"database/sql"
+	"sync"
 	"time"
 
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -34,8 +32,11 @@ func Process(
 		return err
 	}
 
+	var wg sync.WaitGroup
 	for _, userId := range users.UserIds {
+		wg.Add(1)
 		go func() error {
+			defer wg.Done()
 			objects, err := collections_delivering_products.ReadMany(ctx, logger, db, nk, collections_delivering_products.ReadManyParams{
 				UserId: userId,
 			})
@@ -55,12 +56,13 @@ func Process(
 			var totalUtilityTokenAmount float64
 
 			//get the key, delete the deliverings, then add money
+
 			for _, deliveryProduct := range deliveryProducts {
 				keys = append(keys, deliveryProduct.Key)
 
 				//ref to the reference
 				marketPricingObject, err := collections_market_pricings.ReadByKey(ctx, logger, db, nk, collections_market_pricings.ReadByKeyParams{
-					Key: deliveryProduct.Key,
+					Key: deliveryProduct.ReferenceKey,
 				})
 				if err != nil {
 					logger.Error(err.Error())
@@ -71,9 +73,8 @@ func Process(
 					logger.Error(err.Error())
 					return err
 				}
-				if !deliveryProduct.Premium {
-					totalGoldAmount += marketPricing.BasicAmount * int64(deliveryProduct.Quantity)
-				} else {
+				totalGoldAmount += marketPricing.BasicAmount * int64(deliveryProduct.Quantity)
+				if deliveryProduct.Premium {
 					totalUtilityTokenAmount += marketPricing.PremiumAmount * float64(deliveryProduct.Quantity)
 				}
 			}
@@ -101,50 +102,52 @@ func Process(
 				logger.Error(err.Error())
 				return err
 			}
-			//get the metadata
-			metadataObject, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
-				UserId: userId,
-			})
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
-			metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, metadataObject)
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
+			// //get the metadata
+			// metadataObject, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+			// 	UserId: userId,
+			// })
+			// if err != nil {
+			// 	logger.Error(err.Error())
+			// 	return err
+			// }
+			// metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, metadataObject)
+			// if err != nil {
+			// 	logger.Error(err.Error())
+			// 	return err
+			// }
 
-			//the other one might call api to process mint, peripery might be a wait
-			minterPrivatekey, err := config.MinterPrivateKey(ctx, logger, db, nk)
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
-			utilityTokenAddress, err := config.UtilityTokenAddress(ctx, logger, db, nk)
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
+			// //the other one might call api to process mint, peripery might be a wait
+			// minterPrivatekey, err := config.MinterPrivateKey(ctx, logger, db, nk)
+			// if err != nil {
+			// 	logger.Error(err.Error())
+			// 	return err
+			// }
+			// utilityTokenAddress, err := config.UtilityTokenAddress(ctx, logger, db, nk)
+			// if err != nil {
+			// 	logger.Error(err.Error())
+			// 	return err
+			// }
 
-			//
-			//GasCheck is required (future plan)
-			//ect
-			//maybe do later with response, such as notifcation,...
-			_, err = services_periphery_api_token.Mint(ctx, logger, db, nk, &services_periphery_api_token.MintRequestBody{
-				TokenAddress:     utilityTokenAddress,
-				MinterPrivateKey: minterPrivatekey,
-				MintAmount:       totalUtilityTokenAmount,
-				ToAddress:        metadata.AccountAddress,
-				ChainKey:         metadata.ChainKey,
-				Network:          metadata.Network,
-			})
-			if err != nil {
-				logger.Error(err.Error())
-				return err
-			}
+			// //
+			// //GasCheck is required (future plan)
+			// //ect
+			// //maybe do later with response, such as notifcation,...
+			// _, err = services_periphery_api_token.Mint(ctx, logger, db, nk, &services_periphery_api_token.MintRequestBody{
+			// 	TokenAddress:     utilityTokenAddress,
+			// 	MinterPrivateKey: minterPrivatekey,
+			// 	MintAmount:       totalUtilityTokenAmount,
+			// 	ToAddress:        metadata.AccountAddress,
+			// 	ChainKey:         metadata.ChainKey,
+			// 	Network:          metadata.Network,
+			// })
+			// if err != nil {
+			// 	logger.Error(err.Error())
+			// 	return err
+			// }
 			return nil
 		}()
 	}
+	wg.Wait()
+
 	return nil
 }

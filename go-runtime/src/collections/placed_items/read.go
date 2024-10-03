@@ -21,7 +21,7 @@ func ReadMany(
 	nk runtime.NakamaModule,
 	params ReadManyParams,
 ) ([]*api.StorageObject, error) {
-	objects, _, err := nk.StorageList(ctx, params.UserId, params.UserId, COLLECTION_NAME, collections_common.MAX_ENTRIES, "")
+	objects, _, err := nk.StorageList(ctx, params.UserId, params.UserId, COLLECTION_NAME, collections_common.MAX_ENTRIES_LIST, "")
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
