@@ -9,6 +9,7 @@ import (
 	rpcs_miscellaneous "cifarm-server/src/rpcs/miscellaneous"
 	rpcs_nfts "cifarm-server/src/rpcs/nfts"
 	rpcs_placement "cifarm-server/src/rpcs/placement"
+	rpcs_profile "cifarm-server/src/rpcs/profile"
 	rpcs_shop "cifarm-server/src/rpcs/shop"
 	rpcs_tests "cifarm-server/src/rpcs/tests"
 	"context"
@@ -20,14 +21,16 @@ import (
 func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
 	err := initializer.RegisterRpc("go_healthcheck", HealthcheckRpc)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_auth.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
-	//
+
 	err = rpcs_farming.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		return err
@@ -35,41 +38,55 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 
 	err = rpcs_shop.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_daily_rewards.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_nfts.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_community.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_tests.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_assets.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_placement.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 
 	err = rpcs_miscellaneous.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = rpcs_profile.Initialize(ctx, logger, db, nk, initializer)
+	if err != nil {
+		logger.Error(err.Error())
 		return err
 	}
 

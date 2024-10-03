@@ -47,14 +47,16 @@ func SetupSystemActivityExperiences(
 ) error {
 	err := collections_system.WriteActivityExperiences(ctx, logger, db, nk, collections_system.WriteActivityExperiencesParams{
 		ActivityExperiences: collections_system.ActivityExperiences{
-			Water:            3,
-			UsePestiside:     3,
-			UseFertilizer:    3,
-			UseHerbicide:     3,
-			HelpUseHerbicide: 3,
-			HelpUsePestiside: 3,
-			HelpWater:        3,
-			ThiefCrop:        3,
+			Water:              3,
+			UsePestiside:       3,
+			UseFertilizer:      3,
+			UseHerbicide:       3,
+			HelpUseHerbicide:   3,
+			HelpUsePestiside:   3,
+			HelpWater:          3,
+			ThiefCrop:          3,
+			HelpFeedAnimal:     100,
+			ThiefAnimalProduct: 3,
 		},
 	})
 	if err != nil {

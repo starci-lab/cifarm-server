@@ -6,7 +6,6 @@ import (
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_system "cifarm-server/src/collections/system"
-	collections_tiles "cifarm-server/src/collections/tiles"
 	"cifarm-server/src/utils"
 	"context"
 	"database/sql"
@@ -18,17 +17,17 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type ThiefCropRpcParams struct {
-	UserId            string `json:"userId"`
-	PlacedItemTileKey string `json:"placedItemTileKey"`
+type ThiefAnimalProductRpcParams struct {
+	UserId              string `json:"userId"`
+	PlacedItemAnimalKey string `json:"placedItemAnimalKey"`
 }
 
-type ThiefCropRpcResponse struct {
+type ThiefAnimalProductRpcResponse struct {
 	InventoryThiefCropKey string `json:"inventoryThiefCropKey"`
 	ThiefQuantity         int    `json:"thiefQuantity"`
 }
 
-func ThiefCropRpc(
+func ThiefAnimalProductRpc(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -41,7 +40,7 @@ func ThiefCropRpc(
 		return "", errors.New(errMsg)
 	}
 
-	var params *ThiefCropRpcParams
+	var params *ThiefAnimalProductRpcParams
 	err := json.Unmarshal([]byte(payload), &params)
 	if err != nil {
 		logger.Error(err.Error())
@@ -49,7 +48,7 @@ func ThiefCropRpc(
 	}
 
 	if userId == params.UserId {
-		errMsg := "you cannot theif your plants"
+		errMsg := "you cannot theif your animals"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
@@ -70,7 +69,7 @@ func ThiefCropRpc(
 	// }
 
 	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
-		Key:    params.PlacedItemTileKey,
+		Key:    params.PlacedItemAnimalKey,
 		UserId: params.UserId,
 	})
 	if err != nil {
@@ -84,31 +83,31 @@ func ThiefCropRpc(
 		return "", errors.New(errMsg)
 	}
 
-	tile, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)
+	animal, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	if !tile.SeedGrowthInfo.IsPlanted {
-		errMsg := "tile is not being planted"
+	if !animal.AnimalInfo.IsAdult {
+		errMsg := "animal is not adult"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	if !tile.SeedGrowthInfo.FullyMatured {
-		errMsg := "crop not fully matured"
+	if !animal.AnimalInfo.HasYielded {
+		errMsg := "animal has not yielded"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	if utils.Contains(tile.SeedGrowthInfo.ThiefedBy, userId) {
-		errMsg := "theif the crop before"
+	if utils.Contains(animal.AnimalInfo.ThiefedBy, userId) {
+		errMsg := "theif the animal before"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	maximunTheifQuantity := tile.SeedGrowthInfo.HarvestQuantityRemaining - tile.SeedGrowthInfo.Crop.MinHarvestQuantity
+	maximunTheifQuantity := animal.AnimalInfo.HarvestQuantityRemaining - animal.AnimalInfo.Animal.MinHarvestQuantity
 	if maximunTheifQuantity == 0 {
 		errMsg := "cannot thief anymore"
 		logger.Error(errMsg)
@@ -128,10 +127,10 @@ func ThiefCropRpc(
 	//check kinh nghiệm, check các thứ, ...
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
-			ReferenceKey: tile.SeedGrowthInfo.Crop.Key,
+			ReferenceKey: animal.AnimalInfo.Animal.Key,
 			Type:         collections_inventories.TYPE_HARVESTED_CROP,
 			Quantity:     thiefQuantity,
-			Premium:      tile.ReferenceKey == collections_tiles.KEY_NFT,
+			Premium:      animal.AnimalInfo.Animal.IsNFT,
 			Deliverable:  true,
 		},
 		UserId: userId,
@@ -143,12 +142,12 @@ func ThiefCropRpc(
 
 	//giam san luong
 	//add thang an trom vao list
-	tile.SeedGrowthInfo.HarvestQuantityRemaining -= thiefQuantity
-	tile.SeedGrowthInfo.ThiefedBy = append(tile.SeedGrowthInfo.ThiefedBy, userId)
+	animal.AnimalInfo.HarvestQuantityRemaining -= thiefQuantity
+	animal.AnimalInfo.ThiefedBy = append(animal.AnimalInfo.ThiefedBy, userId)
 
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
-		PlacedItem: *tile,
+		PlacedItem: *animal,
 		UserId:     params.UserId,
 	})
 
@@ -170,7 +169,7 @@ func ThiefCropRpc(
 	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.ThiefCrop,
+		Amount: activityExperiences.ThiefAnimalProduct,
 	})
 	if err != nil {
 		logger.Error(err.Error())

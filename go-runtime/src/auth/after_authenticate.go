@@ -82,6 +82,8 @@ func AfterAuthenticate(
 				Level:           1,
 				Experiences:     0,
 				ExperienceQuota: 50,
+				TutorialIndex:   0,
+				StepIndex:       0,
 			},
 		})
 		if err != nil {

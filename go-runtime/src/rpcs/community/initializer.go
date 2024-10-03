@@ -58,5 +58,15 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
+	err = initializer.RegisterRpc("help_feed_animal", HelpFeedAnimalRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("thief_animal_product", ThiefAnimalProductRpc)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
