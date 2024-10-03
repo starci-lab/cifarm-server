@@ -9,6 +9,6 @@ const (
 )
 
 const (
-	TYPE_PLANT  = 0
+	TYPE_CROP   = 0
 	TYPE_ANIMAL = 1
 )
