@@ -55,7 +55,7 @@ func SetupSystemActivityExperiences(
 			HelpUsePestiside:   3,
 			HelpWater:          3,
 			ThiefCrop:          3,
-			HelpFeedAnimal:     100,
+			HelpFeedAnimal:     50,
 			ThiefAnimalProduct: 3,
 		},
 	})

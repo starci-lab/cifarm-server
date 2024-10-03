@@ -5,6 +5,7 @@ import (
 	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_system "cifarm-server/src/collections/system"
+	"cifarm-server/src/friends"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -91,6 +92,20 @@ func HelpWaterRpc(
 		return "", err
 	}
 
+	//check friend
+	check, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
+		UserId:       userId,
+		FriendUserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	multiplier := 1
+	if check {
+		multiplier = 2
+	}
+
 	//increase experience
 	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
 	if err != nil {
@@ -104,7 +119,7 @@ func HelpWaterRpc(
 	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.HelpWater,
+		Amount: activityExperiences.HelpWater * multiplier,
 	})
 	if err != nil {
 		logger.Error(err.Error())

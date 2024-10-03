@@ -54,22 +54,55 @@ func ThiefCropRpc(
 		return "", errors.New(errMsg)
 	}
 
-	// check, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
-	// 	UserId:       userId,
-	// 	FriendUserId: params.UserId,
-	// })
-	// if err != nil {
-	// 	logger.Error(err.Error())
-	// 	return "", err
-	// }
+	//ensure you have more level
+	//your level
+	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	if object == nil {
+		errMsg := "player stats not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
 
-	// if !check {
-	// 	errMsg := "not your friend"
-	// 	logger.Error(errMsg)
-	// 	return "", errors.New(errMsg)
-	// }
+	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
-	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+	//other level
+	object, err = collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+		UserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	if object == nil {
+		errMsg := "the other's player stats not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
+	otherPlayerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	//check level
+	if playerStats.Level < otherPlayerStats.Level {
+		errMsg := "you cannot theif higher level"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemTileKey,
 		UserId: params.UserId,
 	})
@@ -77,7 +110,6 @@ func ThiefCropRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
-
 	if object == nil {
 		errMsg := "tile not found"
 		logger.Error(errMsg)
