@@ -118,7 +118,7 @@ func WritePlayerStats(
 }
 
 type IncreaseExperiencesParams struct {
-	Amount int64  `json:"amount"`
+	Amount int    `json:"amount"`
 	UserId string `json:"userId"`
 }
 
@@ -142,12 +142,12 @@ func IncreaseExperiences(ctx context.Context,
 
 	//each level need 50 exp, next level need 20 more
 	//50=>100=>150=>...
-	totalExperiences := playerStats.Experiences + int64(params.Amount)
+	totalExperiences := playerStats.Experiences + params.Amount
 	for {
 		if totalExperiences >= playerStats.ExperienceQuota {
 			totalExperiences -= playerStats.ExperienceQuota
 			playerStats.Level += 1
-			playerStats.ExperienceQuota = 50 + int64(playerStats.Level-1)*50
+			playerStats.ExperienceQuota = 50 + (playerStats.Level-1)*50
 		} else {
 			playerStats.Experiences = totalExperiences
 			break

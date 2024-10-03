@@ -101,7 +101,7 @@ func HarvestCropRpc(
 		return "", err
 	}
 
-	var experiences int64
+	var experiences int
 	if premium {
 		experiences = tile.SeedGrowthInfo.Crop.PremiumHarvestExperiences
 	} else {

@@ -95,7 +95,7 @@ func CollectAnimalProductRpc(
 	}
 
 	//exp
-	var experiences int64
+	var experiences int
 	if animal.AnimalInfo.Animal.IsNFT {
 		experiences = animal.SeedGrowthInfo.Crop.PremiumHarvestExperiences
 	} else {
