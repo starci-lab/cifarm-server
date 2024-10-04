@@ -113,10 +113,6 @@ func ReadByFilters2(
 	return objects, err
 }
 
-type ReadByFilters3Params struct {
-	UserId string `json:"userId"`
-}
-
 type ReadByInventoryKeyParams struct {
 	InventoryKey string `json:"inventoryKey"`
 }
@@ -146,4 +142,32 @@ func ReadByInventoryKey(
 
 	object := objects.Objects[0]
 	return object, nil
+}
+
+type ReadByFilters3Params struct {
+	UserId       string `json:"userId"`
+	ReferenceKey string `json:"referenceKey"`
+}
+
+func ReadByFilters3(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadByFilters3Params,
+) (*api.StorageObjects, error) {
+
+	name := STORAGE_INDEX_BY_FILTERS_3
+	query := fmt.Sprintf("+user_id:%s +value.type:%v +value.referenceKey:%v", params.UserId, TYPE_TILE, params.ReferenceKey)
+
+	maxEntries := collections_common.MAX_ENTRIES
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, maxEntries, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return objects, err
 }

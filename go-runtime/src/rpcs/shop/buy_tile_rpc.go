@@ -2,7 +2,7 @@ package rpcs_shop
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_tiles "cifarm-server/src/collections/tiles"
 	"cifarm-server/src/wallets"
 	"context"
@@ -31,44 +31,40 @@ func HasEnoughTiles(
 		return false, errors.New(errMsg)
 	}
 
-	object, err := collections_inventories.Read(ctx, logger, db, nk, collections_inventories.ReadParams{
-		ReferenceKey: params.ReferenceKey,
+	objects, err := collections_placed_items.ReadByFilters3(ctx, logger, db, nk, collections_placed_items.ReadByFilters3Params{
 		UserId:       userId,
-		Type:         collections_inventories.TYPE_TILE,
-	},
-	)
+		ReferenceKey: params.ReferenceKey,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return false, err
-	}
-	inventory, err := collections_common.ToValue[collections_inventories.Inventory](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return false, err
-	}
-	if inventory == nil {
-		return false, nil
 	}
 
-	object, err = collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
+	tiles, err := collections_common.ToValues[collections_placed_items.PlacedItem](ctx, logger, db, nk, objects)
+	if err != nil {
+		logger.Error(err.Error())
+		return false, err
+	}
+
+	object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 		Key: params.ReferenceKey,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return false, err
 	}
+	if object == nil {
+		errMsg := "tile not found"
+		logger.Error(errMsg)
+		return false, errors.New(errMsg)
+	}
 	tile, err := collections_common.ToValue[collections_tiles.Tile](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return false, err
 	}
-	if tile == nil {
-		errMsg := "tile not found"
-		logger.Error(errMsg)
-		return false, errors.New(errMsg)
-	}
 
-	result := inventory.Quantity >= tile.MaxOwnership
+	result := len(tiles) >= tile.MaxOwnership
 	return result, nil
 }
 
@@ -93,6 +89,7 @@ func GetTileData(
 	}
 
 	if !has1 {
+		logger.Info("you buy 1")
 		object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 			Key: key,
 		})
@@ -128,6 +125,7 @@ func GetTileData(
 		return nil, err
 	}
 	if !has2 {
+		logger.Info("you buy 2")
 		object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 			Key: key,
 		})
@@ -157,6 +155,7 @@ func GetTileData(
 	object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 		Key: key,
 	})
+	logger.Info("you buy 3")
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
@@ -174,9 +173,12 @@ func GetTileData(
 	}, nil
 }
 
+type BuyTileRpcParams struct {
+	Position collections_placed_items.Position `json:"position"`
+}
+
 type BuyTileRpcResponse struct {
-	Key   string `json:"key"`
-	Price int64  `json:"price"`
+	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
 func BuyTileRpc(
@@ -191,6 +193,13 @@ func BuyTileRpc(
 		errMsg := "user ID not found"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
+	}
+
+	var params *BuyTileRpcParams
+	err := json.Unmarshal([]byte(payload), &params)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
 
 	data, err := GetTileData(ctx, logger, db, nk)
@@ -211,12 +220,13 @@ func BuyTileRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
-	_, err = collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
-		Inventory: collections_inventories.Inventory{
+	result, err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+		PlacedItem: collections_placed_items.PlacedItem{
 			ReferenceKey: data.Key,
-			Quantity:     1,
-			Type:         collections_inventories.TYPE_TILE,
+			Type:         collections_placed_items.TYPE_TILE,
+			Position:     params.Position,
 		},
+		UserId: userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -224,8 +234,7 @@ func BuyTileRpc(
 	}
 
 	value, err := json.Marshal(BuyTileRpcResponse{
-		Price: data.Price,
-		Key:   data.Key,
+		PlacedItemTileKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

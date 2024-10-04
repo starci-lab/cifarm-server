@@ -8,6 +8,8 @@ const (
 	STORAGE_INDEX_BY_REFERENCE_KEY = "PlacedItemsStorageIndexByReferenceKey"
 	STORAGE_INDEX_BY_FILTERS_1     = "PlacedItemsStorageIndexByFilters1"
 	STORAGE_INDEX_BY_FILTERS_2     = "PlacedItemsStorageIndexByFilters2"
+	//tiles owned by user, with referenceKey
+	STORAGE_INDEX_BY_FILTERS_3     = "PlacedItemsStorageIndexByFilters3"
 	STORAGE_INDEX_BY_INVENTORY_KEY = "PlacedItemsStorageIndexByInventoryKey"
 )
 
