@@ -81,7 +81,6 @@ func HandleAnimalProcedure(
 		logger.Error(err.Error())
 		return err
 	}
-	logger.Info("objects: %v", len(objects.Objects))
 	for _, object := range objects.Objects {
 		go func() error {
 			placedItem, err := collections_common.ToValue[collections_placed_items.PlacedItem](ctx, logger, db, nk, object)

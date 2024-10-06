@@ -37,7 +37,7 @@ func PoolInviteConsumer(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		switch e := ev.(type) {
 		case *kafka.Message:
 			{
-				fmt.Printf("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
+				logger.Error("%% Message on %s:\n%s\n", e.TopicPartition, string(e.Value))
 			}
 		case kafka.Error:
 			fmt.Fprintf(os.Stderr, "%% Error: %v\n", e)
