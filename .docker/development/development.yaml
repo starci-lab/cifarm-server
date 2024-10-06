@@ -46,4 +46,4 @@ volumes:
   data:
 
 # docker compose -f .docker/development/development.yaml -p cifarm-server up --build -d 
- 
+  
