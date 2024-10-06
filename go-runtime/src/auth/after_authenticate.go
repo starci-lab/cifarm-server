@@ -16,6 +16,98 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
+type HandleRefererParams struct {
+	ReferrerUserId string `json:"referrerUserId"`
+}
+
+func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, userId string, params HandleRefererParams) error {
+	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+		UserId: params.ReferrerUserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		errMsg := "player stats not found"
+		//if not found, mean wrong code, stop the refer
+		logger.Error(errMsg)
+		return nil
+	}
+	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	playerStats.Invites = append(playerStats.Invites, params.ReferrerUserId)
+
+	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+		PlayerStats: *playerStats,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	object, err = collections_system.ReadRewards(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		errMsg := "rewards not found"
+		logger.Error(errMsg)
+		return err
+	}
+	rewards, err := collections_common.ToValue[collections_system.Rewards](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	if len(playerStats.Invites) == rewards.FromInvites.Metrics[1].Key {
+		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
+			UserId: params.ReferrerUserId,
+			Amount: rewards.FromInvites.Metrics[1].Value,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
+	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[2].Key {
+		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
+			UserId: params.ReferrerUserId,
+			Amount: rewards.FromInvites.Metrics[2].Value,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
+	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[3].Key {
+		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
+			UserId: params.ReferrerUserId,
+			Amount: rewards.FromInvites.Metrics[3].Value,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
+	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[4].Key {
+		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
+			UserId: params.ReferrerUserId,
+			Amount: rewards.FromInvites.Metrics[4].Value,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+	}
+	return nil
+}
+
 type Claims struct {
 	Uid      string `json:"uid"`
 	Username string `json:"username"`
@@ -62,6 +154,7 @@ func AfterAuthenticate(
 
 	if object == nil {
 		//first time login
+
 		err = collections_config.WriteMetadata(ctx, logger, db, nk,
 			collections_config.WriteMetadataParams{
 				Metadata: collections_config.Metadata{
@@ -155,6 +248,30 @@ func AfterAuthenticate(
 		if err != nil {
 			logger.Error(err.Error())
 			return err
+		}
+
+		referrerUserId := in.Account.Vars["referrerUserId"]
+		//you have been referred by someone
+		if referrerUserId != "" {
+			err = HandleReferer(ctx, logger, db, nk, userId, HandleRefererParams{
+				ReferrerUserId: referrerUserId,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+			//bonus for being referred
+			err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
+				Amount: 200,
+				Metadata: map[string]interface{}{
+					"name": "Referred",
+				},
+				UserId: userId,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
 		}
 	}
 
