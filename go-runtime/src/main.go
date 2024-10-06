@@ -2,8 +2,7 @@ package main
 
 import (
 	"cifarm-server/src/auth"
-	storage "cifarm-server/src/collections"
-	"cifarm-server/src/consumers"
+	"cifarm-server/src/collections"
 	"cifarm-server/src/crons"
 	"cifarm-server/src/matches"
 	"cifarm-server/src/rpcs"
@@ -15,7 +14,7 @@ import (
 )
 
 func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := storage.Initialize(ctx, logger, db, nk, initializer)
+	err := collections.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -46,12 +45,6 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	}
 
 	err = crons.Initialize(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-
-	err = consumers.Initialize(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

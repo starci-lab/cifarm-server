@@ -3,7 +3,6 @@ module cifarm-server
 go 1.22.5
 
 require (
-	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/go-co-op/gocron/v2 v2.11.0
 	github.com/google/uuid v1.6.0
 	github.com/hasura/go-graphql-client v0.13.0

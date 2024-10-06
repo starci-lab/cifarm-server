@@ -1,4 +1,4 @@
-package storage
+package collections
 
 import (
 	collections_config "cifarm-server/src/collections/config"
