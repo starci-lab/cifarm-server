@@ -12,6 +12,8 @@ runtime:
     - "cifarm-periphery-websocket-url=ws://192.168.2.7:9999"
     - "minter-private-key=8a27d62c2184c6503c84065f6abe837cc2173bb9e5ddca5d52d9c7c46db6cdbb"
     - "utility-token-address=0xA9E72Ae9FfEc2a10AA9b6d617d1faf4953A2dADD"
+    - "kafka-1-host=192.168.2.7"
+    - "kafka-1-port=29092"
 session:
   encryption_key: "948033f7-f3b3-4311-9017-d7557d5b65c6"
   token_expiry_sec: 7200 # 2 hours

@@ -13,6 +13,8 @@ const (
 	CIFARM_PERIPHERY_GRAPHQL_URL = "cifarm-periphery-graphql-url"
 	MINTER_PRIVATE_KEY           = "minter-private-key"
 	UTILITY_TOKEN_ADDRESS        = "utility-token-address"
+	KAFKA_1_HOST                 = "kafka-1-host"
+	KAFKA_1_PORT                 = "kafka-1-port"
 )
 
 func MinterPrivateKey(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (string, error) {
@@ -71,6 +73,36 @@ func CifarmPeripheryGraphqlUrl(ctx context.Context, logger runtime.Logger, db *s
 	if !ok {
 		logger.Error("CIFARM_PERIPHERY_GRAPHQL_URL not found in environment variables")
 		return "", errors.New("CIFARM_PERIPHERY_GRAPHQL_URL not found in environment variables")
+	}
+	return value, nil
+}
+
+func Kafka1Host(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (string, error) {
+	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
+	if !ok {
+		logger.Error("Cannot get environment variables")
+		return "", errors.New("cannot get environment variables")
+	}
+	//get env
+	value, ok := vars[KAFKA_1_HOST]
+	if !ok {
+		logger.Error("KAFKA_1_HOST not found in environment variables")
+		return "", errors.New("KAFKA_1_HOST not found in environment variables")
+	}
+	return value, nil
+}
+
+func Kafka1Port(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule) (string, error) {
+	vars, ok := ctx.Value(runtime.RUNTIME_CTX_ENV).(map[string]string)
+	if !ok {
+		logger.Error("Cannot get environment variables")
+		return "", errors.New("cannot get environment variables")
+	}
+	//get env
+	value, ok := vars[KAFKA_1_PORT]
+	if !ok {
+		logger.Error("KAFKA_1_PORT not found in environment variables")
+		return "", errors.New("KAFKA_1_PORT not found in environment variables")
 	}
 	return value, nil
 }

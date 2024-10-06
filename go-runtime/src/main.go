@@ -3,6 +3,7 @@ package main
 import (
 	"cifarm-server/src/auth"
 	storage "cifarm-server/src/collections"
+	"cifarm-server/src/consumers"
 	"cifarm-server/src/crons"
 	"cifarm-server/src/matches"
 	"cifarm-server/src/rpcs"
@@ -45,6 +46,12 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	}
 
 	err = crons.Initialize(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = consumers.Initialize(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
