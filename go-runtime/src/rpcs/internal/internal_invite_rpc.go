@@ -57,7 +57,7 @@ func InternalInviteRpc(
 		return "", err
 	}
 	playerStats.Invites = append(playerStats.Invites, params.OriginUserId)
-	//save
+
 	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
 		PlayerStats: *playerStats,
 	})
@@ -66,8 +66,6 @@ func InternalInviteRpc(
 		return "", err
 	}
 
-	//check points
-	//1
 	object, err = collections_system.ReadRewards(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
