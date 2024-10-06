@@ -65,3 +65,40 @@ func SetupSystemActivityExperiences(
 	}
 	return nil
 }
+
+func SetupSystemRewards(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) error {
+	err := collections_system.WriteRewards(ctx, logger, db, nk, collections_system.WriteRewardsParams{
+		Rewards: collections_system.Rewards{
+			FromInvites: collections_system.FromInvites{
+				Metrics: map[int]collections_system.Metric{
+					1: {
+						Key:   1,
+						Value: 500,
+					},
+					2: {
+						Key:   3,
+						Value: 1000,
+					},
+					3: {
+						Key:   10,
+						Value: 2000,
+					},
+					4: {
+						Key:   25,
+						Value: 5000,
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

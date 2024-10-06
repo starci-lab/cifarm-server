@@ -10,4 +10,5 @@ const (
 	KEY_MATCH_INFO           = "matchInfo"
 	KEY_SPEEDUP              = "speedUp"
 	KEY_ACTIVITY_EXPERIENCES = "activityExperiences"
+	KEY_REWARDS              = "rewards"
 )

@@ -11,6 +11,7 @@ runtime:
     - "cifarm-periphery-graphql-url=http://192.168.2.7:9999/graphql"
     - "kafka-1-host=192.168.2.7"
     - "kafka-1-port=29092"
+    - "authentication-id=4084d32a-7e3e-44d0-afb1-973b8f72e184"
 session:
   encryption_key: "948033f7-f3b3-4311-9017-d7557d5b65c6"
   token_expiry_sec: 7200 # 2 hours

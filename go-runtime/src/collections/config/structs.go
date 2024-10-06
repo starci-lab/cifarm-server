@@ -13,10 +13,11 @@ type VisitState struct {
 }
 
 type PlayerStats struct {
-	Key             string `json:"key"`
-	Experiences     int    `json:"experiences"`
-	ExperienceQuota int    `json:"experienceQuota"`
-	Level           int    `json:"level"`
-	TutorialIndex   int    `json:"tutorialIndex"`
-	StepIndex       int    `json:"stepIndex"`
+	Key             string   `json:"key"`
+	Experiences     int      `json:"experiences"`
+	ExperienceQuota int      `json:"experienceQuota"`
+	Level           int      `json:"level"`
+	TutorialIndex   int      `json:"tutorialIndex"`
+	StepIndex       int      `json:"stepIndex"`
+	Invites         []string `json:"invites"`
 }

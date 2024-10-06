@@ -35,3 +35,18 @@ type ActivityExperiences struct {
 	HelpFeedAnimal     int    `json:"helpFeedAnimal"`
 	ThiefAnimalProduct int    `json:"thiefAnimalProduct"`
 }
+
+type Rewards struct {
+	Key         string      `json:"key"`
+	FromInvites FromInvites `json:"fromInvites"`
+}
+
+type FromInvites struct {
+	Key     string         `json:"key"`
+	Metrics map[int]Metric `json:"metrics"`
+}
+
+type Metric struct {
+	Key   int   `json:"key"`
+	Value int64 `json:"value"`
+}

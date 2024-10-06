@@ -176,3 +176,37 @@ func WriteActivityExperiences(
 	}
 	return nil
 }
+
+type WriteRewardsParams struct {
+	Rewards Rewards `json:"rewards"`
+}
+
+func WriteRewards(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteRewardsParams,
+) error {
+	value, err := json.Marshal(params.Rewards)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_REWARDS,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
