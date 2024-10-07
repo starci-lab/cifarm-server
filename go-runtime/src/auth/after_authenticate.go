@@ -215,7 +215,7 @@ func AfterAuthenticate(
 			ReferenceKey: collections_buildings.KEY_HOME,
 			Position: collections_placed_items.Position{
 				X: 0,
-				Y: 5,
+				Y: 10,
 			},
 			Type: collections_placed_items.TYPE_BUILDING,
 		})
