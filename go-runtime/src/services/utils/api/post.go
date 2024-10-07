@@ -11,6 +11,7 @@ import (
 
 func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody, headers *Headers) (*TResponseData, error) {
 	var _body *bytes.Buffer = bytes.NewBuffer([]byte{})
+
 	if body != nil {
 		bodyBytes, err := json.Marshal(body)
 		if err != nil {
@@ -23,6 +24,11 @@ func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TReq
 		return nil, err
 	}
 	req.Header.Add("Content-Type", "application/json")
+	if headers != nil {
+		if headers.Authorization != "" {
+			req.Header.Add("Authorization", headers.Authorization)
+		}
+	}
 
 	client := &http.Client{
 		Timeout: 10 * time.Second,
@@ -37,9 +43,6 @@ func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TReq
 	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
-	}
-	if headers.Authorization != "" {
-		req.Header.Add("Authorization", headers.Authorization)
 	}
 
 	if !IsStatusCode2xx(resp.StatusCode) {

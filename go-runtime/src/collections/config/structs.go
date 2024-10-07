@@ -1,7 +1,7 @@
 package collections_config
 
 type TelegramData struct {
-	UserId string `json:"userId"`
+	UserId int `json:"userId"`
 }
 type Metadata struct {
 	Key            string       `json:"key"`

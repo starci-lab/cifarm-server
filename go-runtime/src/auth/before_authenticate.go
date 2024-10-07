@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -20,27 +21,37 @@ func BeforeAuthenticate(
 
 	message, ok := data.Account.Vars["message"]
 	if !ok {
-		return nil, errors.New("missing 'message' in account variables")
+		errMsg := "missing 'message' in account variables"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 
 	signature, ok := data.Account.Vars["signature"]
 	if !ok {
-		return nil, errors.New("missing 'signature' in account variables")
+		errMsg := "missing 'signature' in account variables"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 
 	publicKey, ok := data.Account.Vars["publicKey"]
 	if !ok {
-		return nil, errors.New("missing 'publicKey' in account variables")
+		errMsg := "missing 'publicKey' in account variables"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 
 	chainKey, ok := data.Account.Vars["chainKey"]
 	if !ok {
-		return nil, errors.New("missing 'chainKey' in account variables")
+		errMsg := "missing 'chainKey' in account variables"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 
 	network, ok := data.Account.Vars["network"]
 	if !ok {
-		return nil, errors.New("missing 'network' in account variables")
+		errMsg := "missing 'network' in account variables"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 
 	body := services_periphery_api_authenticator.VerifyMessageRequestBody{
@@ -55,13 +66,14 @@ func BeforeAuthenticate(
 		Body: body,
 	})
 	if err != nil {
-		logger.Error(err.Error())
 		return nil, err
 	}
 
 	telegramInitDataRaw, ok := data.Account.Vars["telegramInitDataRaw"]
 	if !ok {
-		return nil, errors.New("missing 'telegramInitDataRaw' in account variables")
+		errMsg := "missing 'telegramInitDataRaw' in account variables"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
 	}
 
 	authorizeTelegramResponse, err := services_periphery_api_authenticator.AuthorizeTelegram(ctx, logger, db, nk, services_periphery_api_authenticator.AuthorizeTelegramParams{
@@ -76,6 +88,8 @@ func BeforeAuthenticate(
 	data.Create.Value = true
 	data.Username = fmt.Sprintf("%s_%s", chainKey, response.Address)
 	data.Account.Vars["accountAddress"] = response.Address
-	data.Account.Vars["telegramUserId"] = authorizeTelegramResponse.TelegramData.UserId
+
+	_userId := strconv.Itoa(authorizeTelegramResponse.TelegramData.UserId)
+	data.Account.Vars["telegramUserId"] = _userId
 	return data, nil
 }

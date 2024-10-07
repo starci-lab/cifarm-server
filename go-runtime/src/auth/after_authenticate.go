@@ -11,6 +11,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strconv"
 
 	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -155,7 +156,12 @@ func AfterAuthenticate(
 
 	if object == nil {
 		//first time login
-
+		logger.Info(telegramUserId)
+		_telegramUserId, err := strconv.Atoi(telegramUserId)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 		err = collections_config.WriteMetadata(ctx, logger, db, nk,
 			collections_config.WriteMetadataParams{
 				Metadata: collections_config.Metadata{
@@ -163,7 +169,7 @@ func AfterAuthenticate(
 					AccountAddress: address,
 					Network:        network,
 					TelegramData: collections_config.TelegramData{
-						UserId: telegramUserId,
+						UserId: _telegramUserId,
 					},
 				},
 				UserId: userId,

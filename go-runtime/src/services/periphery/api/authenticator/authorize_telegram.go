@@ -11,7 +11,7 @@ import (
 )
 
 type TelegramData struct {
-	UserId string `json:"userId"`
+	UserId int `json:"userId"`
 }
 
 type AuthorizeTelegramResponseData struct {

@@ -39,8 +39,9 @@ func VerifyMessage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 		return nil, err
 	}
 	url = url + "/authenticator/verify-message"
-	logger.Info("POST %v", url)
-	_response, err := services_uitls_api.SendPostRequest[VerifyMessageRequestBody, VerifyMessageResponse](url, &params.Body, nil)
+
+	body := params.Body
+	_response, err := services_uitls_api.SendPostRequest[VerifyMessageRequestBody, VerifyMessageResponse](url, &body, nil)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
