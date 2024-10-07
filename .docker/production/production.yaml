@@ -6,12 +6,10 @@ services:
       POSTGRES_POSTGRES_DB: ${POSTGRES_NAKAMA_DATABASE}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     expose:
-      - "8080"
       - "5432"
     image: postgres:12.2-alpine
     ports:
       - "5432:5432"
-      - "8080:8080"
     volumes:
       - data:/var/lib/postgresql/data
   cifarm-server:
