@@ -35,7 +35,7 @@ func Mint(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.Nak
 	}
 	url = url + "/token/mint"
 	logger.Info("POST %v", url)
-	_response, err := services_uitls_api.SendPostRequest[MintRequestBody, MintResponse](url, body)
+	_response, err := services_uitls_api.SendPostRequest[MintRequestBody, MintResponse](url, body, nil)
 	if err != nil {
 		return nil, err
 	}

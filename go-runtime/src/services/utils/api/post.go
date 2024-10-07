@@ -9,8 +9,9 @@ import (
 	"time"
 )
 
-func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody) (*TResponseData, error) {
+func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody, headers *Headers) (*TResponseData, error) {
 	var _body *bytes.Buffer = bytes.NewBuffer([]byte{})
+
 	if body != nil {
 		bodyBytes, err := json.Marshal(body)
 		if err != nil {
@@ -23,6 +24,11 @@ func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TReq
 		return nil, err
 	}
 	req.Header.Add("Content-Type", "application/json")
+	if headers != nil {
+		if headers.Authorization != "" {
+			req.Header.Add("Authorization", headers.Authorization)
+		}
+	}
 
 	client := &http.Client{
 		Timeout: 10 * time.Second,
