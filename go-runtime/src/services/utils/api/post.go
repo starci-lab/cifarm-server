@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody) (*TResponseData, error) {
+func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody, headers *Headers) (*TResponseData, error) {
 	var _body *bytes.Buffer = bytes.NewBuffer([]byte{})
 	if body != nil {
 		bodyBytes, err := json.Marshal(body)
@@ -37,6 +37,9 @@ func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TReq
 	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+	if headers.Authorization != "" {
+		req.Header.Add("Authorization", headers.Authorization)
 	}
 
 	if !IsStatusCode2xx(resp.StatusCode) {

@@ -51,7 +51,22 @@ func BeforeAuthenticate(
 		Network:   network,
 	}
 
-	response, err := services_periphery_api_authenticator.VerifyMessage(ctx, logger, db, nk, &body)
+	response, err := services_periphery_api_authenticator.VerifyMessage(ctx, logger, db, nk, services_periphery_api_authenticator.VerifyMessageParams{
+		Body: body,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	initDataRaw, ok := data.Account.Vars["initDataRaw"]
+	if !ok {
+		return nil, errors.New("missing 'initDataRaw' in account variables")
+	}
+
+	authorizeTelegramResponse, err := services_periphery_api_authenticator.AuthorizeTelegram(ctx, logger, db, nk, services_periphery_api_authenticator.AuthorizeTelegramParams{
+		InitDataRaw: initDataRaw,
+	})
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
@@ -61,5 +76,6 @@ func BeforeAuthenticate(
 	data.Create.Value = true
 	data.Username = fmt.Sprintf("%s_%s", chainKey, response.Address)
 	data.Account.Vars["accountAddress"] = response.Address
+	data.Account.Vars["telegramUserId"] = authorizeTelegramResponse.TelegramData.UserId
 	return data, nil
 }

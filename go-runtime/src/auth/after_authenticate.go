@@ -131,6 +131,7 @@ func AfterAuthenticate(
 	chain := in.Account.Vars["chainKey"]
 	address := in.Account.Vars["accountAddress"]
 	network := in.Account.Vars["network"]
+	telegramUserId := in.Account.Vars["telegramUserId"]
 
 	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
 		UserId: userId,
@@ -161,6 +162,9 @@ func AfterAuthenticate(
 					ChainKey:       chain,
 					AccountAddress: address,
 					Network:        network,
+					TelegramData: collections_config.TelegramData{
+						UserId: telegramUserId,
+					},
 				},
 				UserId: userId,
 			})

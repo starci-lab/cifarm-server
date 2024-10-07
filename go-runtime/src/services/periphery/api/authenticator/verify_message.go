@@ -23,12 +23,16 @@ type VerifyMessageResponseData struct {
 	AuthenticationId string `json:"authenticationId"`
 }
 
+type VerifyMessageParams struct {
+	Body VerifyMessageRequestBody `json:"body"`
+}
+
 type VerifyMessageResponse struct {
 	Message string                    `json:"message"`
 	Data    VerifyMessageResponseData `json:"data"`
 }
 
-func VerifyMessage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, body *VerifyMessageRequestBody) (response *VerifyMessageResponseData, err error) {
+func VerifyMessage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params VerifyMessageParams) (response *VerifyMessageResponseData, err error) {
 	url, err := config.CifarmPeripheryApiUrl(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
@@ -36,7 +40,7 @@ func VerifyMessage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 	}
 	url = url + "/authenticator/verify-message"
 	logger.Info("POST %v", url)
-	_response, err := services_uitls_api.SendPostRequest[VerifyMessageRequestBody, VerifyMessageResponse](url, body)
+	_response, err := services_uitls_api.SendPostRequest[VerifyMessageRequestBody, VerifyMessageResponse](url, &params.Body, nil)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

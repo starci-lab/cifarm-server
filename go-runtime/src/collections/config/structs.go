@@ -1,10 +1,14 @@
 package collections_config
 
+type TelegramData struct {
+	UserId string `json:"userId"`
+}
 type Metadata struct {
-	Key            string `json:"key"`
-	ChainKey       string `json:"chainKey"`
-	AccountAddress string `json:"accountAddress"`
-	Network        string `json:"network"`
+	Key            string       `json:"key"`
+	ChainKey       string       `json:"chainKey"`
+	AccountAddress string       `json:"accountAddress"`
+	Network        string       `json:"network"`
+	TelegramData   TelegramData `json:"telegramData"`
 }
 
 type VisitState struct {
