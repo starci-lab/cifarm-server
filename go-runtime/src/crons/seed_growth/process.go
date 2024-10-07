@@ -47,7 +47,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 			params.PlacedItem.SeedGrowthInfo.CurrentStage += 1
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
-				//50% chance to be drain
+				//50% chance to be drain,
 				if rand.Float64() < 0.5 {
 					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER
 				}
