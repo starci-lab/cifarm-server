@@ -15,7 +15,7 @@ services:
     entrypoint:
       - "/bin/sh"
       - "-ecx"
-      - >
+      - > 
         /nakama/nakama migrate up --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE} &&
         exec /nakama/nakama --config /nakama/data/config.yml --database.address ${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAKAMA_DATABASE}
     expose:
