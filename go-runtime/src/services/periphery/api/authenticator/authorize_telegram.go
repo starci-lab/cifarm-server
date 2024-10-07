@@ -24,7 +24,7 @@ type AuthorizeTelegramResponse struct {
 }
 
 type AuthorizeTelegramParams struct {
-	InitDataRaw string `json:"initDataRaw"`
+	TelegramInitDataRaw string `json:"telegramInitDataRaw"`
 }
 
 func AuthorizeTelegram(
@@ -42,7 +42,7 @@ func AuthorizeTelegram(
 	url = url + "/authenticator/authorize-telegram"
 	logger.Info("POST %v", url)
 	_response, err := services_uitls_api.SendPostRequest[any, AuthorizeTelegramResponse](url, nil, &services_uitls_api.Headers{
-		Authorization: fmt.Sprintf("tma %s", params.InitDataRaw),
+		Authorization: fmt.Sprintf("tma %s", params.TelegramInitDataRaw),
 	})
 	if err != nil {
 		return nil, err

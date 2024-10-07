@@ -59,13 +59,13 @@ func BeforeAuthenticate(
 		return nil, err
 	}
 
-	initDataRaw, ok := data.Account.Vars["initDataRaw"]
+	telegramInitDataRaw, ok := data.Account.Vars["telegramInitDataRaw"]
 	if !ok {
-		return nil, errors.New("missing 'initDataRaw' in account variables")
+		return nil, errors.New("missing 'telegramInitDataRaw' in account variables")
 	}
 
 	authorizeTelegramResponse, err := services_periphery_api_authenticator.AuthorizeTelegram(ctx, logger, db, nk, services_periphery_api_authenticator.AuthorizeTelegramParams{
-		InitDataRaw: initDataRaw,
+		TelegramInitDataRaw: telegramInitDataRaw,
 	})
 	if err != nil {
 		logger.Error(err.Error())
