@@ -12,7 +12,7 @@ services:
       POSTGRES_NAKAMA_DATABASE: ${POSTGRES_NAKAMA_DATABASE}
     # volumes:
     #   - /home/ubuntu/docker/cifarm-server/data:/nakama/data
-    entrypoint:
+    entrypoint: 
       - "/bin/sh"
       - "-ecx"
       - > 
