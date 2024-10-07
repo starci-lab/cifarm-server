@@ -214,8 +214,8 @@ func AfterAuthenticate(
 		placedItems = append(placedItems, collections_placed_items.PlacedItem{
 			ReferenceKey: collections_buildings.KEY_HOME,
 			Position: collections_placed_items.Position{
-				X: 0,
-				Y: 10,
+				X: 4,
+				Y: 0,
 			},
 			Type: collections_placed_items.TYPE_BUILDING,
 		})
