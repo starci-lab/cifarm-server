@@ -3,7 +3,8 @@ services:
   postgres:
     command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all
     env_file:
-      - ../../.env.local
+      POSTGRES_POSTGRES_DB: ${POSTGRES_NAKAMA_DATABASE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     expose:
       - "8080"
       - "5432"
