@@ -144,17 +144,17 @@ func WriteSpeedUp(
 }
 
 type WriteActivityExperiencesParams struct {
-	ActivityExperiences ActivityExperiences `json:"activityExperiences"`
+	Activities Activities `json:"activities"`
 }
 
-func WriteActivityExperiences(
+func WriteActivities(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	params WriteActivityExperiencesParams,
 ) error {
-	value, err := json.Marshal(params.ActivityExperiences)
+	value, err := json.Marshal(params.Activities)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -163,7 +163,7 @@ func WriteActivityExperiences(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             KEY_ACTIVITY_EXPERIENCES,
+			Key:             KEY_ACTIVITIES,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

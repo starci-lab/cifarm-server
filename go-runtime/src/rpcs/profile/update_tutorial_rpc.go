@@ -52,8 +52,8 @@ func UpdateTutorialRpc(ctx context.Context,
 		logger.Error(err.Error())
 		return "", err
 	}
-	playerStats.TutorialIndex = params.TutorialIndex
-	playerStats.StepIndex = params.StepIndex
+	playerStats.TutorialInfo.TutorialIndex = params.TutorialIndex
+	playerStats.TutorialInfo.StepIndex = params.StepIndex
 
 	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
 		PlayerStats: *playerStats,

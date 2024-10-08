@@ -3,6 +3,7 @@ package crons
 import (
 	crons_animal_produce "cifarm-server/src/crons/animal_produce"
 	crons_deliver "cifarm-server/src/crons/deliver"
+	crons_energy_gain "cifarm-server/src/crons/energy_gain"
 	crons_last_server_uptime "cifarm-server/src/crons/last_server_uptime"
 	crons_seed_growth "cifarm-server/src/crons/seed_growth"
 	"context"
@@ -17,12 +18,20 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		logger.Error(err.Error())
 		return err
 	}
+
 	err = crons_seed_growth.Run(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
+
 	err = crons_deliver.Run(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = crons_energy_gain.Run(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

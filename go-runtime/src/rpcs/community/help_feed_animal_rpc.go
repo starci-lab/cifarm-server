@@ -41,9 +41,20 @@ func HelpFeedAnimalRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
 	//fetch the animal
-	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemAnimalKey,
 		UserId: params.UserId,
 	})
@@ -74,6 +85,17 @@ func HelpFeedAnimalRpc(
 		errMsg := "animal does not need to be fed"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
+	}
+
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.HelpFeedAnimal.EnergyCost,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
 
 	//delete the feed from inventory
@@ -116,20 +138,9 @@ func HelpFeedAnimalRpc(
 	}
 
 	//increase user experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.HelpFeedAnimal * multiplier,
+		Amount: activities.HelpFeedAnimal.ExperiencesGain * multiplier,
 	})
 	if err != nil {
 		logger.Error(err.Error())

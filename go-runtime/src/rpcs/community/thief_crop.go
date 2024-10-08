@@ -7,6 +7,7 @@ import (
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_system "cifarm-server/src/collections/system"
 	collections_tiles "cifarm-server/src/collections/tiles"
+	"cifarm-server/src/friends"
 	"cifarm-server/src/utils"
 	"context"
 	"database/sql"
@@ -48,6 +49,18 @@ func ThiefCropRpc(
 		return "", err
 	}
 
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	if userId == params.UserId {
 		errMsg := "you cannot theif your plants"
 		logger.Error(errMsg)
@@ -56,7 +69,7 @@ func ThiefCropRpc(
 
 	//ensure you have more level
 	//your level
-	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err = collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -96,7 +109,7 @@ func ThiefCropRpc(
 	}
 
 	//check level
-	if playerStats.Level < otherPlayerStats.Level {
+	if playerStats.LevelInfo.Level < otherPlayerStats.LevelInfo.Level {
 		errMsg := "you cannot theif higher level"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
@@ -147,6 +160,13 @@ func ThiefCropRpc(
 		return "", errors.New(errMsg)
 	}
 
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.ThiefCrop.EnergyCost,
+	})
+
 	//fn to calculate
 	thiefQuantity := 1
 	random := rand.Float64()
@@ -189,20 +209,24 @@ func ThiefCropRpc(
 		return "", err
 	}
 
+	//check friend
+	check, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
+		UserId:       userId,
+		FriendUserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	multiplier := 1
+	if check {
+		multiplier = 2
+	}
+
 	//increase experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.ThiefCrop,
+		Amount: activities.ThiefCrop.ExperiencesGain * multiplier,
 	})
 	if err != nil {
 		logger.Error(err.Error())

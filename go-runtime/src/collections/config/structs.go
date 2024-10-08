@@ -17,11 +17,27 @@ type VisitState struct {
 }
 
 type PlayerStats struct {
-	Key             string `json:"key"`
-	Experiences     int    `json:"experiences"`
-	ExperienceQuota int    `json:"experienceQuota"`
-	Level           int    `json:"level"`
-	TutorialIndex   int    `json:"tutorialIndex"`
-	StepIndex       int    `json:"stepIndex"`
-	Invites         []int  `json:"invites"`
+	Key          string       `json:"key"`
+	LevelInfo    LevelInfo    `json:"levelInfo"`
+	TutorialInfo TutorialInfo `json:"tutorialInfo"`
+	Invites      []int        `json:"invites"`
+	EnergyInfo   EnergyInfo   `json:"energyInfo"`
+}
+
+type TutorialInfo struct {
+	TutorialIndex int `json:"tutorialIndex"`
+	StepIndex     int `json:"stepIndex"`
+}
+
+type LevelInfo struct {
+	Experiences     int `json:"experiences"`
+	ExperienceQuota int `json:"experienceQuota"`
+	Level           int `json:"level"`
+}
+
+type EnergyInfo struct {
+	CurrentEnergy     int   `json:"currentEnergy"`
+	MaxEnergy         int   `json:"maxEnergy"`
+	EnergyQuota       int   `json:"energyQuota"`
+	RecoveryTimeCount int64 `json:"recoveryTimeCount"`
 }

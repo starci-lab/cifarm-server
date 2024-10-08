@@ -20,20 +20,26 @@ type SpeedUp struct {
 	Key                 string `json:"key"`
 	AnimalProcedureTime int64  `json:"animalProcedureTime"`
 	SeedGrowthTime      int64  `json:"time"`
+	EnergyGain          int64  `json:"energyGain"`
 }
 
-type ActivityExperiences struct {
-	Key                string `json:"key"`
-	Water              int    `json:"water"`
-	UsePestiside       int    `json:"usePestiside"`
-	UseFertilizer      int    `json:"useFertilizer"`
-	UseHerbicide       int    `json:"useHerbicide"`
-	HelpUseHerbicide   int    `json:"helpUseHerbicide"`
-	HelpUsePestiside   int    `json:"helpUsePestiside"`
-	HelpWater          int    `json:"helpWater"`
-	ThiefCrop          int    `json:"thiefCrop"`
-	HelpFeedAnimal     int    `json:"helpFeedAnimal"`
-	ThiefAnimalProduct int    `json:"thiefAnimalProduct"`
+type ActivityInfo struct {
+	ExperiencesGain int `json:"experiencesGain"`
+	EnergyCost      int `json:"energyCost"`
+}
+type Activities struct {
+	Key                string       `json:"key"`
+	Water              ActivityInfo `json:"water"`
+	FeedAnimal         ActivityInfo `json:"feedAnimal"`
+	UsePestiside       ActivityInfo `json:"usePestiside"`
+	UseFertilizer      ActivityInfo `json:"useFertilizer"`
+	UseHerbicide       ActivityInfo `json:"useHerbicide"`
+	HelpUseHerbicide   ActivityInfo `json:"helpUseHerbicide"`
+	HelpUsePestiside   ActivityInfo `json:"helpUsePestiside"`
+	HelpWater          ActivityInfo `json:"helpWater"`
+	ThiefCrop          ActivityInfo `json:"thiefCrop"`
+	HelpFeedAnimal     ActivityInfo `json:"helpFeedAnimal"`
+	ThiefAnimalProduct ActivityInfo `json:"thiefAnimalProduct"`
 }
 
 type Rewards struct {

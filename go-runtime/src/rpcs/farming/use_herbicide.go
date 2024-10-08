@@ -38,7 +38,19 @@ func UseHerbicideRpc(
 		return "", err
 	}
 
-	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemTileKey,
 		UserId: userId,
 	})
@@ -71,6 +83,17 @@ func UseHerbicideRpc(
 		return "", errors.New(errMsg)
 	}
 
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.UseHerbicide.ExperiencesGain,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	//update tile status
 	tile.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NORMAL
 
@@ -85,19 +108,9 @@ func UseHerbicideRpc(
 	}
 
 	//increase experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.UseHerbicide,
+		Amount: activities.UseHerbicide.ExperiencesGain,
 	})
 	if err != nil {
 		logger.Error(err.Error())

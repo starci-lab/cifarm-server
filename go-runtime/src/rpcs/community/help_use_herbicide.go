@@ -39,6 +39,17 @@ func HelpUseHerbicideRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
 	if userId == params.UserId {
 		errMsg := "you cannot help yourself with using herbicide"
@@ -46,7 +57,7 @@ func HelpUseHerbicideRpc(
 		return "", errors.New(errMsg)
 	}
 
-	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemTileKey,
 		UserId: params.UserId,
 	})
@@ -79,6 +90,17 @@ func HelpUseHerbicideRpc(
 		return "", errors.New(errMsg)
 	}
 
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.HelpUseHerbicide.EnergyCost,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	//update tile status
 	tile.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NORMAL
 
@@ -107,19 +129,9 @@ func HelpUseHerbicideRpc(
 	}
 
 	//increase experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.HelpUseHerbicide * multiplier,
+		Amount: activities.HelpUseHerbicide.ExperiencesGain * multiplier,
 	})
 	if err != nil {
 		logger.Error(err.Error())

@@ -108,7 +108,7 @@ func ReadSpeedUp(
 	return object, nil
 }
 
-func ReadActivityExperiences(
+func ReadActivities(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -117,7 +117,7 @@ func ReadActivityExperiences(
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{
 			Collection: COLLECTION_NAME,
-			Key:        KEY_ACTIVITY_EXPERIENCES,
+			Key:        KEY_ACTIVITIES,
 		},
 	})
 	if err != nil {

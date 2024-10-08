@@ -215,11 +215,21 @@ func AfterAuthenticate(
 		err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
 			UserId: userId,
 			PlayerStats: collections_config.PlayerStats{
-				Level:           1,
-				Experiences:     0,
-				ExperienceQuota: 50,
-				TutorialIndex:   0,
-				StepIndex:       0,
+				LevelInfo: collections_config.LevelInfo{
+					Level:           1,
+					Experiences:     0,
+					ExperienceQuota: 50,
+				},
+				TutorialInfo: collections_config.TutorialInfo{
+					TutorialIndex: 0,
+					StepIndex:     0,
+				},
+				EnergyInfo: collections_config.EnergyInfo{
+					CurrentEnergy:     50,
+					MaxEnergy:         50,
+					EnergyQuota:       1,
+					RecoveryTimeCount: 0,
+				},
 			},
 		})
 		if err != nil {
