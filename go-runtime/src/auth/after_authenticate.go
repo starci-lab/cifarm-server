@@ -7,6 +7,7 @@ import (
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_system "cifarm-server/src/collections/system"
 	collections_tiles "cifarm-server/src/collections/tiles"
+	"cifarm-server/src/utils"
 	"cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -18,39 +19,13 @@ import (
 )
 
 type HandleRefererParams struct {
-	ReferrerUserId string `json:"referrerUserId"`
+	//your metadata
+	Metadata       collections_config.Metadata `json:"metadata"`
+	ReferrerUserId string                      `json:"referrerUserId"`
 }
 
 func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, userId string, params HandleRefererParams) error {
-	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
-		UserId: params.ReferrerUserId,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-	if object == nil {
-		errMsg := "player stats not found"
-		//if not found, mean wrong code, stop the refer
-		logger.Error(errMsg)
-		return nil
-	}
-	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-	playerStats.Invites = append(playerStats.Invites, params.ReferrerUserId)
-
-	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
-		PlayerStats: *playerStats,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-
-	object, err = collections_system.ReadRewards(ctx, logger, db, nk)
+	object, err := collections_system.ReadRewards(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -66,40 +41,98 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 		return err
 	}
 
+	object, err = collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+		UserId: params.ReferrerUserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		debugMsg := "player stats not found"
+		//if not found, mean wrong code, stop the refer
+		logger.Debug(debugMsg)
+		return nil
+	}
+	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	//check
+	if utils.ContainsInt(playerStats.Invites, params.Metadata.TelegramData.UserId) {
+		debugMsg := "already invited"
+		logger.Debug(debugMsg)
+		return nil
+	}
+
+	//bonus for being referred
+	err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
+		Amount: rewards.Referred,
+		Metadata: map[string]interface{}{
+			"name": "Referred",
+		},
+		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	playerStats.Invites = append(playerStats.Invites, params.Metadata.TelegramData.UserId)
+
+	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+		PlayerStats: *playerStats,
+		UserId:      params.ReferrerUserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	if len(playerStats.Invites) == rewards.FromInvites.Metrics[1].Key {
 		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 			UserId: params.ReferrerUserId,
 			Amount: rewards.FromInvites.Metrics[1].Value,
+			Metadata: map[string]interface{}{
+				"name": "Refer",
+			},
 		})
 		if err != nil {
 			logger.Error(err.Error())
 			return err
 		}
-
 	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[2].Key {
 		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 			UserId: params.ReferrerUserId,
 			Amount: rewards.FromInvites.Metrics[2].Value,
+			Metadata: map[string]interface{}{
+				"name": "Refer",
+			},
 		})
 		if err != nil {
 			logger.Error(err.Error())
 			return err
 		}
-
 	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[3].Key {
 		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 			UserId: params.ReferrerUserId,
 			Amount: rewards.FromInvites.Metrics[3].Value,
+			Metadata: map[string]interface{}{
+				"name": "Refer",
+			},
 		})
 		if err != nil {
 			logger.Error(err.Error())
 			return err
 		}
-
 	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[4].Key {
 		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 			UserId: params.ReferrerUserId,
 			Amount: rewards.FromInvites.Metrics[4].Value,
+			Metadata: map[string]interface{}{
+				"name": "Refer",
+			},
 		})
 		if err != nil {
 			logger.Error(err.Error())
@@ -133,6 +166,11 @@ func AfterAuthenticate(
 	address := in.Account.Vars["accountAddress"]
 	network := in.Account.Vars["network"]
 	telegramUserId := in.Account.Vars["telegramUserId"]
+	_telegramUserId, err := strconv.Atoi(telegramUserId)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 
 	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
 		UserId: userId,
@@ -156,23 +194,18 @@ func AfterAuthenticate(
 
 	if object == nil {
 		//first time login
-		logger.Info(telegramUserId)
-		_telegramUserId, err := strconv.Atoi(telegramUserId)
-		if err != nil {
-			logger.Error(err.Error())
-			return err
+		metadata := collections_config.Metadata{
+			ChainKey:       chain,
+			AccountAddress: address,
+			Network:        network,
+			TelegramData: collections_config.TelegramData{
+				UserId: _telegramUserId,
+			},
 		}
 		err = collections_config.WriteMetadata(ctx, logger, db, nk,
 			collections_config.WriteMetadataParams{
-				Metadata: collections_config.Metadata{
-					ChainKey:       chain,
-					AccountAddress: address,
-					Network:        network,
-					TelegramData: collections_config.TelegramData{
-						UserId: _telegramUserId,
-					},
-				},
-				UserId: userId,
+				Metadata: metadata,
+				UserId:   userId,
 			})
 		if err != nil {
 			logger.Error(err.Error())
@@ -261,26 +294,48 @@ func AfterAuthenticate(
 		}
 
 		referrerUserId := in.Account.Vars["referrerUserId"]
-		//you have been referred by someone
+		//you have been referred by someone, we only check newly telegram
+		logger.Debug("referrerUserId: %s", referrerUserId)
 		if referrerUserId != "" {
 			err = HandleReferer(ctx, logger, db, nk, userId, HandleRefererParams{
 				ReferrerUserId: referrerUserId,
+				Metadata:       metadata,
 			})
 			if err != nil {
 				logger.Error(err.Error())
 				return err
 			}
-			//bonus for being referred
-			err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-				Amount: 200,
-				Metadata: map[string]interface{}{
-					"name": "Referred",
-				},
-				UserId: userId,
-			})
+		}
+	} else {
+		//update tele metadata if neccessary
+		//check metadata
+		metadataObject, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+			UserId: userId,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		if metadataObject != nil {
+			//has metadata before
+			//check if telegramUserId is the same
+			metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, metadataObject)
 			if err != nil {
 				logger.Error(err.Error())
 				return err
+			}
+
+			if metadata.TelegramData.UserId != _telegramUserId {
+				//telegramUserId is different, do update
+				metadata.TelegramData.UserId = _telegramUserId
+				err = collections_config.WriteMetadata(ctx, logger, db, nk, collections_config.WriteMetadataParams{
+					Metadata: *metadata,
+					UserId:   userId,
+				})
+				if err != nil {
+					logger.Error(err.Error())
+					return err
+				}
 			}
 		}
 	}

@@ -39,6 +39,7 @@ type ActivityExperiences struct {
 type Rewards struct {
 	Key         string      `json:"key"`
 	FromInvites FromInvites `json:"fromInvites"`
+	Referred    int64       `json:"referred"`
 }
 
 type FromInvites struct {

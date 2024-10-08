@@ -11,7 +11,8 @@ const (
 )
 
 const (
-	STORAGE_INDEX_USER_ID = "ConfigStorageIndexUserId"
+	STORAGE_INDEX_USER_ID  = "ConfigStorageIndexUserId"
+	STORAGE_INDEX_METADATA = "ConfigStorageIndexMetadata"
 )
 
 const (

@@ -40,6 +40,39 @@ func ReadMetadata(
 	return object, nil
 }
 
+type GetMetadataParams struct {
+	Metadata Metadata `json:"metadata"`
+}
+
+func GetMetadata(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params GetMetadataParams,
+) (*api.StorageObject, error) {
+	name := STORAGE_INDEX_METADATA
+	query := fmt.Sprintf("+value.accountAddress:%s +value.chainKey:%v +value.network:%s",
+		params.Metadata.AccountAddress,
+		params.Metadata.ChainKey,
+		params.Metadata.Network,
+	)
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, 1, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects.Objects) == 0 {
+		errMsg := "metadata not found"
+		logger.Error(errMsg)
+		return nil, nil
+	}
+	return objects.Objects[0], nil
+}
+
 type GetUserIdByMetadataParams struct {
 	Metadata Metadata `json:"metadata"`
 }

@@ -6,7 +6,6 @@ import (
 	rpcs_community "cifarm-server/src/rpcs/community"
 	rpcs_daily_rewards "cifarm-server/src/rpcs/daily_rewards"
 	rpcs_farming "cifarm-server/src/rpcs/farming"
-	rpcs_internal "cifarm-server/src/rpcs/internal"
 	rpcs_miscellaneous "cifarm-server/src/rpcs/miscellaneous"
 	rpcs_nfts "cifarm-server/src/rpcs/nfts"
 	rpcs_placement "cifarm-server/src/rpcs/placement"
@@ -86,12 +85,6 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	}
 
 	err = rpcs_profile.Initialize(ctx, logger, db, nk, initializer)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
-	}
-
-	err = rpcs_internal.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

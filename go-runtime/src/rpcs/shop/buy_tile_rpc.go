@@ -89,7 +89,6 @@ func GetTileData(
 	}
 
 	if !has1 {
-		logger.Info("you buy 1")
 		object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 			Key: key,
 		})
@@ -125,7 +124,6 @@ func GetTileData(
 		return nil, err
 	}
 	if !has2 {
-		logger.Info("you buy 2")
 		object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 			Key: key,
 		})
@@ -155,7 +153,6 @@ func GetTileData(
 	object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 		Key: key,
 	})
-	logger.Info("you buy 3")
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

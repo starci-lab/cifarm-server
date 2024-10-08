@@ -94,6 +94,7 @@ func SetupSystemRewards(
 					},
 				},
 			},
+			Referred: 200,
 		},
 	})
 	if err != nil {

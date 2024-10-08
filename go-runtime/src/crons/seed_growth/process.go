@@ -104,7 +104,6 @@ func HandleSeedGrowth(
 	objects, err := collections_placed_items.ReadByFilters1(ctx, logger, db, nk, collections_placed_items.ReadByFilters1Params{
 		UserId: params.UserId,
 	})
-	logger.Info("Garden %s: Crops %v", params.UserId, len(objects.Objects))
 	if err != nil {
 		logger.Error(err.Error())
 		return err
