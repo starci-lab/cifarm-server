@@ -21,6 +21,7 @@ type SeedGrowthInfo struct {
 	ThiefedBy                []string               `json:"thiefedBy"`
 	FullyMatured             bool                   `json:"fullyMatured"`
 	IsPlanted                bool                   `json:"isPlanted"`
+	IsFertilized             bool                   `json:"isFertilized"`
 }
 
 type AnimalInfo struct {

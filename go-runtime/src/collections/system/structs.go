@@ -33,6 +33,7 @@ type Activities struct {
 	FeedAnimal         ActivityInfo `json:"feedAnimal"`
 	UsePestiside       ActivityInfo `json:"usePestiside"`
 	UseFertilizer      ActivityInfo `json:"useFertilizer"`
+	HelpUseFertilizer  ActivityInfo `json:"helpUseFertilizer"`
 	UseHerbicide       ActivityInfo `json:"useHerbicide"`
 	HelpUseHerbicide   ActivityInfo `json:"helpUseHerbicide"`
 	HelpUsePestiside   ActivityInfo `json:"helpUsePestiside"`

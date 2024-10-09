@@ -7,7 +7,6 @@ import (
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_system "cifarm-server/src/collections/system"
 	collections_tiles "cifarm-server/src/collections/tiles"
-	"cifarm-server/src/friends"
 	"cifarm-server/src/utils"
 	"context"
 	"database/sql"
@@ -214,17 +213,13 @@ func ThiefCropRpc(
 	}
 
 	//check friend
-	check, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
-		UserId:       userId,
-		FriendUserId: params.UserId,
+	multiplier, err := GetMutipleValue(ctx, logger, db, nk, GetMutipleValueParams{
+		UserId:      userId,
+		OtherUserId: params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
-	}
-	multiplier := 1
-	if check {
-		multiplier = 2
 	}
 
 	//increase experience

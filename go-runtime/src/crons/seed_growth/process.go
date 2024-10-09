@@ -45,6 +45,8 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		if params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed >= params.PlacedItem.SeedGrowthInfo.Crop.GrowthStageDuration {
 			params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed -= params.PlacedItem.SeedGrowthInfo.Crop.GrowthStageDuration
 			params.PlacedItem.SeedGrowthInfo.CurrentStage += 1
+			//reset fertilized status after growth stage
+			params.PlacedItem.SeedGrowthInfo.IsFertilized = false
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
 				//50% chance to be drain,
