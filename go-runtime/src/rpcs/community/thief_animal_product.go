@@ -11,8 +11,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"math"
-	"math/rand"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -171,14 +169,13 @@ func ThiefAnimalProductRpc(
 	}
 
 	//fn to calculate
-	thiefQuantity := 1
-	random := rand.Float64()
-	if random > 0.95 {
-		thiefQuantity = 3
-	} else if random > 0.8 {
-		thiefQuantity = 2
+	thiefQuantity, err := GetThiefValue(ctx, logger, db, nk, GetThiefValueParams{
+		MaximunTheifQuantity: maximunTheifQuantity,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
-	thiefQuantity = int(math.Min(float64(maximunTheifQuantity), float64(thiefQuantity)))
 
 	//check kinh nghiệm, check các thứ, ...
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{

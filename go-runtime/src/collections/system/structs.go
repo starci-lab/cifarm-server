@@ -58,3 +58,15 @@ type Metric struct {
 	Key   int   `json:"key"`
 	Value int64 `json:"value"`
 }
+
+type GameRandomness struct {
+	Theif3            float64 `json:"theif3"`
+	Theif2            float64 `json:"theif2"`
+	NeedWater         float64 `json:"needWater"`
+	IsWeedyOrInfested float64 `json:"isWeedyOrInfested"`
+}
+
+type GlobalConstants struct {
+	Key            string         `json:"key"`
+	GameRandomness GameRandomness `json:"gameRandomness"`
+}

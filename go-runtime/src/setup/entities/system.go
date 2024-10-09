@@ -141,3 +141,29 @@ func SetupSystemRewards(
 	}
 	return nil
 }
+
+func SetupGlobalConstants(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) error {
+	globalConstants := collections_system.GlobalConstants{
+		GameRandomness: collections_system.GameRandomness{
+			Theif3:            0.95,
+			Theif2:            0.8,
+			NeedWater:         0.5,
+			IsWeedyOrInfested: 1,
+		},
+	}
+
+	err := collections_system.WriteGlobalConstants(ctx, logger, db, nk, collections_system.WriteGlobalConstantsParams{
+		GlobalConstants: globalConstants,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	return nil
+}

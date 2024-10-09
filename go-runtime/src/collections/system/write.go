@@ -210,3 +210,37 @@ func WriteRewards(
 	}
 	return nil
 }
+
+type WriteGlobalConstantsParams struct {
+	GlobalConstants GlobalConstants `json:"globalConstants"`
+}
+
+func WriteGlobalConstants(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteGlobalConstantsParams,
+) error {
+	value, err := json.Marshal(params.GlobalConstants)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_GLOBAL_CONSTANTS,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

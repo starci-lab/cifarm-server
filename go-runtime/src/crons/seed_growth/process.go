@@ -33,6 +33,22 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		return nil
 	}
 
+	object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		errMsg := "global constants not found"
+		logger.Error(errMsg)
+		return err
+	}
+	globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
 	params.PlacedItem.SeedGrowthInfo.TotalTimeElapsed += params.TimeInSeconds
 	params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed += params.TimeInSeconds
 
@@ -50,17 +66,19 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
 				//50% chance to be drain,
-				if rand.Float64() < 0.5 {
+				if rand.Float64() < globalConstants.GameRandomness.NeedWater {
 					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER
 				}
 			}
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == 4 {
 				//50% to be infested or weedly, chance maybe difference via better tiles
-				if rand.Float64() < 0.5 {
-					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_WEEDY
-				} else {
-					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_INFESTED
+				if rand.Float64() <= globalConstants.GameRandomness.IsWeedyOrInfested {
+					if rand.Float64() < 0.5 {
+						params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_WEEDY
+					} else {
+						params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_INFESTED
+					}
 				}
 			}
 
@@ -79,7 +97,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		}
 	}
 
-	_, err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *params.PlacedItem,
 		UserId:     params.UserId,
 	})
