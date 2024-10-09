@@ -91,6 +91,10 @@ func SetupSystemActivityExperiences(
 				ExperiencesGain: 3,
 				EnergyCost:      1,
 			},
+			HelpUseFertilizer: collections_system.ActivityInfo{
+				ExperiencesGain: 50,
+				EnergyCost:      1,
+			},
 		},
 	})
 	if err != nil {
