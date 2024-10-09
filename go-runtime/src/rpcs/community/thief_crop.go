@@ -166,6 +166,10 @@ func ThiefCropRpc(
 		UserId: userId,
 		Amount: activities.ThiefCrop.EnergyCost,
 	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
 	//fn to calculate
 	thiefQuantity := 1
