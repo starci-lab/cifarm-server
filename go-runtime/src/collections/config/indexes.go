@@ -59,3 +59,27 @@ func RegisterMetadata(
 	}
 	return nil
 }
+
+func RegisterMetadatas(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	initializer runtime.Initializer,
+) error {
+	name := STORAGE_INDEX_METADATAS
+	collection := COLLECTION_NAME
+	key := KEY_METADATA
+	fields := []string{
+		"telegramData",
+	}
+	sortableFields := []string{}
+	maxEntries := collections_common.MAX_ENTRIES
+	indexOnly := false
+	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}

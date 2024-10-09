@@ -1,6 +1,7 @@
 package collections_config
 
 import (
+	collections_common "cifarm-server/src/collections/common"
 	"context"
 	"database/sql"
 	"fmt"
@@ -103,6 +104,32 @@ func GetUserIdByMetadata(
 	}
 	var result = objects.Objects[0]
 	return result.UserId, nil
+}
+
+type ReadMetadatasParams struct {
+	TelegramUserId string `json:"telegramUserId"`
+}
+
+func ReadMetadatas(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadMetadatasParams,
+) ([]*api.StorageObject, error) {
+	name := STORAGE_INDEX_METADATAS
+	query := fmt.Sprintf(
+		"+value.telegramData.userId:%s",
+		params.TelegramUserId)
+	order := []string{}
+
+	objects, err := nk.StorageIndexList(ctx, "", name, query, collections_common.MAX_ENTRIES_LIST, order)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return objects.Objects, nil
 }
 
 type ReadVisitStateParams struct {
