@@ -102,7 +102,7 @@ func BuyAnimalRpc(ctx context.Context,
 		return "", err
 	}
 	//check animal type
-	if building.BuildingInfo.Building.AnimalKey != animal.Key {
+	if building.BuildingInfo.Building.Type != animal.Type {
 		errMsg := "animal type does not match"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)

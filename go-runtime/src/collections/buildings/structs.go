@@ -6,5 +6,5 @@ type Building struct {
 	MaxUpgrade      int    `json:"maxUpgrade"`
 	Price           int64  `json:"price"`
 	Capacity        int    `json:"capacity"`
-	AnimalKey       string `json:"animalKey"`
+	Type            int    `json:"type"`
 }

@@ -18,18 +18,18 @@ func SetupBuildings(
 
 	buildings := []collections_buildings.Building{
 		{
-			Key:             collections_buildings.KEY_CHICKEN_COOP,
+			Key:             collections_buildings.KEY_COOP,
 			AvailableInShop: true,
-			AnimalKey:       collections_animals.KEY_CHICKEN,
+			Type:            collections_animals.TYPE_POULTRY,
 			MaxUpgrade:      3,
 			Price:           2000,
 			Capacity:        4,
 		},
 		{
-			Key:             collections_buildings.KEY_COW_PASTURE,
+			Key:             collections_buildings.KEY_PASTURE,
 			AvailableInShop: true,
 			MaxUpgrade:      3,
-			AnimalKey:       collections_animals.KEY_COW,
+			Type:            collections_animals.TYPE_LIVESTOCK,
 			Price:           3000,
 			Capacity:        4,
 		},

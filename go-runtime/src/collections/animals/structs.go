@@ -12,4 +12,5 @@ type Animal struct {
 	MaxHarvestQuantity        int    `json:"maxHarvestQuantity"`
 	BasicHarvestExperiences   int64  `json:"basicHarvestExperiences"`
 	PremiumHarvestExperiences int64  `json:"premiumHarvestExperiences"`
+	Type                      int    `json:"type"`
 }
