@@ -108,7 +108,7 @@ func BuyAnimalRpc(ctx context.Context,
 		return "", errors.New(errMsg)
 	}
 	//check ocupation
-	if building.BuildingInfo.Occupancy >= building.BuildingInfo.Building.UpgradeSummaries[building.BuildingInfo.CurrentUpgrade].Capacity {
+	if building.BuildingInfo.Occupancy >= building.BuildingInfo.Building.Capacity {
 		errMsg := "building is full"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)

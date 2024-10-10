@@ -22,40 +22,16 @@ func SetupBuildings(
 			AvailableInShop: true,
 			AnimalKey:       collections_animals.KEY_CHICKEN,
 			MaxUpgrade:      3,
-			UpgradeSummaries: map[int]collections_buildings.UpgradeSummary{
-				1: {
-					Price:    2000,
-					Capacity: 2,
-				},
-				2: {
-					Price:    5000,
-					Capacity: 4,
-				},
-				3: {
-					Price:    10000,
-					Capacity: 6,
-				},
-			},
+			Price:           2000,
+			Capacity:        4,
 		},
 		{
 			Key:             collections_buildings.KEY_COW_PASTURE,
 			AvailableInShop: true,
 			MaxUpgrade:      3,
 			AnimalKey:       collections_animals.KEY_COW,
-			UpgradeSummaries: map[int]collections_buildings.UpgradeSummary{
-				1: {
-					Price:    2000,
-					Capacity: 2,
-				},
-				2: {
-					Price:    5000,
-					Capacity: 4,
-				},
-				3: {
-					Price:    10000,
-					Capacity: 6,
-				},
-			},
+			Price:           3000,
+			Capacity:        4,
 		},
 		{
 			Key: collections_buildings.KEY_HOME,
