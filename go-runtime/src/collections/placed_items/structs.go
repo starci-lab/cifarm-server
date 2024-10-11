@@ -17,7 +17,7 @@ type SeedGrowthInfo struct {
 	TotalTimeElapsed         int64                  `json:"totalTimeElapsed"`
 	HarvestQuantityRemaining int                    `json:"harvestQuantityRemaining"`
 	Crop                     collections_crops.Crop `json:"crop"`
-	PlantCurrentState        int                    `json:"plantCurrentState"`
+	CurrentState             int                    `json:"currentState"`
 	ThiefedBy                []string               `json:"thiefedBy"`
 	FullyMatured             bool                   `json:"fullyMatured"`
 	IsPlanted                bool                   `json:"isPlanted"`

@@ -84,8 +84,8 @@ func HelpWaterRpc(
 		return "", errors.New(errMsg)
 	}
 
-	if tile.SeedGrowthInfo.PlantCurrentState != collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER {
-		errMsg := "plant do not need water"
+	if tile.SeedGrowthInfo.CurrentState != collections_placed_items.CURRENT_STATE_NEED_WATER {
+		errMsg := "crop do not need water"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
@@ -102,7 +102,7 @@ func HelpWaterRpc(
 	}
 
 	//update tile status
-	tile.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NORMAL
+	tile.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_NORMAL
 
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
