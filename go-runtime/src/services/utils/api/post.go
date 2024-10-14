@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody, headers *Headers) (*TResponseData, error) {
+func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TRequestBody, headers *map[string]string) (*TResponseData, error) {
 	var _body *bytes.Buffer = bytes.NewBuffer([]byte{})
 
 	if body != nil {
@@ -24,12 +24,12 @@ func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TReq
 		return nil, err
 	}
 	req.Header.Add("Content-Type", "application/json")
+
 	if headers != nil {
-		if headers.Authorization != "" {
-			req.Header.Add("Authorization", headers.Authorization)
-		}
-		if headers.BotType != "" {
-			req.Header.Add("Bot-Type", headers.BotType)
+		for key, value := range *headers {
+			if value != "" {
+				req.Header.Add(key, value)
+			}
 		}
 	}
 
