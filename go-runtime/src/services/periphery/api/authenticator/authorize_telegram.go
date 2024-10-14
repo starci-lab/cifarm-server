@@ -25,7 +25,6 @@ type AuthorizeTelegramResponse struct {
 
 type AuthorizeTelegramParams struct {
 	TelegramInitDataRaw string `json:"telegramInitDataRaw"`
-	BotType             string `json:"botType"`
 }
 
 func AuthorizeTelegram(
