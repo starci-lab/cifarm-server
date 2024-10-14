@@ -44,7 +44,6 @@ func AuthorizeTelegram(
 	logger.Info("POST %v", url)
 	_response, err := services_uitls_api.SendPostRequest[any, AuthorizeTelegramResponse](url, nil, &services_uitls_api.Headers{
 		Authorization: fmt.Sprintf("tma %s", params.TelegramInitDataRaw),
-		BotType:       params.BotType,
 	})
 	if err != nil {
 		return nil, err
