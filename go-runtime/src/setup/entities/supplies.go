@@ -20,6 +20,9 @@ func SetupSupplies(
 			Price:           50,
 			AvailableInShop: true,
 			Type:            collections_supplies.TYPE_FERTILIZER,
+			FertilizerEffect: collections_supplies.FertilizerEffect{
+				TimeReduce: 60 * 30, // 30 minutes
+			},
 		},
 		{
 			Key:             collections_supplies.KEY_CHICKEN_FEED,

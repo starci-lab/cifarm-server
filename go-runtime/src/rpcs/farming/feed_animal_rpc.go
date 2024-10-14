@@ -40,8 +40,20 @@ func FeedAnimalRpc(
 		return "", err
 	}
 
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	//fetch the animal
-	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemAnimalKey,
 		UserId: userId,
 	})
@@ -74,6 +86,17 @@ func FeedAnimalRpc(
 		return "", errors.New(errMsg)
 	}
 
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.FeedAnimal.ExperiencesGain,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	//delete the feed from inventory
 	err = collections_inventories.Delete(ctx, logger, db, nk, collections_inventories.DeleteParams{
 		Key:      params.InventoryAnimalFeedKey,
@@ -100,20 +123,9 @@ func FeedAnimalRpc(
 	}
 
 	//increase user experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.UseFertilizer,
+		Amount: activities.FeedAnimal.ExperiencesGain,
 	})
 	if err != nil {
 		logger.Error(err.Error())

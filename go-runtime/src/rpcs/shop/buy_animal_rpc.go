@@ -102,13 +102,13 @@ func BuyAnimalRpc(ctx context.Context,
 		return "", err
 	}
 	//check animal type
-	if building.BuildingInfo.Building.AnimalKey != animal.Key {
+	if building.BuildingInfo.Building.Type != animal.Type {
 		errMsg := "animal type does not match"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 	//check ocupation
-	if building.BuildingInfo.Occupancy >= building.BuildingInfo.Building.UpgradeSummaries[building.BuildingInfo.CurrentUpgrade].Capacity {
+	if building.BuildingInfo.Occupancy >= building.BuildingInfo.Building.Capacity {
 		errMsg := "building is full"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)

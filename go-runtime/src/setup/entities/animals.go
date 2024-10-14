@@ -28,6 +28,7 @@ func SetupAnimals(
 			MaxHarvestQuantity:        20,
 			BasicHarvestExperiences:   32,
 			PremiumHarvestExperiences: 96,
+			Type:                      collections_animals.TYPE_POULTRY,
 		},
 		{
 			Key:                       collections_animals.KEY_COW,
@@ -40,6 +41,7 @@ func SetupAnimals(
 			MaxHarvestQuantity:        20,
 			BasicHarvestExperiences:   32,
 			PremiumHarvestExperiences: 96,
+			Type:                      collections_animals.TYPE_LIVESTOCK,
 		},
 	}
 

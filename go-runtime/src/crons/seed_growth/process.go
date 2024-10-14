@@ -28,9 +28,25 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		return nil
 	}
 
-	if params.PlacedItem.SeedGrowthInfo.PlantCurrentState == collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER {
+	if params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_NEED_WATER {
 		//do nothing via being need watering
 		return nil
+	}
+
+	object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		errMsg := "global constants not found"
+		logger.Error(errMsg)
+		return err
+	}
+	globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
 	}
 
 	params.PlacedItem.SeedGrowthInfo.TotalTimeElapsed += params.TimeInSeconds
@@ -45,26 +61,30 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		if params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed >= params.PlacedItem.SeedGrowthInfo.Crop.GrowthStageDuration {
 			params.PlacedItem.SeedGrowthInfo.CurrentStageTimeElapsed -= params.PlacedItem.SeedGrowthInfo.Crop.GrowthStageDuration
 			params.PlacedItem.SeedGrowthInfo.CurrentStage += 1
+			//reset fertilized status after growth stage
+			params.PlacedItem.SeedGrowthInfo.IsFertilized = false
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
 				//50% chance to be drain,
-				if rand.Float64() < 0.5 {
-					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER
+				if rand.Float64() < globalConstants.GameRandomness.NeedWater {
+					params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_NEED_WATER
 				}
 			}
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == 4 {
 				//50% to be infested or weedly, chance maybe difference via better tiles
-				if rand.Float64() < 0.5 {
-					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_WEEDY
-				} else {
-					params.PlacedItem.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_IS_INFESTED
+				if rand.Float64() <= globalConstants.GameRandomness.IsWeedyOrInfested {
+					if rand.Float64() < 0.5 {
+						params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_IS_WEEDY
+					} else {
+						params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_IS_INFESTED
+					}
 				}
 			}
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == params.PlacedItem.SeedGrowthInfo.Crop.GrowthStages {
-				if params.PlacedItem.SeedGrowthInfo.PlantCurrentState == collections_placed_items.PLANT_CURRENT_STATE_IS_WEEDY ||
-					params.PlacedItem.SeedGrowthInfo.PlantCurrentState == collections_placed_items.PLANT_CURRENT_STATE_IS_INFESTED {
+				if params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_IS_WEEDY ||
+					params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_IS_INFESTED {
 					//reduce quantity
 					newQuantity := (params.PlacedItem.SeedGrowthInfo.Crop.MaxHarvestQuantity + params.PlacedItem.SeedGrowthInfo.Crop.MinHarvestQuantity) / 2
 					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = newQuantity
@@ -77,7 +97,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		}
 	}
 
-	_, err := collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
+	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *params.PlacedItem,
 		UserId:     params.UserId,
 	})

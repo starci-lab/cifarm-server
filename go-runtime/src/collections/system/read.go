@@ -108,7 +108,7 @@ func ReadSpeedUp(
 	return object, nil
 }
 
-func ReadActivityExperiences(
+func ReadActivities(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -117,7 +117,7 @@ func ReadActivityExperiences(
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{
 			Collection: COLLECTION_NAME,
-			Key:        KEY_ACTIVITY_EXPERIENCES,
+			Key:        KEY_ACTIVITIES,
 		},
 	})
 	if err != nil {
@@ -143,6 +143,31 @@ func ReadRewards(
 		{
 			Collection: COLLECTION_NAME,
 			Key:        KEY_REWARDS,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects) == 0 {
+		return nil, nil
+	}
+
+	object := objects[0]
+	return object, nil
+}
+
+func ReadGlobalConstants(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) (*api.StorageObject, error) {
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Collection: COLLECTION_NAME,
+			Key:        KEY_GLOBAL_CONSTANTS,
 		},
 	})
 	if err != nil {

@@ -5,7 +5,6 @@ import (
 	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_system "cifarm-server/src/collections/system"
-	"cifarm-server/src/friends"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -40,13 +39,25 @@ func HelpWaterRpc(
 		return "", err
 	}
 
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	if userId == params.UserId {
 		errMsg := "you cannot help yourself with using herbicide"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemTileKey,
 		UserId: params.UserId,
 	})
@@ -73,14 +84,25 @@ func HelpWaterRpc(
 		return "", errors.New(errMsg)
 	}
 
-	if tile.SeedGrowthInfo.PlantCurrentState != collections_placed_items.PLANT_CURRENT_STATE_NEED_WATER {
-		errMsg := "plant do not need water"
+	if tile.SeedGrowthInfo.CurrentState != collections_placed_items.CURRENT_STATE_NEED_WATER {
+		errMsg := "crop do not need water"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.HelpWater.EnergyCost,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	//update tile status
-	tile.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NORMAL
+	tile.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_NORMAL
 
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
@@ -93,33 +115,19 @@ func HelpWaterRpc(
 	}
 
 	//check friend
-	check, err := friends.CheckFriendByUserId(ctx, logger, db, nk, friends.CheckFriendByUserIdParams{
-		UserId:       userId,
-		FriendUserId: params.UserId,
+	multiplier, err := GetMutipleValue(ctx, logger, db, nk, GetMutipleValueParams{
+		UserId:      userId,
+		OtherUserId: params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	multiplier := 1
-	if check {
-		multiplier = 2
-	}
 
 	//increase experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.HelpWater * multiplier,
+		Amount: activities.HelpWater.ExperiencesGain * multiplier,
 	})
 	if err != nil {
 		logger.Error(err.Error())

@@ -59,7 +59,7 @@ func ConstructBuildingRpc(ctx context.Context,
 	}
 	err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
 		UserId: userId,
-		Amount: -building.UpgradeSummaries[1].Price,
+		Amount: -building.Price,
 		Metadata: map[string]interface{}{
 			"name": "Construct building",
 		},

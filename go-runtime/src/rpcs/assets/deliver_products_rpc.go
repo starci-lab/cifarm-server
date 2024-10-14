@@ -14,8 +14,8 @@ import (
 )
 
 type EnsureParams struct {
-	UserId               string               `json:"userId"`
-	InventoryWithIndexes []InventoryWithIndex `json:"inventoryWithIndexes"`
+	UserId             string             `json:"userId"`
+	InventoryWithIndex InventoryWithIndex `json:"inventoryWithIndexes"`
 }
 
 func Ensure(
@@ -25,38 +25,31 @@ func Ensure(
 	nk runtime.NakamaModule,
 	params EnsureParams,
 ) (bool, error) {
-	var keys []string
-	for _, inventoryWithIndex := range params.InventoryWithIndexes {
-		keys = append(keys, inventoryWithIndex.Inventory.Key)
-	}
-	objects, err := collections_inventories.ReadMany(ctx, logger, db, nk, collections_inventories.ReadManyParams{
+	object, err := collections_inventories.ReadByKey(ctx, logger, db, nk, collections_inventories.ReadByKeyParams{
 		UserId: params.UserId,
-		Keys:   keys,
+		Key:    params.InventoryWithIndex.Inventory.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return false, err
 	}
 
-	queriedInventories, err := collections_common.ToValues2[collections_inventories.Inventory](ctx, logger, db, nk, objects)
+	queriedInventory, err := collections_common.ToValue[collections_inventories.Inventory](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return false, err
 	}
 
-	for index, queriedInventory := range queriedInventories {
-		// nếu số lượng trong cơ sở dữ liệu bé hơn
-		if queriedInventory.Quantity < params.InventoryWithIndexes[index].Inventory.Quantity {
-			errMsg := fmt.Sprintf("quantity not enough: %s", queriedInventory.Key)
-			logger.Error(errMsg)
-			return false, nil
-		}
-		//nếu mà nó không deliveriable được
-		if !queriedInventory.Deliverable {
-			errMsg := fmt.Sprintf("not deliverialbe: %s", queriedInventory.Key)
-			logger.Error(errMsg)
-			return false, nil
-		}
+	if queriedInventory.Quantity < params.InventoryWithIndex.Inventory.Quantity {
+		errMsg := fmt.Sprintf("quantity not enough: %s", queriedInventory.Key)
+		logger.Error(errMsg)
+		return false, nil
+	}
+	//nếu mà nó không deliveriable được
+	if !queriedInventory.Deliverable {
+		errMsg := fmt.Sprintf("not deliverialbe: %s", queriedInventory.Key)
+		logger.Error(errMsg)
+		return false, nil
 	}
 	return true, nil
 }
@@ -66,11 +59,11 @@ type InventoryWithIndex struct {
 	Inventory collections_inventories.Inventory `json:"inventory"`
 }
 type DeliverProductsRpcParams struct {
-	InventoryWithIndexes []InventoryWithIndex `json:"inventoryWithIndexes"`
+	InventoryWithIndex InventoryWithIndex `json:"inventoryWithIndex"`
 }
 
 type DeliverProductsRpcResponse struct {
-	DeliveryProductKeys []string `json:"deliveryProductKeys"`
+	DeliveringProductKey string `json:"deliveringProductKey"`
 }
 
 func DeliverProductsRpc(
@@ -96,8 +89,8 @@ func DeliverProductsRpc(
 
 	//ensure enough item to deliver
 	ensure, err := Ensure(ctx, logger, db, nk, EnsureParams{
-		UserId:               userId,
-		InventoryWithIndexes: params.InventoryWithIndexes,
+		UserId:             userId,
+		InventoryWithIndex: params.InventoryWithIndex,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -109,62 +102,56 @@ func DeliverProductsRpc(
 		return "", errors.New(errMsg)
 	}
 
-	var keys []string
-	for _, inventoryWithIndex := range params.InventoryWithIndexes {
-		//query again to track data
-		object, err := collections_inventories.ReadByKey(ctx, logger, db, nk, collections_inventories.ReadByKeyParams{
-			UserId: userId,
-			Key:    inventoryWithIndex.Inventory.Key,
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return "", err
-		}
-		query, err := collections_common.ToValue[collections_inventories.Inventory](ctx, logger, db, nk, object)
-		if err != nil {
-			logger.Error(err.Error())
-			return "", err
-		}
+	object, err := collections_inventories.ReadByKey(ctx, logger, db, nk, collections_inventories.ReadByKeyParams{
+		UserId: userId,
+		Key:    params.InventoryWithIndex.Inventory.Key,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	query, err := collections_common.ToValue[collections_inventories.Inventory](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
-		//delete the previous
-		err = collections_inventories.Delete(ctx, logger, db, nk, collections_inventories.DeleteParams{
-			Key:      inventoryWithIndex.Inventory.Key,
-			Quantity: inventoryWithIndex.Inventory.Quantity,
-			UserId:   userId,
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return "", err
-		}
+	//delete the previous
+	err = collections_inventories.Delete(ctx, logger, db, nk, collections_inventories.DeleteParams{
+		Key:      params.InventoryWithIndex.Inventory.Key,
+		Quantity: params.InventoryWithIndex.Inventory.Quantity,
+		UserId:   userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
-		//write new delivering products
-		var productType int
-		switch query.Type {
-		case collections_inventories.TYPE_HARVESTED_CROP:
-			productType = collections_delivering_products.TYPE_CROP
-		default:
-		}
+	//write new delivering products
+	var productType int
+	switch query.Type {
+	case collections_inventories.TYPE_HARVESTED_CROP:
+		productType = collections_delivering_products.TYPE_CROP
+	default:
+	}
 
-		result, err := collections_delivering_products.Write(ctx, logger, db, nk, collections_delivering_products.WriteParams{
-			DeliveringProduct: collections_delivering_products.DeliveringProduct{
-				ReferenceKey: query.ReferenceKey,
-				Quantity:     inventoryWithIndex.Inventory.Quantity,
-				Type:         productType,
-				Premium:      inventoryWithIndex.Inventory.Premium,
-				Index:        inventoryWithIndex.Index,
-			},
-			UserId: userId,
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return "", err
-		}
-
-		keys = append(keys, result.Key)
+	result, err := collections_delivering_products.Write(ctx, logger, db, nk, collections_delivering_products.WriteParams{
+		DeliveringProduct: collections_delivering_products.DeliveringProduct{
+			ReferenceKey: query.ReferenceKey,
+			Quantity:     params.InventoryWithIndex.Inventory.Quantity,
+			Type:         productType,
+			Premium:      params.InventoryWithIndex.Inventory.Premium,
+			Index:        params.InventoryWithIndex.Index,
+		},
+		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
 
 	value, err := json.Marshal(DeliverProductsRpcResponse{
-		DeliveryProductKeys: keys,
+		DeliveringProductKey: result.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

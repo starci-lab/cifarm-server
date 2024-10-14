@@ -8,7 +8,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"time"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -98,20 +97,17 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 			}
 			return nil
 		}()
-	}
-
-	//broadcast next deli time
-	var presences []runtime.Presence
-	for _, presence := range matchState.Presences {
-		presences = append(presences, presence)
-	}
-	err := BroadcastNextDeliveryTime(ctx, logger, db, nk, BroadcastNextDeliveryTimeParams{
-		presences:  presences,
-		dispatcher: dispatcher,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return err
+		go func() error {
+			err := BroadcastPlayerStats(ctx, logger, db, nk, BroadcastPlayerStatsParams{
+				presence:   presence,
+				dispatcher: dispatcher,
+			})
+			if err != nil {
+				logger.Error(err.Error())
+				return err
+			}
+			return nil
+		}()
 	}
 
 	return state
@@ -209,30 +205,38 @@ func BroadcastPlacedItems(ctx context.Context, logger runtime.Logger, db *sql.DB
 	return nil
 }
 
-type NextDeliveryTime struct {
-	Time int64 `json:"time"`
-}
-
-type BroadcastNextDeliveryTimeParams struct {
-	presences  []runtime.Presence
+type BroadcastPlayerStatsParams struct {
+	presence   runtime.Presence
 	dispatcher runtime.MatchDispatcher
 }
 
-func BroadcastNextDeliveryTime(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastNextDeliveryTimeParams) error {
-	now := time.Now()
-	nextInterval := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())
-
-	nextDeliveryTime := NextDeliveryTime{
-		Time: nextInterval.Unix() - now.Unix(),
+func BroadcastPlayerStats(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastPlayerStatsParams) error {
+	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+		UserId: params.presence.GetUserId(),
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
 	}
-
-	data, err := json.Marshal(nextDeliveryTime)
+	if object == nil {
+		errMsg := "player stats not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
 
-	err = params.dispatcher.BroadcastMessage(OP_CODE_NEXT_DELIVERY_TIME, data, params.presences, nil, true)
+	data, err := json.Marshal(playerStats)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	err = params.dispatcher.BroadcastMessage(OP_CODE_PLAYER_STATS, data, []runtime.Presence{
+		params.presence,
+	}, nil, true)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

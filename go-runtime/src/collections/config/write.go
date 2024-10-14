@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -142,18 +143,60 @@ func IncreaseExperiences(ctx context.Context,
 
 	//each level need 50 exp, next level need 20 more
 	//50=>100=>150=>...
-	totalExperiences := playerStats.Experiences + params.Amount
+	totalExperiences := playerStats.LevelInfo.Experiences + params.Amount
 	for {
-		if totalExperiences >= playerStats.ExperienceQuota {
-			totalExperiences -= playerStats.ExperienceQuota
-			playerStats.Level += 1
-			playerStats.ExperienceQuota = 50 + (playerStats.Level-1)*50
+		if totalExperiences >= playerStats.LevelInfo.ExperienceQuota {
+			totalExperiences -= playerStats.LevelInfo.ExperienceQuota
+			playerStats.LevelInfo.Level += 1
+			playerStats.LevelInfo.ExperienceQuota = playerStats.LevelInfo.Level * 50
+			//max energy increase by quota, current energy restore to max
+			playerStats.EnergyInfo.MaxEnergy += playerStats.EnergyInfo.EnergyQuota
+			playerStats.EnergyInfo.CurrentEnergy = playerStats.EnergyInfo.MaxEnergy
 		} else {
-			playerStats.Experiences = totalExperiences
+			playerStats.LevelInfo.Experiences = totalExperiences
 			break
 		}
 	}
 
+	err = WritePlayerStats(ctx, logger, db, nk, WritePlayerStatsParams{
+		PlayerStats: *playerStats,
+		UserId:      params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type DecreaseEnergyParams struct {
+	Amount int    `json:"amount"`
+	UserId string `json:"userId"`
+}
+
+func DecreaseEnergy(ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params DecreaseEnergyParams) error {
+	object, err := ReadPlayerStats(ctx, logger, db, nk, ReadPlayerStatsParams{
+		UserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	playerStats, err := collections_common.ToValue[PlayerStats](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if (playerStats.EnergyInfo.CurrentEnergy - params.Amount) < 0 {
+		errMsg := "not enough energy"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+	playerStats.EnergyInfo.CurrentEnergy -= params.Amount
 	err = WritePlayerStats(ctx, logger, db, nk, WritePlayerStatsParams{
 		PlayerStats: *playerStats,
 		UserId:      params.UserId,

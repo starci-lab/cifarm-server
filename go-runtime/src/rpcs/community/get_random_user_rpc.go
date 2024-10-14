@@ -1,10 +1,13 @@
 package rpcs_community
 
 import (
+	collections_common "cifarm-server/src/collections/common"
+	collections_config "cifarm-server/src/collections/config"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"strconv"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -20,8 +23,28 @@ func GetRandomUser(
 	nk runtime.NakamaModule,
 	params GetRandomUserParams,
 ) (*User, error) {
-	query := `SELECT id, username FROM users WHERE id NOT IN ($1, '00000000-0000-0000-0000-000000000000'::UUID) ORDER BY RANDOM() LIMIT 1;`
-	rows, err := db.Query(query, params.UserId)
+	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+		UserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+	metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	query := `SELECT id, username FROM users INNER JOIN storage ON users.id = storage.user_id
+WHERE id NOT IN ('00000000-0000-0000-0000-000000000000'::UUID) 
+AND key = 'metadata'
+AND value->'telegramData'->>'userId' != $1
+ORDER BY RANDOM() LIMIT 1;
+`
+
+	telegramUserId := strconv.Itoa(metadata.TelegramData.UserId)
+	rows, err := db.Query(query, telegramUserId)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

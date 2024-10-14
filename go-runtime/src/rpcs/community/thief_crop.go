@@ -12,8 +12,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"math"
-	"math/rand"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -48,6 +46,18 @@ func ThiefCropRpc(
 		return "", err
 	}
 
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	if userId == params.UserId {
 		errMsg := "you cannot theif your plants"
 		logger.Error(errMsg)
@@ -56,7 +66,7 @@ func ThiefCropRpc(
 
 	//ensure you have more level
 	//your level
-	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err = collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -96,7 +106,7 @@ func ThiefCropRpc(
 	}
 
 	//check level
-	if playerStats.Level < otherPlayerStats.Level {
+	if playerStats.LevelInfo.Level < otherPlayerStats.LevelInfo.Level {
 		errMsg := "you cannot theif higher level"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
@@ -147,15 +157,25 @@ func ThiefCropRpc(
 		return "", errors.New(errMsg)
 	}
 
-	//fn to calculate
-	thiefQuantity := 1
-	random := rand.Float64()
-	if random > 0.95 {
-		thiefQuantity = 3
-	} else if random > 0.8 {
-		thiefQuantity = 2
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.ThiefCrop.EnergyCost,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
-	thiefQuantity = int(math.Min(float64(maximunTheifQuantity), float64(thiefQuantity)))
+
+	//fn to calculate
+	thiefQuantity, err := GetThiefValue(ctx, logger, db, nk, GetThiefValueParams{
+		MaximunTheifQuantity: maximunTheifQuantity,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
 
 	//check kinh nghiệm, check các thứ, ...
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
@@ -189,20 +209,20 @@ func ThiefCropRpc(
 		return "", err
 	}
 
+	//check friend
+	multiplier, err := GetMutipleValue(ctx, logger, db, nk, GetMutipleValueParams{
+		UserId:      userId,
+		OtherUserId: params.UserId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	//increase experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.ThiefCrop,
+		Amount: activities.ThiefCrop.ExperiencesGain * multiplier,
 	})
 	if err != nil {
 		logger.Error(err.Error())

@@ -15,6 +15,9 @@ func Run(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) error {
+	//delay 10s to start write
+	time.Sleep(10 * time.Second)
+
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
 		logger.Error(err.Error())

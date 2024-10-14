@@ -38,7 +38,19 @@ func UsePestisideRpc(
 		return "", err
 	}
 
-	object, err := collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
+	//get activities
+	object, err := collections_system.ReadActivities(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	activities, err := collections_common.ToValue[collections_system.Activities](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	object, err = collections_placed_items.ReadByKey(ctx, logger, db, nk, collections_placed_items.ReadByKeyParams{
 		Key:    params.PlacedItemTileKey,
 		UserId: userId,
 	})
@@ -65,14 +77,25 @@ func UsePestisideRpc(
 		return "", errors.New(errMsg)
 	}
 
-	if tile.SeedGrowthInfo.PlantCurrentState != collections_placed_items.PLANT_CURRENT_STATE_IS_INFESTED {
-		errMsg := "plant is not infested"
+	if tile.SeedGrowthInfo.CurrentState != collections_placed_items.CURRENT_STATE_IS_INFESTED {
+		errMsg := "crop is not infested"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
+	//process - ok
+	//pay energy first, if not revert
+	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+		UserId: userId,
+		Amount: activities.UsePestiside.ExperiencesGain,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
 	//update tile status
-	tile.SeedGrowthInfo.PlantCurrentState = collections_placed_items.PLANT_CURRENT_STATE_NORMAL
+	tile.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_NORMAL
 
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
@@ -85,19 +108,9 @@ func UsePestisideRpc(
 	}
 
 	//increase experience
-	object, err = collections_system.ReadActivityExperiences(ctx, logger, db, nk)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-	activityExperiences, err := collections_common.ToValue[collections_system.ActivityExperiences](ctx, logger, db, nk, object)
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
 	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activityExperiences.UsePestiside,
+		Amount: activities.UsePestiside.ExperiencesGain,
 	})
 	if err != nil {
 		logger.Error(err.Error())
