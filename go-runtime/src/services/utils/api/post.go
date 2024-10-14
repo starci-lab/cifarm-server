@@ -28,6 +28,9 @@ func SendPostRequest[TRequestBody any, TResponseData any](url string, body *TReq
 		if headers.Authorization != "" {
 			req.Header.Add("Authorization", headers.Authorization)
 		}
+		if headers.BotType != "" {
+			req.Header.Add("Bot-Type", headers.BotType)
+		}
 	}
 
 	client := &http.Client{

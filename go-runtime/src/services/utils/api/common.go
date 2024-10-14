@@ -5,5 +5,6 @@ func IsStatusCode2xx(statusCode int) bool {
 }
 
 type Headers struct {
-	Authorization string `json:"authorization"`
+	Authorization string `json:"Authorization"`
+	BotType       string `json:"Bot-Type"`
 }
