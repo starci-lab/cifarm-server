@@ -76,8 +76,16 @@ func BeforeAuthenticate(
 		return nil, errors.New(errMsg)
 	}
 
+	botType, ok := data.Account.Vars["botType"]
+	if !ok {
+		errMsg := "missing 'botType' in account variables"
+		logger.Error(errMsg)
+		return nil, errors.New(errMsg)
+	}
+
 	authorizeTelegramResponse, err := services_periphery_api_authenticator.AuthorizeTelegram(ctx, logger, db, nk, services_periphery_api_authenticator.AuthorizeTelegramParams{
 		TelegramInitDataRaw: telegramInitDataRaw,
+		BotType:             botType,
 	})
 
 	if err != nil {
