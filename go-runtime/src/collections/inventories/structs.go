@@ -19,4 +19,5 @@ type Inventory struct {
 	IsPlaced     bool     `json:"isPlaced"`
 	Premium      bool     `json:"premium"`
 	Deliverable  bool     `json:"deliverable"`
+	AsTool       bool     `json:"asTool"`
 }

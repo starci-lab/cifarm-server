@@ -1,6 +1,7 @@
 package collections_tools
 
 import (
+	collections_common "cifarm-server/src/collections/common"
 	"context"
 	"database/sql"
 
@@ -36,4 +37,24 @@ func ReadByKey(
 
 	object := objects[0]
 	return object, nil
+}
+
+type ReadManyParams struct {
+	UserId string `json:"userId"`
+}
+
+func ReadMany(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadManyParams,
+) ([]*api.StorageObject, error) {
+	objects, _, err := nk.StorageList(ctx, "", params.UserId, COLLECTION_NAME, collections_common.MAX_ENTRIES, "")
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	return objects, nil
 }

@@ -86,6 +86,8 @@ func BuySuppliesRpc(ctx context.Context,
 				ReferenceKey: params.Key,
 				Quantity:     params.Quantity,
 				Type:         collections_inventories.TYPE_SUPPLY,
+				// supplies work as tools
+				AsTool: true,
 			},
 			UserId: userId,
 		})
