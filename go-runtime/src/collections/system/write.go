@@ -211,18 +211,18 @@ func WriteRewards(
 	return nil
 }
 
-type WriteGlobalConstantsParams struct {
-	GlobalConstants GlobalConstants `json:"globalConstants"`
+type WriteCropRandomnessParams struct {
+	CropRandomness CropRandomness `json:"cropRandomness"`
 }
 
-func WriteGlobalConstants(
+func WriteCropRandomness(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteGlobalConstantsParams,
+	params WriteCropRandomnessParams,
 ) error {
-	value, err := json.Marshal(params.GlobalConstants)
+	value, err := json.Marshal(params.CropRandomness)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -231,7 +231,109 @@ func WriteGlobalConstants(
 	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
 		{
 			Collection:      COLLECTION_NAME,
-			Key:             KEY_GLOBAL_CONSTANTS,
+			Key:             KEY_CROP_RANDOMNESS,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type WriteStarterConfigureParams struct {
+	StarterConfigure StarterConfigure `json:"starterConfigure"`
+}
+
+func WriteStarterConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteStarterConfigureParams,
+) error {
+	value, err := json.Marshal(params.StarterConfigure)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_STARTER_CONFIGURE,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type WriteTokenConfigureParams struct {
+	TokenConfigure TokenConfigure `json:"tokenConfigure"`
+}
+
+func WriteTokenConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteTokenConfigureParams,
+) error {
+	value, err := json.Marshal(params.TokenConfigure)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_TOKEN_CONFIGURE,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type WriteSpinConfigureParams struct {
+	SpinConfigure SpinConfigure `json:"spinConfigure"`
+}
+
+func WriteSpinConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteSpinConfigureParams,
+) error {
+	value, err := json.Marshal(params.SpinConfigure)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_SPIN_CONFIGURE,
 			Value:           string(value),
 			PermissionRead:  2,
 			PermissionWrite: 0,

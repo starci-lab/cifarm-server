@@ -118,6 +118,42 @@ func WritePlayerStats(
 	return nil
 }
 
+type WriteRewardTrackerParams struct {
+	RewardTracker RewardTracker `json:"rewardTracker"`
+	UserId        string        `json:"userId"`
+}
+
+func WriteRewardTracker(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params WriteRewardTrackerParams,
+) error {
+	value, err := json.Marshal(params.RewardTracker)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
+		{
+			Collection:      COLLECTION_NAME,
+			Key:             KEY_REWARD_TRACKER,
+			UserID:          params.UserId,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		},
+	})
+
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
 type IncreaseExperiencesParams struct {
 	Amount int    `json:"amount"`
 	UserId string `json:"userId"`

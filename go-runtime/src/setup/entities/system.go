@@ -142,32 +142,81 @@ func SetupSystemRewards(
 	return nil
 }
 
-func SetupGlobalConstants(
+func SetupCropRandomness(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) error {
-	globalConstants := collections_system.GlobalConstants{
-		GameRandomness: collections_system.GameRandomness{
-			Theif3:            0.95,
-			Theif2:            0.8,
-			NeedWater:         0.5,
-			IsWeedyOrInfested: 1,
-		},
-		Decimals: 5,
-		Starter: collections_system.Starter{
-			GoldAmount: 500,
-		},
+	cropRandomness := collections_system.CropRandomness{
+		Theif3:            0.95,
+		Theif2:            0.8,
+		NeedWater:         0.5,
+		IsWeedyOrInfested: 1,
 	}
 
-	err := collections_system.WriteGlobalConstants(ctx, logger, db, nk, collections_system.WriteGlobalConstantsParams{
-		GlobalConstants: globalConstants,
+	err := collections_system.WriteCropRandomness(ctx, logger, db, nk, collections_system.WriteCropRandomnessParams{
+		CropRandomness: cropRandomness,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
 
+	return nil
+}
+
+func SetupTokenConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) error {
+	err := collections_system.WriteTokenConfigure(ctx, logger, db, nk, collections_system.WriteTokenConfigureParams{
+		TokenConfigure: collections_system.TokenConfigure{
+			Decimals: 5,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+func SetupSpinConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) error {
+	err := collections_system.WriteSpinConfigure(ctx, logger, db, nk, collections_system.WriteSpinConfigureParams{
+		SpinConfigure: collections_system.SpinConfigure{
+			SpinPrice:    500,
+			FreeSpinTime: 60 * 60 * 24 * 2, //2 days
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+func SetupStarterConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) error {
+	err := collections_system.WriteStarterConfigure(ctx, logger, db, nk, collections_system.WriteStarterConfigureParams{
+		StarterConfigure: collections_system.StarterConfigure{
+			GoldAmount: 500,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 	return nil
 }

@@ -37,10 +37,9 @@ func ClaimDailyRewardRpc(
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
-	var lastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility
 
-	//get last claimed
-	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	//get reward tracker
+	object, err := collections_config.ReadRewardTracker(ctx, logger, db, nk, collections_config.ReadRewardTrackerParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -49,33 +48,33 @@ func ClaimDailyRewardRpc(
 	}
 
 	if object == nil {
-		errMsg := "player stats not found"
+		errMsg := "reward tracker not found"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
 	//check claim possible
-	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	rewardTracker, err := collections_common.ToValue[collections_config.RewardTracker](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	lastClaimedDateBegin := time.Unix(playerStats.DailyRewardsInfo.LastClaimedTime, 0).UTC()
-	startOfLastClaimedDate := time.Date(
-		lastClaimedDateBegin.Year(),
-		lastClaimedDateBegin.Month(),
-		lastClaimedDateBegin.Day(),
+	lastClaimDateBegin := time.Unix(rewardTracker.DailyRewardsInfo.LastClaimTime, 0).UTC()
+	startOfLastClaimDate := time.Date(
+		lastClaimDateBegin.Year(),
+		lastClaimDateBegin.Month(),
+		lastClaimDateBegin.Day(),
 		0,
 		0,
 		0,
 		0,
 		time.UTC)
 
-	tomorrowAfterLastClaimedDate := startOfLastClaimedDate.Add(24 * time.Hour)
+	tomorrowAfterLastClaimDate := startOfLastClaimDate.Add(24 * time.Hour)
 	now := time.Now().UTC().Unix()
 
-	result := now >= tomorrowAfterLastClaimedDate.Unix()
+	result := now >= tomorrowAfterLastClaimDate.Unix()
 	if !result {
 		errMsg := "you have already claimed the daily reward this day"
 		logger.Error(errMsg)
@@ -84,20 +83,20 @@ func ClaimDailyRewardRpc(
 
 	//process logic
 	//if you do not claim the reward for 2 days, the streak will be reset
-	if now > tomorrowAfterLastClaimedDate.Add(24*time.Hour).Unix() {
-		playerStats.DailyRewardsInfo.Streak = 0
+	if now > tomorrowAfterLastClaimDate.Add(24*time.Hour).Unix() {
+		rewardTracker.DailyRewardsInfo.Streak = 0
 	} else {
-		playerStats.DailyRewardsInfo.Streak++
+		rewardTracker.DailyRewardsInfo.Streak++
 	}
 
 	//update the last claimed time
-	playerStats.DailyRewardsInfo.LastClaimedTime = now
-	playerStats.DailyRewardsInfo.NumberOfClaims++
+	rewardTracker.DailyRewardsInfo.LastClaimTime = now
+	rewardTracker.DailyRewardsInfo.NumberOfClaims++
 
 	//write the player stats
-	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
-		PlayerStats: *playerStats,
-		UserId:      userId,
+	err = collections_config.WriteRewardTracker(ctx, logger, db, nk, collections_config.WriteRewardTrackerParams{
+		RewardTracker: *rewardTracker,
+		UserId:        userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -107,7 +106,7 @@ func ClaimDailyRewardRpc(
 	//check best reward
 	object, err = collections_daily_rewards.ReadHighestPossibleDay(ctx, logger, db, nk, collections_daily_rewards.ReadHighestPossibleDayParams{
 		UserId: userId,
-		Streak: playerStats.DailyRewardsInfo.Streak,
+		Streak: rewardTracker.DailyRewardsInfo.Streak,
 	})
 	if err != nil {
 		logger.Error(err.Error())
@@ -124,6 +123,8 @@ func ClaimDailyRewardRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+
+	var lastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility
 	if !dailyReward.IsLastDay {
 		//only add golds if it is not the last day
 		err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
@@ -142,7 +143,7 @@ func ClaimDailyRewardRpc(
 		//randomize the reward
 		randomValue := rand.Float64()
 		for _, dailyRewardPossibility := range dailyReward.DailyRewardPossibilities {
-			if randomValue <= dailyRewardPossibility.ThresholdMax && randomValue > dailyRewardPossibility.ThresholdMin {
+			if randomValue < dailyRewardPossibility.ThresholdMax && randomValue >= dailyRewardPossibility.ThresholdMin {
 				lastDailyRewardPossibility = dailyRewardPossibility
 				break
 			}

@@ -40,9 +40,7 @@ func ListToolsRpc(
 
 	// query tools
 	// list all defaut tools
-	defaultToolObjects, err := collections_tools.ReadMany(ctx, logger, db, nk, collections_tools.ReadManyParams{
-		UserId: userId,
-	})
+	defaultToolObjects, err := collections_tools.ReadMany(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err

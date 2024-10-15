@@ -193,13 +193,13 @@ func AfterAuthenticate(
 	}
 
 	if object == nil {
-		//get global constants
-		object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+		//get
+		object, err := collections_system.ReadStarterConfigure(ctx, logger, db, nk)
 		if err != nil {
 			logger.Error(err.Error())
 			return err
 		}
-		globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+		starterConfigure, err := collections_common.ToValue[collections_system.StarterConfigure](ctx, logger, db, nk, object)
 		if err != nil {
 			logger.Error(err.Error())
 			return err
@@ -248,6 +248,24 @@ func AfterAuthenticate(
 			return err
 		}
 
+		err = collections_config.WriteRewardTracker(ctx, logger, db, nk, collections_config.WriteRewardTrackerParams{
+			UserId: userId,
+			RewardTracker: collections_config.RewardTracker{
+				DailyRewardsInfo: collections_config.DailyRewardsInfo{
+					Streak:         0,
+					LastClaimTime:  0,
+					NumberOfClaims: 0,
+				},
+				SpinInfo: collections_config.SpinInfo{
+					LastSpinTime: 0,
+					SpinCount:    0,
+				},
+			}})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
 		positions := []collections_placed_items.Position{
 			{X: 0, Y: -1},
 			{X: 0, Y: 0},
@@ -284,7 +302,7 @@ func AfterAuthenticate(
 		}
 
 		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
-			GoldAmount: globalConstants.Starter.GoldAmount,
+			GoldAmount: starterConfigure.GoldAmount,
 			Metadata: map[string]interface{}{
 				"name": "Initial",
 			},

@@ -59,22 +59,27 @@ type Metric struct {
 	Value int64 `json:"value"`
 }
 
-type GameRandomness struct {
+type CropRandomness struct {
+	Key               string  `json:"key"`
 	Theif3            float64 `json:"theif3"`
 	Theif2            float64 `json:"theif2"`
 	NeedWater         float64 `json:"needWater"`
 	IsWeedyOrInfested float64 `json:"isWeedyOrInfested"`
 }
 
-type GlobalConstants struct {
-	Key            string         `json:"key"`
-	GameRandomness GameRandomness `json:"gameRandomness"`
+type TokenConfigure struct {
+	Key string `json:"key"`
 	//token in-game decimal
 	Decimals int `json:"decimals"`
-	//starting
-	Starter Starter `json:"starter"`
 }
 
-type Starter struct {
-	GoldAmount int64 `json:"goldAmount"`
+type StarterConfigure struct {
+	Key        string `json:"key"`
+	GoldAmount int64  `json:"goldAmount"`
+}
+
+type SpinConfigure struct {
+	Key          string `json:"key"`
+	SpinPrice    int64  `json:"spinPrice"`
+	FreeSpinTime int64  `json:"freeSpinTime"`
 }

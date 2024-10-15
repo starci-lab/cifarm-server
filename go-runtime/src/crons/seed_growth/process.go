@@ -33,7 +33,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		return nil
 	}
 
-	object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+	object, err := collections_system.ReadCropRandomness(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -43,7 +43,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		logger.Error(errMsg)
 		return err
 	}
-	globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+	cropRandomness, err := collections_common.ToValue[collections_system.CropRandomness](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -66,14 +66,14 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
 				//50% chance to be drain,
-				if rand.Float64() < globalConstants.GameRandomness.NeedWater {
+				if rand.Float64() < cropRandomness.NeedWater {
 					params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_NEED_WATER
 				}
 			}
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == 4 {
 				//50% to be infested or weedly, chance maybe difference via better tiles
-				if rand.Float64() <= globalConstants.GameRandomness.IsWeedyOrInfested {
+				if rand.Float64() <= cropRandomness.IsWeedyOrInfested {
 					if rand.Float64() < 0.5 {
 						params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_IS_WEEDY
 					} else {

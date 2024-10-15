@@ -52,7 +52,25 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = SetupGlobalConstants(ctx, logger, db, nk)
+	err = SetupCropRandomness(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = SetupStarterConfigure(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = SetupTokenConfigure(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = SetupSpinConfigure(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -65,6 +83,12 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	}
 
 	err = SetupDailyRewards(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	err = SetupSpins(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

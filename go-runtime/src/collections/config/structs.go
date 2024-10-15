@@ -17,12 +17,11 @@ type VisitState struct {
 }
 
 type PlayerStats struct {
-	Key              string           `json:"key"`
-	LevelInfo        LevelInfo        `json:"levelInfo"`
-	TutorialInfo     TutorialInfo     `json:"tutorialInfo"`
-	Invites          []int            `json:"invites"`
-	EnergyInfo       EnergyInfo       `json:"energyInfo"`
-	DailyRewardsInfo DailyRewardsInfo `json:"dailyRewardsInfo"`
+	Key          string       `json:"key"`
+	LevelInfo    LevelInfo    `json:"levelInfo"`
+	TutorialInfo TutorialInfo `json:"tutorialInfo"`
+	Invites      []int        `json:"invites"`
+	EnergyInfo   EnergyInfo   `json:"energyInfo"`
 }
 
 type TutorialInfo struct {
@@ -43,8 +42,18 @@ type EnergyInfo struct {
 	RecoveryTimeCount int64 `json:"recoveryTimeCount"`
 }
 
+type RewardTracker struct {
+	DailyRewardsInfo DailyRewardsInfo `json:"railyRewardsInfo"`
+	SpinInfo         SpinInfo         `json:"spinInfo"`
+}
+
 type DailyRewardsInfo struct {
-	Streak          int   `json:"streak"`
-	LastClaimedTime int64 `json:"lastClaimedTime"`
-	NumberOfClaims  int   `json:"numberOfClaims"`
+	Streak         int   `json:"streak"`
+	LastClaimTime  int64 `json:"lastClaimTime"`
+	NumberOfClaims int   `json:"numberOfClaims"`
+}
+
+type SpinInfo struct {
+	LastSpinTime int64 `json:"lastSpinTime"`
+	SpinCount    int   `json:"spinCount"`
 }

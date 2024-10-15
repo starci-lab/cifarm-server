@@ -5,9 +5,10 @@ const (
 )
 
 const (
-	KEY_METADATA     = "metadata"
-	KEY_VISIT_STATE  = "visitState"
-	KEY_PLAYER_STATS = "playerStats"
+	KEY_METADATA       = "metadata"
+	KEY_VISIT_STATE    = "visitState"
+	KEY_PLAYER_STATS   = "playerStats"
+	KEY_REWARD_TRACKER = "rewardTracker"
 )
 
 const (

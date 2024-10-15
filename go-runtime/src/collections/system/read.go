@@ -158,7 +158,7 @@ func ReadRewards(
 	return object, nil
 }
 
-func ReadGlobalConstants(
+func ReadCropRandomness(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
@@ -167,7 +167,82 @@ func ReadGlobalConstants(
 	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
 		{
 			Collection: COLLECTION_NAME,
-			Key:        KEY_GLOBAL_CONSTANTS,
+			Key:        KEY_CROP_RANDOMNESS,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects) == 0 {
+		return nil, nil
+	}
+
+	object := objects[0]
+	return object, nil
+}
+
+func ReadTokenConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) (*api.StorageObject, error) {
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Collection: COLLECTION_NAME,
+			Key:        KEY_TOKEN_CONFIGURE,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects) == 0 {
+		return nil, nil
+	}
+
+	object := objects[0]
+	return object, nil
+}
+
+func ReadStarterConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) (*api.StorageObject, error) {
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Collection: COLLECTION_NAME,
+			Key:        KEY_STARTER_CONFIGURE,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects) == 0 {
+		return nil, nil
+	}
+
+	object := objects[0]
+	return object, nil
+}
+
+func ReadSpinConfigure(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+) (*api.StorageObject, error) {
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Collection: COLLECTION_NAME,
+			Key:        KEY_SPIN_CONFIGURE,
 		},
 	})
 	if err != nil {

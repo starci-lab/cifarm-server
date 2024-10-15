@@ -193,3 +193,34 @@ func ReadPlayerStats(
 	object := objects[0]
 	return object, nil
 }
+
+type ReadRewardTrackerParams struct {
+	UserId string `json:"userId"`
+}
+
+func ReadRewardTracker(
+	ctx context.Context,
+	logger runtime.Logger,
+	db *sql.DB,
+	nk runtime.NakamaModule,
+	params ReadRewardTrackerParams,
+) (*api.StorageObject, error) {
+	objects, err := nk.StorageRead(ctx, []*runtime.StorageRead{
+		{
+			Collection: COLLECTION_NAME,
+			Key:        KEY_REWARD_TRACKER,
+			UserID:     params.UserId,
+		},
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	if len(objects) == 0 {
+		return nil, nil
+	}
+
+	object := objects[0]
+	return object, nil
+}

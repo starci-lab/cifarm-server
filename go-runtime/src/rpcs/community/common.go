@@ -56,7 +56,7 @@ func GetThiefValue(
 	nk runtime.NakamaModule,
 	params GetThiefValueParams,
 ) (int, error) {
-	object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+	object, err := collections_system.ReadCropRandomness(ctx, logger, db, nk)
 	if err != nil {
 		logger.Error(err.Error())
 		return 0, err
@@ -66,7 +66,7 @@ func GetThiefValue(
 		logger.Error(errMsg)
 		return 0, err
 	}
-	globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+	cropRandomness, err := collections_common.ToValue[collections_system.CropRandomness](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return 0, err
@@ -74,9 +74,9 @@ func GetThiefValue(
 
 	thiefQuantity := 1
 	random := rand.Float64()
-	if random > globalConstants.GameRandomness.Theif3 {
+	if random > cropRandomness.Theif3 {
 		thiefQuantity = 3
-	} else if random > globalConstants.GameRandomness.Theif2 {
+	} else if random > cropRandomness.Theif2 {
 		thiefQuantity = 2
 	}
 	thiefQuantity = int(math.Min(float64(params.MaximunTheifQuantity), float64(thiefQuantity)))
