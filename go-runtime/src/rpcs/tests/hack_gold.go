@@ -34,9 +34,10 @@ func HackGoldRpc(ctx context.Context,
 		return "", err
 	}
 
-	err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-		Amount: params.Amount,
-		UserId: userId,
+	err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+		GoldAmount:  params.Amount,
+		TokenAmount: float64(params.Amount),
+		UserId:      userId,
 		Metadata: map[string]interface{}{
 			"name": "Hack",
 		},

@@ -66,9 +66,9 @@ func BuySuppliesRpc(ctx context.Context,
 	}
 
 	totalCost := int64(supply.Price) * int64(params.Quantity)
-	err = _wallets.UpdateWalletGolds(ctx, logger, db, nk, _wallets.UpdateWalletGoldsParams{
-		Amount: -totalCost,
-		UserId: userId,
+	err = _wallets.UpdateWallet(ctx, logger, db, nk, _wallets.UpdateWalletParams{
+		GoldAmount: -totalCost,
+		UserId:     userId,
 		Metadata: map[string]interface{}{
 			"name": "Buy supplies",
 			"key":  params.Key,

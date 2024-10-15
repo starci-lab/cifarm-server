@@ -155,6 +155,8 @@ func SetupGlobalConstants(
 			NeedWater:         0.5,
 			IsWeedyOrInfested: 1,
 		},
+		Decimals:  5,
+		GoldStart: 500,
 	}
 
 	err := collections_system.WriteGlobalConstants(ctx, logger, db, nk, collections_system.WriteGlobalConstantsParams{

@@ -1,26 +1,50 @@
 package wallets
 
 import (
+	collections_common "cifarm-server/src/collections/common"
+	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
+	"math"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type UpdateWalletGoldsParams struct {
-	UserId   string
-	Amount   int64
-	Metadata map[string]interface{}
+type UpdateWalletParams struct {
+	UserId      string                 `json:"user_id"`
+	GoldAmount  int64                  `json:"goldAmount"`
+	TokenAmount float64                `json:"tokenAmount"`
+	Metadata    map[string]interface{} `json:"metadata"`
 }
 
-func UpdateWalletGolds(ctx context.Context,
+func UpdateWallet(ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params UpdateWalletGoldsParams,
+	params UpdateWalletParams,
 ) error {
+	var goldUpdate, tokenUpdate int64
+	if params.GoldAmount > 0 {
+		goldUpdate = params.GoldAmount
+	}
+	if params.TokenAmount > 0 {
+		object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		//cut by 10^decimals
+		tokenUpdate = int64(params.TokenAmount * math.Pow(10, float64(globalConstants.Decimals)))
+	}
+
 	changeset := map[string]int64{
-		WALLETS_KEY_GOLD: params.Amount,
+		WALLETS_KEY_GOLD:   goldUpdate,
+		WALLETS_KEY_TOKENS: tokenUpdate,
 	}
 
 	_, _, err := nk.WalletUpdate(ctx, params.UserId, changeset, params.Metadata, true)

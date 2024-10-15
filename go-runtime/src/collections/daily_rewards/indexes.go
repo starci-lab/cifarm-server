@@ -8,20 +8,22 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func RegisterLatest(
+func RegisterHighestPossibleDay(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
-	name := STORAGE_INDEX_LATEST
+	name := STORAGE_INDEX_HIGHEST_POSSIBLE_DAY
 	collection := COLLECTION_NAME
 	key := ""
 	fields := []string{
-		"referenceKey",
+		"day",
 	}
-	sortableFields := []string{}
+	sortableFields := []string{
+		"day",
+	}
 	maxEntries := collections_common.MAX_ENTRIES
 	indexOnly := false
 	err := initializer.RegisterStorageIndex(name, collection, key, fields, sortableFields, maxEntries, indexOnly)

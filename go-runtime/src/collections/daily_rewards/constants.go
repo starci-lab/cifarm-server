@@ -5,5 +5,5 @@ const (
 )
 
 const (
-	STORAGE_INDEX_LATEST = "DailyRewardsStorageIndexLatest"
+	STORAGE_INDEX_HIGHEST_POSSIBLE_DAY = "DailyRewardStorageIndexHighestPossibleDay"
 )

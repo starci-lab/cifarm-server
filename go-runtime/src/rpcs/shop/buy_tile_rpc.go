@@ -205,8 +205,8 @@ func BuyTileRpc(
 		return "", err
 	}
 
-	err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-		Amount: -data.Price,
+	err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+		GoldAmount: -data.Price,
 		Metadata: map[string]interface{}{
 			"name": "Buy tile",
 			"key":  data.Key,

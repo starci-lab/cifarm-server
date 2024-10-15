@@ -67,8 +67,8 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 	}
 
 	//bonus for being referred
-	err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-		Amount: rewards.Referred,
+	err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+		GoldAmount: rewards.Referred,
 		Metadata: map[string]interface{}{
 			"name": "Referred",
 		},
@@ -91,9 +91,9 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 	}
 
 	if len(playerStats.Invites) == rewards.FromInvites.Metrics[1].Key {
-		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-			UserId: params.ReferrerUserId,
-			Amount: rewards.FromInvites.Metrics[1].Value,
+		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			UserId:     params.ReferrerUserId,
+			GoldAmount: rewards.FromInvites.Metrics[1].Value,
 			Metadata: map[string]interface{}{
 				"name": "Refer",
 			},
@@ -103,9 +103,9 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 			return err
 		}
 	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[2].Key {
-		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-			UserId: params.ReferrerUserId,
-			Amount: rewards.FromInvites.Metrics[2].Value,
+		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			UserId:     params.ReferrerUserId,
+			GoldAmount: rewards.FromInvites.Metrics[2].Value,
 			Metadata: map[string]interface{}{
 				"name": "Refer",
 			},
@@ -115,9 +115,9 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 			return err
 		}
 	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[3].Key {
-		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-			UserId: params.ReferrerUserId,
-			Amount: rewards.FromInvites.Metrics[3].Value,
+		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			UserId:     params.ReferrerUserId,
+			GoldAmount: rewards.FromInvites.Metrics[3].Value,
 			Metadata: map[string]interface{}{
 				"name": "Refer",
 			},
@@ -127,9 +127,9 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 			return err
 		}
 	} else if len(playerStats.Invites) == rewards.FromInvites.Metrics[4].Key {
-		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-			UserId: params.ReferrerUserId,
-			Amount: rewards.FromInvites.Metrics[4].Value,
+		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			UserId:     params.ReferrerUserId,
+			GoldAmount: rewards.FromInvites.Metrics[4].Value,
 			Metadata: map[string]interface{}{
 				"name": "Refer",
 			},
@@ -193,6 +193,17 @@ func AfterAuthenticate(
 	}
 
 	if object == nil {
+		//get global constants
+		object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+		globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 		//first time login
 		metadata := collections_config.Metadata{
 			ChainKey:       chain,
@@ -272,8 +283,8 @@ func AfterAuthenticate(
 			return err
 		}
 
-		err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-			Amount: 500,
+		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			GoldAmount: globalConstants.GoldStart,
 			Metadata: map[string]interface{}{
 				"name": "Initial",
 			},
@@ -284,7 +295,7 @@ func AfterAuthenticate(
 			return err
 		}
 
-		object, err := collections_system.ReadUsers(ctx, logger, db, nk)
+		object, err = collections_system.ReadUsers(ctx, logger, db, nk)
 		if err != nil {
 			logger.Error(err.Error())
 			return err

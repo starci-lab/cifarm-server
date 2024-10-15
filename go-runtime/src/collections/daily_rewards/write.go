@@ -5,41 +5,42 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/google/uuid"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-type WriteParams struct {
-	DailyReward DailyReward `json:"dailyReward"`
-	UserId      string      `json:"userId"`
+type WriteManyParams struct {
+	DailyRewards []DailyReward `json:"dailyRewards"`
 }
 
-func Write(
+func WriteMany(
 	ctx context.Context,
 	logger runtime.Logger,
 	db *sql.DB,
 	nk runtime.NakamaModule,
-	params WriteParams,
+	params WriteManyParams,
 ) error {
-	key := uuid.NewString()
+	var writes []*runtime.StorageWrite
+	for _, dailyReward := range params.DailyRewards {
+		key := dailyReward.Key
+		dailyReward.Key = ""
 
-	value, err := json.Marshal(params.DailyReward)
-	if err != nil {
-		logger.Error(err.Error())
-		return err
+		value, err := json.Marshal(dailyReward)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
+		write := &runtime.StorageWrite{
+			Key:             key,
+			Collection:      COLLECTION_NAME,
+			Value:           string(value),
+			PermissionRead:  2,
+			PermissionWrite: 0,
+		}
+		writes = append(writes, write)
 	}
 
-	_, err = nk.StorageWrite(ctx, []*runtime.StorageWrite{
-		{
-			Collection:      COLLECTION_NAME,
-			Key:             key,
-			UserID:          params.UserId,
-			Value:           string(value),
-			PermissionRead:  1,
-			PermissionWrite: 0,
-		},
-	})
-
+	_, err := nk.StorageWrite(ctx, writes)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

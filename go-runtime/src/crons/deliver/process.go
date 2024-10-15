@@ -53,7 +53,7 @@ func Process(
 			//delete all delivers
 			var keys []string
 			var totalGoldAmount int64
-			var totalUtilityTokenAmount float64
+			var totalTokenAmount float64
 
 			//get the key, delete the deliverings, then add money
 
@@ -75,7 +75,7 @@ func Process(
 				}
 				totalGoldAmount += marketPricing.BasicAmount * int64(deliveryProduct.Quantity)
 				if deliveryProduct.Premium {
-					totalUtilityTokenAmount += marketPricing.PremiumAmount * float64(deliveryProduct.Quantity)
+					totalTokenAmount += marketPricing.PremiumAmount * float64(deliveryProduct.Quantity)
 				}
 			}
 
@@ -90,9 +90,10 @@ func Process(
 			}
 
 			//update wallet
-			err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-				UserId: userId,
-				Amount: totalGoldAmount,
+			err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+				UserId:      userId,
+				GoldAmount:  totalGoldAmount,
+				TokenAmount: totalTokenAmount,
 				Metadata: map[string]interface{}{
 					"name": "Basic Delivery",
 					"time": time.Now().Format(time.RFC850),

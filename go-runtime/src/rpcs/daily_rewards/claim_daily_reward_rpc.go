@@ -2,51 +2,26 @@ package rpcs_daily_rewards
 
 import (
 	collections_common "cifarm-server/src/collections/common"
+	collections_config "cifarm-server/src/collections/config"
 	collections_daily_rewards "cifarm-server/src/collections/daily_rewards"
 	"cifarm-server/src/wallets"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"math/rand/v2"
 	"time"
 
-	"github.com/heroiclabs/nakama-common/api"
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
-func CanUserClaimDailyReward(
-	ctx context.Context,
-	logger runtime.Logger,
-	db *sql.DB,
-	nk runtime.NakamaModule,
-	object *api.StorageObject,
-) (bool, error) {
-	if object == nil {
-		errMsg := "object is nil"
-		return false, errors.New(errMsg)
-	}
-
-	objectCreateTime := time.Unix(object.CreateTime.Seconds, 0).UTC()
-	startOfToday := time.Date(
-		objectCreateTime.Year(),
-		objectCreateTime.Month(),
-		objectCreateTime.Day(),
-		0,
-		0,
-		0,
-		0,
-		time.UTC)
-	//startOfTomorrow := startOfToday
-	startOfTomorrow := startOfToday.Add(24 * time.Hour)
-	now := time.Now().UTC().Unix()
-
-	result := now >= startOfTomorrow.Unix()
-	return result, nil
+type CanUserClaimDailyRewardParams struct {
+	UserId string `json:"userId"`
 }
 
 type ClaimDailyRewardRpcResponse struct {
-	Amount int64 `json:"amount"`
-	Days   int   `json:"days"`
+	//response only neccessary for the lasted date
+	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility"`
 }
 
 func ClaimDailyRewardRpc(
@@ -62,8 +37,10 @@ func ClaimDailyRewardRpc(
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
+	var lastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility
 
-	object, err := collections_daily_rewards.ReadLatest(ctx, logger, db, nk, collections_daily_rewards.ReadLatestParams{
+	//get last claimed
+	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -72,92 +49,121 @@ func ClaimDailyRewardRpc(
 	}
 
 	if object == nil {
-		amount := int64(100)
-		days := 1
-		err := wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-			Amount: amount,
-			UserId: userId,
-			Metadata: map[string]interface{}{
-				"name": "Daily reward",
-				"days": days,
-			},
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return "", err
-		}
-		err = collections_daily_rewards.Write(ctx, logger, db, nk, collections_daily_rewards.WriteParams{
-			UserId: userId,
-			DailyReward: collections_daily_rewards.DailyReward{
-				Amount: amount,
-				Days:   days,
-			},
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return "", err
-		}
-
-		value, err := json.Marshal(ClaimDailyRewardRpcResponse{
-			Amount: amount,
-			Days:   days,
-		})
-		if err != nil {
-			logger.Error(err.Error())
-			return "", err
-		}
-		return string(value), err
+		errMsg := "player stats not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
 	}
 
-	can, err := CanUserClaimDailyReward(ctx, logger, db, nk, object)
+	//check claim possible
+	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
-	if !can {
-		errMsg := "you have claimed reward today"
+	lastClaimedDateBegin := time.Unix(playerStats.DailyRewardsInfo.LastClaimedTime, 0).UTC()
+	startOfLastClaimedDate := time.Date(
+		lastClaimedDateBegin.Year(),
+		lastClaimedDateBegin.Month(),
+		lastClaimedDateBegin.Day(),
+		0,
+		0,
+		0,
+		0,
+		time.UTC)
+
+	tomorrowAfterLastClaimedDate := startOfLastClaimedDate.Add(24 * time.Hour)
+	now := time.Now().UTC().Unix()
+
+	result := now >= tomorrowAfterLastClaimedDate.Unix()
+	if !result {
+		errMsg := "you have already claimed the daily reward this day"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
 
-	amount := int64(100)
+	//process logic
+	//if you do not claim the reward for 2 days, the streak will be reset
+	if now > tomorrowAfterLastClaimedDate.Add(24*time.Hour).Unix() {
+		playerStats.DailyRewardsInfo.Streak = 0
+	} else {
+		playerStats.DailyRewardsInfo.Streak++
+	}
+
+	//update the last claimed time
+	playerStats.DailyRewardsInfo.LastClaimedTime = now
+	playerStats.DailyRewardsInfo.NumberOfClaims++
+
+	//write the player stats
+	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+		PlayerStats: *playerStats,
+		UserId:      userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	//check best reward
+	object, err = collections_daily_rewards.ReadHighestPossibleDay(ctx, logger, db, nk, collections_daily_rewards.ReadHighestPossibleDayParams{
+		UserId: userId,
+		Streak: playerStats.DailyRewardsInfo.Streak,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	if object == nil {
+		errMsg := "daily reward not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+
 	dailyReward, err := collections_common.ToValue[collections_daily_rewards.DailyReward](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	days := dailyReward.Days
-	days++
-
-	err = wallets.UpdateWalletGolds(ctx, logger, db, nk, wallets.UpdateWalletGoldsParams{
-		Amount: amount,
-		UserId: userId,
-		Metadata: map[string]interface{}{
-			"name": "Daily reward",
-			"days": days,
-		},
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
-	err = collections_daily_rewards.Write(ctx, logger, db, nk, collections_daily_rewards.WriteParams{
-		DailyReward: collections_daily_rewards.DailyReward{
-			Amount: amount,
-			Days:   days,
-		},
-		UserId: userId,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
+	if !dailyReward.IsLastDay {
+		//only add golds if it is not the last day
+		err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			UserId:     userId,
+			GoldAmount: dailyReward.Amount,
+			Metadata: map[string]interface{}{
+				"name": "Daily reward",
+				"time": time.Now().Format(time.RFC850),
+			},
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return "", err
+		}
+	} else {
+		//randomize the reward
+		randomValue := rand.Float64()
+		for _, dailyRewardPossibility := range dailyReward.DailyRewardPossibilities {
+			if randomValue <= dailyRewardPossibility.ThresholdMax && randomValue > dailyRewardPossibility.ThresholdMin {
+				lastDailyRewardPossibility = dailyRewardPossibility
+				break
+			}
+		}
+		err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+			UserId:      userId,
+			GoldAmount:  lastDailyRewardPossibility.GoldAmount,
+			TokenAmount: lastDailyRewardPossibility.TokenAmount,
+			Metadata: map[string]interface{}{
+				"name": "Last daily reward",
+				"time": time.Now().Format(time.RFC850),
+			},
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return "", err
+		}
 	}
 
 	_value, err := json.Marshal(ClaimDailyRewardRpcResponse{
-		Amount: amount,
-		Days:   days,
+		LastDailyRewardPossibility: lastDailyRewardPossibility,
 	})
 	if err != nil {
 		logger.Error(err.Error())
