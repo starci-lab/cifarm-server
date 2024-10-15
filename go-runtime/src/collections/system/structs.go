@@ -69,6 +69,12 @@ type GameRandomness struct {
 type GlobalConstants struct {
 	Key            string         `json:"key"`
 	GameRandomness GameRandomness `json:"gameRandomness"`
-	Decimals       int            `json:"decimals"`
-	GoldStart      int64          `json:"goldStart"`
+	//token in-game decimal
+	Decimals int `json:"decimals"`
+	//starting
+	Starter Starter `json:"starter"`
+}
+
+type Starter struct {
+	GoldAmount int64 `json:"goldAmount"`
 }

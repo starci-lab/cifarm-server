@@ -284,7 +284,7 @@ func AfterAuthenticate(
 		}
 
 		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
-			GoldAmount: globalConstants.GoldStart,
+			GoldAmount: globalConstants.Starter.GoldAmount,
 			Metadata: map[string]interface{}{
 				"name": "Initial",
 			},
