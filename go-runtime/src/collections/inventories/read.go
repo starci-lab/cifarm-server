@@ -41,7 +41,7 @@ func Read(
 	if len(objects.Objects) == 0 {
 		return nil, nil
 	}
-	var object = objects.Objects[0]
+	object := objects.Objects[0]
 	return object, nil
 }
 
@@ -73,7 +73,7 @@ func ReadByKey(
 	if len(objects) == 0 {
 		return nil, nil
 	}
-	var object = objects[0]
+	object := objects[0]
 	return object, nil
 }
 
@@ -104,7 +104,7 @@ func ReadByTokenId(
 	if len(objects.Objects) == 0 {
 		return nil, nil
 	}
-	var object = objects.Objects[0]
+	object := objects.Objects[0]
 	return object, nil
 }
 
