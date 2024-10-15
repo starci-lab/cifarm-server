@@ -16,7 +16,6 @@ func SetupMarketPricings(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) error {
-
 	marketPricings := []collections_market_pricings.MarketPricing{
 		{
 			Key:           collections_crops.KEY_CARROT,
