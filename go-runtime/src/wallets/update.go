@@ -28,18 +28,18 @@ func UpdateWallet(ctx context.Context,
 		goldUpdate = params.GoldAmount
 	}
 	if params.TokenAmount > 0 {
-		object, err := collections_system.ReadGlobalConstants(ctx, logger, db, nk)
+		object, err := collections_system.ReadTokenConfigure(ctx, logger, db, nk)
 		if err != nil {
 			logger.Error(err.Error())
 			return err
 		}
-		globalConstants, err := collections_common.ToValue[collections_system.GlobalConstants](ctx, logger, db, nk, object)
+		tokenConfigure, err := collections_common.ToValue[collections_system.TokenConfigure](ctx, logger, db, nk, object)
 		if err != nil {
 			logger.Error(err.Error())
 			return err
 		}
 		//cut by 10^decimals
-		tokenUpdate = int64(params.TokenAmount * math.Pow(10, float64(globalConstants.Decimals)))
+		tokenUpdate = int64(params.TokenAmount * math.Pow(10, float64(tokenConfigure.Decimals)))
 	}
 
 	changeset := map[string]int64{
