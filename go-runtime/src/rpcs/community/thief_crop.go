@@ -2,9 +2,9 @@ package rpcs_community
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	collections_system "cifarm-server/src/collections/system"
 	collections_tiles "cifarm-server/src/collections/tiles"
 	"cifarm-server/src/utils"
@@ -66,7 +66,7 @@ func ThiefCropRpc(
 
 	//ensure you have more level
 	//your level
-	object, err = collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err = collections_player.ReadPlayerStats(ctx, logger, db, nk, collections_player.ReadPlayerStatsParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -79,14 +79,14 @@ func ThiefCropRpc(
 		return "", errors.New(errMsg)
 	}
 
-	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	playerStats, err := collections_common.ToValue[collections_player.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
 
 	//other level
-	object, err = collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err = collections_player.ReadPlayerStats(ctx, logger, db, nk, collections_player.ReadPlayerStatsParams{
 		UserId: params.UserId,
 	})
 	if err != nil {
@@ -99,7 +99,7 @@ func ThiefCropRpc(
 		return "", errors.New(errMsg)
 	}
 
-	otherPlayerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	otherPlayerStats, err := collections_common.ToValue[collections_player.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -159,7 +159,7 @@ func ThiefCropRpc(
 
 	//process - ok
 	//pay energy first, if not revert
-	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+	err = collections_player.DecreaseEnergy(ctx, logger, db, nk, collections_player.DecreaseEnergyParams{
 		UserId: userId,
 		Amount: activities.ThiefCrop.EnergyCost,
 	})
@@ -220,7 +220,7 @@ func ThiefCropRpc(
 	}
 
 	//increase experience
-	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
+	err = collections_player.IncreaseExperiences(ctx, logger, db, nk, collections_player.IncreaseExperiencesParams{
 		UserId: userId,
 		Amount: activities.ThiefCrop.ExperiencesGain * multiplier,
 	})

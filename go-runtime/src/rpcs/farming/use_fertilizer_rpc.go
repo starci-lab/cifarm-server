@@ -2,9 +2,9 @@ package rpcs_farming
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	collections_supplies "cifarm-server/src/collections/supplies"
 	collections_system "cifarm-server/src/collections/system"
 	"context"
@@ -129,7 +129,7 @@ func UseFertilizerRpc(
 
 	//process - ok
 	//pay energy first, if not revert
-	err = collections_config.DecreaseEnergy(ctx, logger, db, nk, collections_config.DecreaseEnergyParams{
+	err = collections_player.DecreaseEnergy(ctx, logger, db, nk, collections_player.DecreaseEnergyParams{
 		UserId: userId,
 		Amount: activities.UseFertilizer.ExperiencesGain,
 	})
@@ -164,7 +164,7 @@ func UseFertilizerRpc(
 		return "", err
 	}
 	//gain experiences
-	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
+	err = collections_player.IncreaseExperiences(ctx, logger, db, nk, collections_player.IncreaseExperiencesParams{
 		UserId: userId,
 		Amount: activities.UseFertilizer.ExperiencesGain,
 	})

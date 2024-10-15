@@ -2,8 +2,8 @@ package rpcs_nfts
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_player "cifarm-server/src/collections/player"
 	collections_tiles "cifarm-server/src/collections/tiles"
 	services_periphery_graphql "cifarm-server/src/services/periphery/graphql"
 	"context"
@@ -77,7 +77,7 @@ func WriteOrTransferedFrom(
 
 type DeleteOrTransferToParams struct {
 	UserId                 string                                       `json:"userId"`
-	Metadata               *collections_config.Metadata                 `json:"metadata"`
+	Metadata               *collections_player.Metadata                 `json:"metadata"`
 	Nfts                   []services_periphery_graphql.NftDataResponse `json:"nfts"`
 	PreviousNftInventories []*collections_inventories.Inventory         `json:"previousNftInventories"`
 }
@@ -142,8 +142,8 @@ func DeleteOrTransferTo(
 			//the nft is still existed on chain, so that will 2 case
 			logger.Debug("Case 2.2: Existed on chain, but you already transfer it: %v", previousNftInventory.TokenId)
 
-			newUserId, err := collections_config.GetUserIdByMetadata(ctx, logger, db, nk, collections_config.GetUserIdByMetadataParams{
-				Metadata: collections_config.Metadata{
+			newUserId, err := collections_player.GetUserIdByMetadata(ctx, logger, db, nk, collections_player.GetUserIdByMetadataParams{
+				Metadata: collections_player.Metadata{
 					ChainKey:       params.Metadata.ChainKey,
 					Network:        params.Metadata.Network,
 					AccountAddress: data.OwnerAddress,
@@ -206,14 +206,14 @@ func UpdatePremiumTileNftsRpc(
 		return "", errors.New(errMsg)
 	}
 
-	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+	object, err := collections_player.ReadMetadata(ctx, logger, db, nk, collections_player.ReadMetadataParams{
 		UserId: userId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
 	}
-	metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, object)
+	metadata, err := collections_common.ToValue[collections_player.Metadata](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err

@@ -2,9 +2,9 @@ package rpcs_farming
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	collections_tiles "cifarm-server/src/collections/tiles"
 	"context"
 	"database/sql"
@@ -108,7 +108,7 @@ func HarvestCropRpc(
 		experiences = tile.SeedGrowthInfo.Crop.BasicHarvestExperiences
 	}
 
-	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
+	err = collections_player.IncreaseExperiences(ctx, logger, db, nk, collections_player.IncreaseExperiencesParams{
 		Amount: experiences,
 		UserId: userId,
 	})

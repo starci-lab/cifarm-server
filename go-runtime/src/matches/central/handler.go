@@ -2,8 +2,8 @@ package matches_central
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -56,8 +56,8 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 
 	for i := 0; i < len(presences); i++ {
 		//when user leave, reset their visit state
-		err := collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
-			VisitState: collections_config.VisitState{
+		err := collections_player.WriteVisitState(ctx, logger, db, nk, collections_player.WriteVisitStateParams{
+			VisitState: collections_player.VisitState{
 				UserId: "",
 			},
 			UserId: presences[i].GetUserId(),
@@ -150,7 +150,7 @@ type BroadcastPlacedItemsParams struct {
 }
 
 func BroadcastPlacedItems(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastPlacedItemsParams) error {
-	object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
+	object, err := collections_player.ReadVisitState(ctx, logger, db, nk, collections_player.ReadVisitStateParams{
 		UserId: params.presence.GetUserId(),
 	})
 	if err != nil {
@@ -160,7 +160,7 @@ func BroadcastPlacedItems(ctx context.Context, logger runtime.Logger, db *sql.DB
 
 	var currentUserId string
 	if object != nil {
-		visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
+		visitState, err := collections_common.ToValue[collections_player.VisitState](ctx, logger, db, nk, object)
 		if err != nil {
 			logger.Error(err.Error())
 			return err
@@ -211,7 +211,7 @@ type BroadcastPlayerStatsParams struct {
 }
 
 func BroadcastPlayerStats(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastPlayerStatsParams) error {
-	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err := collections_player.ReadPlayerStats(ctx, logger, db, nk, collections_player.ReadPlayerStatsParams{
 		UserId: params.presence.GetUserId(),
 	})
 	if err != nil {
@@ -223,7 +223,7 @@ func BroadcastPlayerStats(ctx context.Context, logger runtime.Logger, db *sql.DB
 		logger.Error(errMsg)
 		return errors.New(errMsg)
 	}
-	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	playerStats, err := collections_common.ToValue[collections_player.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

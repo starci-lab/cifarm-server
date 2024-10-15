@@ -2,8 +2,8 @@ package rpcs_bulletin
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_player "cifarm-server/src/collections/player"
 	collections_spin "cifarm-server/src/collections/spin"
 	collections_system "cifarm-server/src/collections/system"
 	"cifarm-server/src/wallets"
@@ -37,7 +37,7 @@ func SpinRpc(
 	}
 
 	//get reward tracker
-	object, err := collections_config.ReadRewardTracker(ctx, logger, db, nk, collections_config.ReadRewardTrackerParams{
+	object, err := collections_player.ReadRewardTracker(ctx, logger, db, nk, collections_player.ReadRewardTrackerParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -52,7 +52,7 @@ func SpinRpc(
 	}
 
 	//check reward tracker
-	rewardTracker, err := collections_common.ToValue[collections_config.RewardTracker](ctx, logger, db, nk, object)
+	rewardTracker, err := collections_common.ToValue[collections_player.RewardTracker](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err

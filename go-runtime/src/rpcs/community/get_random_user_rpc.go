@@ -2,7 +2,7 @@ package rpcs_community
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -23,14 +23,14 @@ func GetRandomUser(
 	nk runtime.NakamaModule,
 	params GetRandomUserParams,
 ) (*User, error) {
-	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+	object, err := collections_player.ReadMetadata(ctx, logger, db, nk, collections_player.ReadMetadataParams{
 		UserId: params.UserId,
 	})
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
-	metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, object)
+	metadata, err := collections_common.ToValue[collections_player.Metadata](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err

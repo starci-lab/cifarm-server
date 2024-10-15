@@ -2,7 +2,7 @@ package rpcs_community
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 	"errors"
@@ -23,7 +23,7 @@ func ReturnRpc(
 		return "", errors.New(errMsg)
 	}
 
-	object, err := collections_config.ReadVisitState(ctx, logger, db, nk, collections_config.ReadVisitStateParams{
+	object, err := collections_player.ReadVisitState(ctx, logger, db, nk, collections_player.ReadVisitStateParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -31,7 +31,7 @@ func ReturnRpc(
 		return "", err
 	}
 
-	visitState, err := collections_common.ToValue[collections_config.VisitState](ctx, logger, db, nk, object)
+	visitState, err := collections_common.ToValue[collections_player.VisitState](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -44,7 +44,7 @@ func ReturnRpc(
 	}
 	visitState.UserId = ""
 
-	err = collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
+	err = collections_player.WriteVisitState(ctx, logger, db, nk, collections_player.WriteVisitStateParams{
 		VisitState: *visitState,
 		UserId:     userId,
 	})

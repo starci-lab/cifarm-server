@@ -104,14 +104,14 @@ func Process(
 				return err
 			}
 			// //get the metadata
-			// metadataObject, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+			// metadataObject, err := collections_player.ReadMetadata(ctx, logger, db, nk, collections_player.ReadMetadataParams{
 			// 	UserId: userId,
 			// })
 			// if err != nil {
 			// 	logger.Error(err.Error())
 			// 	return err
 			// }
-			// metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, metadataObject)
+			// metadata, err := collections_common.ToValue[collections_player.Metadata](ctx, logger, db, nk, metadataObject)
 			// if err != nil {
 			// 	logger.Error(err.Error())
 			// 	return err

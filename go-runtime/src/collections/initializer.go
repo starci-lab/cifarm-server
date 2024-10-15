@@ -1,11 +1,11 @@
 package collections
 
 import (
-	collections_config "cifarm-server/src/collections/config"
 	collections_daily_rewards "cifarm-server/src/collections/daily_rewards"
 	collections_delivering_products "cifarm-server/src/collections/delivering_products"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 
@@ -37,7 +37,7 @@ func Initialize(
 		return err
 	}
 
-	err = collections_config.Initialize(ctx, logger, db, nk, initializer)
+	err = collections_player.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

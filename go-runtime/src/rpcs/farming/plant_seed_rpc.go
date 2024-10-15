@@ -2,10 +2,10 @@ package rpcs_farming
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_crops "cifarm-server/src/collections/crops"
 	collections_inventories "cifarm-server/src/collections/inventories"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -146,9 +146,9 @@ func PlantSeedRpc(
 		return "", err
 	}
 
-	err = collections_config.IncreaseExperiences(ctx, logger, db, nk, collections_config.IncreaseExperiencesParams{
+	err = collections_player.IncreaseExperiences(ctx, logger, db, nk, collections_player.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: collections_config.EXPERIENCE_FROM_ACTIVITY,
+		Amount: collections_player.EXPERIENCE_FROM_ACTIVITY,
 	})
 	if err != nil {
 		logger.Error(err.Error())

@@ -2,7 +2,7 @@ package crons_energy_gain
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
+	collections_player "cifarm-server/src/collections/player"
 	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
@@ -23,7 +23,7 @@ func HandleEnergyGain(
 	params HandleEnergyGainParams,
 
 ) error {
-	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err := collections_player.ReadPlayerStats(ctx, logger, db, nk, collections_player.ReadPlayerStatsParams{
 		UserId: params.UserId,
 	})
 	if err != nil {
@@ -35,7 +35,7 @@ func HandleEnergyGain(
 		logger.Error(errMsg)
 		return err
 	}
-	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	playerStats, err := collections_common.ToValue[collections_player.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -61,7 +61,7 @@ func HandleEnergyGain(
 			break
 		}
 	}
-	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+	err = collections_player.WritePlayerStats(ctx, logger, db, nk, collections_player.WritePlayerStatsParams{
 		PlayerStats: *playerStats,
 		UserId:      params.UserId,
 	})

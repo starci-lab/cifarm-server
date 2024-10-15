@@ -2,7 +2,7 @@ package rpcs_profile
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -35,7 +35,7 @@ func UpdateTutorialRpc(ctx context.Context,
 		return "", err
 	}
 
-	object, err := collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err := collections_player.ReadPlayerStats(ctx, logger, db, nk, collections_player.ReadPlayerStatsParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -47,7 +47,7 @@ func UpdateTutorialRpc(ctx context.Context,
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
 	}
-	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	playerStats, err := collections_common.ToValue[collections_player.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -55,7 +55,7 @@ func UpdateTutorialRpc(ctx context.Context,
 	playerStats.TutorialInfo.TutorialIndex = params.TutorialIndex
 	playerStats.TutorialInfo.StepIndex = params.StepIndex
 
-	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+	err = collections_player.WritePlayerStats(ctx, logger, db, nk, collections_player.WritePlayerStatsParams{
 		PlayerStats: *playerStats,
 		UserId:      userId,
 	})

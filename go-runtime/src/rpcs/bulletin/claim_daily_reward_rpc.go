@@ -2,8 +2,8 @@ package rpcs_bulletin
 
 import (
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_daily_rewards "cifarm-server/src/collections/daily_rewards"
+	collections_player "cifarm-server/src/collections/player"
 	"cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -39,7 +39,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	//get reward tracker
-	object, err := collections_config.ReadRewardTracker(ctx, logger, db, nk, collections_config.ReadRewardTrackerParams{
+	object, err := collections_player.ReadRewardTracker(ctx, logger, db, nk, collections_player.ReadRewardTrackerParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -54,7 +54,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	//check claim possible
-	rewardTracker, err := collections_common.ToValue[collections_config.RewardTracker](ctx, logger, db, nk, object)
+	rewardTracker, err := collections_common.ToValue[collections_player.RewardTracker](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return "", err
@@ -94,7 +94,7 @@ func ClaimDailyRewardRpc(
 	rewardTracker.DailyRewardsInfo.NumberOfClaims++
 
 	//write the player stats
-	err = collections_config.WriteRewardTracker(ctx, logger, db, nk, collections_config.WriteRewardTrackerParams{
+	err = collections_player.WriteRewardTracker(ctx, logger, db, nk, collections_player.WriteRewardTrackerParams{
 		RewardTracker: *rewardTracker,
 		UserId:        userId,
 	})

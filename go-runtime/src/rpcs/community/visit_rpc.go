@@ -1,7 +1,7 @@
 package rpcs_community
 
 import (
-	collections_config "cifarm-server/src/collections/config"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -34,10 +34,10 @@ func VisitRpc(
 		return "", err
 	}
 
-	visitState := collections_config.VisitState{
+	visitState := collections_player.VisitState{
 		UserId: params.UserId,
 	}
-	err = collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
+	err = collections_player.WriteVisitState(ctx, logger, db, nk, collections_player.WriteVisitStateParams{
 		VisitState: visitState,
 		UserId:     userId,
 	})

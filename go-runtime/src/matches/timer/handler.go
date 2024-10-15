@@ -1,8 +1,8 @@
 package matches_timer
 
 import (
-	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -56,8 +56,8 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 
 	for i := 0; i < len(presences); i++ {
 		//when user leave, reset their visit state
-		err := collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
-			VisitState: collections_config.VisitState{
+		err := collections_player.WriteVisitState(ctx, logger, db, nk, collections_player.WriteVisitStateParams{
+			VisitState: collections_player.VisitState{
 				UserId: "",
 			},
 			UserId: presences[i].GetUserId(),

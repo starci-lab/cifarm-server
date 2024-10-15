@@ -3,8 +3,8 @@ package auth
 import (
 	collections_buildings "cifarm-server/src/collections/buildings"
 	collections_common "cifarm-server/src/collections/common"
-	collections_config "cifarm-server/src/collections/config"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
+	collections_player "cifarm-server/src/collections/player"
 	collections_system "cifarm-server/src/collections/system"
 	collections_tiles "cifarm-server/src/collections/tiles"
 	"cifarm-server/src/utils"
@@ -20,7 +20,7 @@ import (
 
 type HandleRefererParams struct {
 	//your metadata
-	Metadata       collections_config.Metadata `json:"metadata"`
+	Metadata       collections_player.Metadata `json:"metadata"`
 	ReferrerUserId string                      `json:"referrerUserId"`
 }
 
@@ -41,7 +41,7 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 		return err
 	}
 
-	object, err = collections_config.ReadPlayerStats(ctx, logger, db, nk, collections_config.ReadPlayerStatsParams{
+	object, err = collections_player.ReadPlayerStats(ctx, logger, db, nk, collections_player.ReadPlayerStatsParams{
 		UserId: params.ReferrerUserId,
 	})
 	if err != nil {
@@ -54,7 +54,7 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 		logger.Debug(debugMsg)
 		return nil
 	}
-	playerStats, err := collections_common.ToValue[collections_config.PlayerStats](ctx, logger, db, nk, object)
+	playerStats, err := collections_common.ToValue[collections_player.PlayerStats](ctx, logger, db, nk, object)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
@@ -81,7 +81,7 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 
 	playerStats.Invites = append(playerStats.Invites, params.Metadata.TelegramData.UserId)
 
-	err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+	err = collections_player.WritePlayerStats(ctx, logger, db, nk, collections_player.WritePlayerStatsParams{
 		PlayerStats: *playerStats,
 		UserId:      params.ReferrerUserId,
 	})
@@ -172,7 +172,7 @@ func AfterAuthenticate(
 		return err
 	}
 
-	object, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+	object, err := collections_player.ReadMetadata(ctx, logger, db, nk, collections_player.ReadMetadataParams{
 		UserId: userId,
 	})
 	if err != nil {
@@ -181,8 +181,8 @@ func AfterAuthenticate(
 	}
 
 	//when user auth, reset visit state to home
-	err = collections_config.WriteVisitState(ctx, logger, db, nk, collections_config.WriteVisitStateParams{
-		VisitState: collections_config.VisitState{
+	err = collections_player.WriteVisitState(ctx, logger, db, nk, collections_player.WriteVisitStateParams{
+		VisitState: collections_player.VisitState{
 			UserId: "",
 		},
 		UserId: userId,
@@ -205,16 +205,16 @@ func AfterAuthenticate(
 			return err
 		}
 		//first time login
-		metadata := collections_config.Metadata{
+		metadata := collections_player.Metadata{
 			ChainKey:       chain,
 			AccountAddress: address,
 			Network:        network,
-			TelegramData: collections_config.TelegramData{
+			TelegramData: collections_player.TelegramData{
 				UserId: _telegramUserId,
 			},
 		}
-		err = collections_config.WriteMetadata(ctx, logger, db, nk,
-			collections_config.WriteMetadataParams{
+		err = collections_player.WriteMetadata(ctx, logger, db, nk,
+			collections_player.WriteMetadataParams{
 				Metadata: metadata,
 				UserId:   userId,
 			})
@@ -223,19 +223,19 @@ func AfterAuthenticate(
 			return err
 		}
 
-		err = collections_config.WritePlayerStats(ctx, logger, db, nk, collections_config.WritePlayerStatsParams{
+		err = collections_player.WritePlayerStats(ctx, logger, db, nk, collections_player.WritePlayerStatsParams{
 			UserId: userId,
-			PlayerStats: collections_config.PlayerStats{
-				LevelInfo: collections_config.LevelInfo{
+			PlayerStats: collections_player.PlayerStats{
+				LevelInfo: collections_player.LevelInfo{
 					Level:           1,
 					Experiences:     0,
 					ExperienceQuota: 50,
 				},
-				TutorialInfo: collections_config.TutorialInfo{
+				TutorialInfo: collections_player.TutorialInfo{
 					TutorialIndex: 0,
 					StepIndex:     0,
 				},
-				EnergyInfo: collections_config.EnergyInfo{
+				EnergyInfo: collections_player.EnergyInfo{
 					CurrentEnergy:     50,
 					MaxEnergy:         50,
 					EnergyQuota:       1,
@@ -248,15 +248,15 @@ func AfterAuthenticate(
 			return err
 		}
 
-		err = collections_config.WriteRewardTracker(ctx, logger, db, nk, collections_config.WriteRewardTrackerParams{
+		err = collections_player.WriteRewardTracker(ctx, logger, db, nk, collections_player.WriteRewardTrackerParams{
 			UserId: userId,
-			RewardTracker: collections_config.RewardTracker{
-				DailyRewardsInfo: collections_config.DailyRewardsInfo{
+			RewardTracker: collections_player.RewardTracker{
+				DailyRewardsInfo: collections_player.DailyRewardsInfo{
 					Streak:         0,
 					LastClaimTime:  0,
 					NumberOfClaims: 0,
 				},
-				SpinInfo: collections_config.SpinInfo{
+				SpinInfo: collections_player.SpinInfo{
 					LastSpinTime: 0,
 					SpinCount:    0,
 				},
@@ -348,7 +348,7 @@ func AfterAuthenticate(
 	} else {
 		//update tele metadata if neccessary
 		//check metadata
-		metadataObject, err := collections_config.ReadMetadata(ctx, logger, db, nk, collections_config.ReadMetadataParams{
+		metadataObject, err := collections_player.ReadMetadata(ctx, logger, db, nk, collections_player.ReadMetadataParams{
 			UserId: userId,
 		})
 		if err != nil {
@@ -358,7 +358,7 @@ func AfterAuthenticate(
 		if metadataObject != nil {
 			//has metadata before
 			//check if telegramUserId is the same
-			metadata, err := collections_common.ToValue[collections_config.Metadata](ctx, logger, db, nk, metadataObject)
+			metadata, err := collections_common.ToValue[collections_player.Metadata](ctx, logger, db, nk, metadataObject)
 			if err != nil {
 				logger.Error(err.Error())
 				return err
@@ -367,7 +367,7 @@ func AfterAuthenticate(
 			if metadata.TelegramData.UserId != _telegramUserId {
 				//telegramUserId is different, do update
 				metadata.TelegramData.UserId = _telegramUserId
-				err = collections_config.WriteMetadata(ctx, logger, db, nk, collections_config.WriteMetadataParams{
+				err = collections_player.WriteMetadata(ctx, logger, db, nk, collections_player.WriteMetadataParams{
 					Metadata: *metadata,
 					UserId:   userId,
 				})
