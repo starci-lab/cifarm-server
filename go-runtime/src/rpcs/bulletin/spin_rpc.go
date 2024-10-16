@@ -82,11 +82,10 @@ func SpinRpc(
 
 	result := now >= nextSpinDate.Unix()
 	if !result {
-		logger.Debug("you have already used the free spin today")
 		// you have use free spin today, now pay to spin
 		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
 			UserId:     userId,
-			GoldAmount: -int64(spinConfigure.SpinPrice),
+			GoldAmount: -spinConfigure.SpinPrice,
 		})
 		if err != nil {
 			logger.Error(err.Error())
