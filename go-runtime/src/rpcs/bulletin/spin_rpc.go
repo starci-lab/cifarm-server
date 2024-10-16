@@ -77,7 +77,7 @@ func SpinRpc(
 
 	lastSpinDate := time.Unix(rewardTracker.SpinInfo.LastSpinTime, 0).UTC()
 	nextSpinDate := lastSpinDate.Add(time.Duration(spinConfigure.FreeSpinTime) * time.Second)
-	logger.Info("last spin date: %v - next spin date: %v", lastSpinDate, nextSpinDate)
+
 	now := time.Now().UTC().Unix()
 
 	result := now >= nextSpinDate.Unix()
