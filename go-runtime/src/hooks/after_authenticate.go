@@ -266,6 +266,12 @@ func AfterAuthenticate(
 			return err
 		}
 
+		err = collections_player.WriteFollowings(ctx, logger, db, nk, collections_player.WriteFollowingsParams{})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
+
 		positions := []collections_placed_items.Position{
 			{X: 0, Y: -1},
 			{X: 0, Y: 0},

@@ -58,3 +58,12 @@ type SpinInfo struct {
 	LastSpinTime int64 `json:"lastSpinTime"`
 	SpinCount    int   `json:"spinCount"`
 }
+
+type Followings struct {
+	Key           string                  `json:"key"`
+	FollowedUsers map[string]FollowedUser `json:"followedUsers"`
+}
+
+type FollowedUser struct {
+	IsPrior bool `json:"isPrior"`
+}

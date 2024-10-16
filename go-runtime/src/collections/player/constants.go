@@ -9,6 +9,7 @@ const (
 	KEY_VISIT_STATE    = "visitState"
 	KEY_PLAYER_STATS   = "playerStats"
 	KEY_REWARD_TRACKER = "rewardTracker"
+	KEY_FOLLOWINGS     = "followings"
 )
 
 const (

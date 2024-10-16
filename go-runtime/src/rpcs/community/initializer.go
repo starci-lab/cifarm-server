@@ -8,17 +8,7 @@ import (
 )
 
 func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, initializer runtime.Initializer) error {
-	err := initializer.RegisterRpc("check_friend_by_user_id", CheckFriendByUserIdRpc)
-	if err != nil {
-		return err
-	}
-
-	err = initializer.RegisterRpc("check_friend_by_username", CheckFriendByUsernameRpc)
-	if err != nil {
-		return err
-	}
-
-	err = initializer.RegisterRpc("visit", VisitRpc)
+	err := initializer.RegisterRpc("visit", VisitRpc)
 	if err != nil {
 		return err
 	}
@@ -59,6 +49,16 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 	}
 
 	err = initializer.RegisterRpc("thief_animal_product", ThiefAnimalProductRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("follow", FollowRpc)
+	if err != nil {
+		return err
+	}
+
+	err = initializer.RegisterRpc("unfollow", UnfollowRpc)
 	if err != nil {
 		return err
 	}
