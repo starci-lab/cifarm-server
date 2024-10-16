@@ -209,20 +209,10 @@ func ThiefCropRpc(
 		return "", err
 	}
 
-	//check friend
-	multiplier, err := GetMutipleValue(ctx, logger, db, nk, GetMutipleValueParams{
-		UserId:      userId,
-		OtherUserId: params.UserId,
-	})
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
 	//increase experience
 	err = collections_player.IncreaseExperiences(ctx, logger, db, nk, collections_player.IncreaseExperiencesParams{
 		UserId: userId,
-		Amount: activities.ThiefCrop.ExperiencesGain * multiplier,
+		Amount: activities.ThiefCrop.ExperiencesGain,
 	})
 	if err != nil {
 		logger.Error(err.Error())
