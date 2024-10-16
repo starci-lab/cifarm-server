@@ -43,7 +43,8 @@ type EnergyInfo struct {
 }
 
 type RewardTracker struct {
-	DailyRewardsInfo DailyRewardsInfo `json:"railyRewardsInfo"`
+	Key              string           `json:"key"`
+	DailyRewardsInfo DailyRewardsInfo `json:"dailyRewardsInfo"`
 	SpinInfo         SpinInfo         `json:"spinInfo"`
 }
 

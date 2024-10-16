@@ -101,8 +101,7 @@ func ClaimDailyRewardRpc(
 
 	//check best reward
 	object, err = collections_daily_rewards.ReadHighestPossibleDay(ctx, logger, db, nk, collections_daily_rewards.ReadHighestPossibleDayParams{
-		UserId: userId,
-		Streak: rewardTracker.DailyRewardsInfo.Streak,
+		MaxPossibleDay: rewardTracker.DailyRewardsInfo.Streak + 1,
 	})
 	if err != nil {
 		logger.Error(err.Error())

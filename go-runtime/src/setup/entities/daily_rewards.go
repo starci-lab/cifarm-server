@@ -40,31 +40,36 @@ func SetupDailyRewards(
 			IsLastDay: false,
 		},
 		{
-			Key:       collections_daily_rewards.KEY_DAY_4,
+			Key:       collections_daily_rewards.KEY_DAY_5,
 			Day:       5,
 			IsLastDay: true,
 			DailyRewardPossibilities: map[int]collections_daily_rewards.LastDailyRewardPossibility{
 				1: {
+					Key:          "possibility1",
 					GoldAmount:   1000,
 					ThresholdMin: 0,
 					ThresholdMax: 0.8,
 				},
 				2: {
+					Key:          "possibility2",
 					GoldAmount:   1500,
 					ThresholdMin: 0.8,
 					ThresholdMax: 0.9,
 				},
 				3: {
+					Key:          "possibility3",
 					GoldAmount:   2000,
 					ThresholdMin: 0.9,
 					ThresholdMax: 0.95,
 				},
 				4: {
+					Key:          "possibility4",
 					TokenAmount:  3,
 					ThresholdMin: 0.95,
 					ThresholdMax: 0.99,
 				},
 				5: {
+					Key:          "possibility5",
 					TokenAmount:  10,
 					ThresholdMin: 0.99,
 					ThresholdMax: 1,

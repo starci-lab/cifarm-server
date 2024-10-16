@@ -14,6 +14,7 @@ type DailyReward struct {
 //either gold
 //small chance to get the CARROT tokens!
 type LastDailyRewardPossibility struct {
+	Key         string  `json:"key"`
 	GoldAmount  int64   `json:"goldAmount"`
 	TokenAmount float64 `json:"tokenAmount"`
 	//to indecate if random 100, the range threshold acheive the reward

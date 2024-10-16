@@ -40,8 +40,7 @@ func ReadByKey(
 }
 
 type ReadHighestPossibleDayParams struct {
-	UserId string `json:"userId"`
-	Streak int    `json:"streak"`
+	MaxPossibleDay int `json:"maxPossibleDay "`
 }
 
 func ReadHighestPossibleDay(
@@ -52,8 +51,8 @@ func ReadHighestPossibleDay(
 	params ReadHighestPossibleDayParams,
 ) (*api.StorageObject, error) {
 	name := STORAGE_INDEX_HIGHEST_POSSIBLE_DAY
-	query := fmt.Sprintf("+user_id:%s +value.day:<=%v",
-		params.UserId, params.Streak)
+	logger.Info(fmt.Sprintf("+value.day:<=%v", params.MaxPossibleDay))
+	query := fmt.Sprintf("+value.day:<=%v", params.MaxPossibleDay)
 	order := []string{
 		"-value.day",
 	}

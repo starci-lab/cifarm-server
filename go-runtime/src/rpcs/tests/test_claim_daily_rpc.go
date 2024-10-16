@@ -15,6 +15,11 @@ import (
 	"github.com/heroiclabs/nakama-common/runtime"
 )
 
+type ClaimDailyRewardRpcParams struct {
+	//response only neccessary for the lasted date
+	Forward int64 `json:"forward"`
+}
+
 type ClaimDailyRewardRpcResponse struct {
 	//response only neccessary for the lasted date
 	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility"`
@@ -33,6 +38,14 @@ func ClaimDailyRewardRpc(
 		errMsg := "user ID not found"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
+	}
+
+	//parse payload
+	var params *ClaimDailyRewardRpcParams
+	err := json.Unmarshal([]byte(payload), &params)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
 
 	//get reward tracker
@@ -57,10 +70,37 @@ func ClaimDailyRewardRpc(
 		return "", err
 	}
 
+	lastClaimDateBegin := time.Unix(rewardTracker.DailyRewardsInfo.LastClaimTime, 0).UTC()
+	startOfLastClaimDate := time.Date(
+		lastClaimDateBegin.Year(),
+		lastClaimDateBegin.Month(),
+		lastClaimDateBegin.Day(),
+		0,
+		0,
+		0,
+		0,
+		time.UTC)
+
+	tomorrowAfterLastClaimDate := startOfLastClaimDate.Add(24 * time.Hour)
+
+	// fake now
 	now := time.Now().UTC().Unix()
+	now = time.Unix(now+params.Forward, 0).UTC().Unix()
+
+	result := now >= tomorrowAfterLastClaimDate.Unix()
+	if !result {
+		errMsg := "you have already claimed the daily reward this day"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
 
 	//process logic
-	rewardTracker.DailyRewardsInfo.Streak++
+	//if you do not claim the reward for 2 days, the streak will be reset
+	if now > tomorrowAfterLastClaimDate.Add(24*time.Hour).Unix() {
+		rewardTracker.DailyRewardsInfo.Streak = 0
+	} else {
+		rewardTracker.DailyRewardsInfo.Streak++
+	}
 
 	//update the last claimed time
 	rewardTracker.DailyRewardsInfo.LastClaimTime = now
@@ -78,8 +118,7 @@ func ClaimDailyRewardRpc(
 
 	//check best reward
 	object, err = collections_daily_rewards.ReadHighestPossibleDay(ctx, logger, db, nk, collections_daily_rewards.ReadHighestPossibleDayParams{
-		UserId: userId,
-		Streak: rewardTracker.DailyRewardsInfo.Streak,
+		MaxPossibleDay: rewardTracker.DailyRewardsInfo.Streak + 1,
 	})
 	if err != nil {
 		logger.Error(err.Error())
