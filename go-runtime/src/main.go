@@ -1,9 +1,9 @@
 package main
 
 import (
-	"cifarm-server/src/auth"
 	"cifarm-server/src/collections"
 	"cifarm-server/src/crons"
+	"cifarm-server/src/hooks"
 	"cifarm-server/src/matches"
 	"cifarm-server/src/rpcs"
 	"cifarm-server/src/setup"
@@ -20,7 +20,7 @@ func InitModule(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = auth.Initialize(ctx, logger, db, nk, initializer)
+	err = hooks.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
