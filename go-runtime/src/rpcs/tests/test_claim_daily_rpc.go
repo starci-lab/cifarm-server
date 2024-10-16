@@ -1,4 +1,4 @@
-package rpcs_bulletin
+package rpcs_tests
 
 import (
 	collections_common "cifarm-server/src/collections/common"
@@ -20,6 +20,7 @@ type ClaimDailyRewardRpcResponse struct {
 	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility"`
 }
 
+// stop the checking phase, make testing conviniences
 func ClaimDailyRewardRpc(
 	ctx context.Context,
 	logger runtime.Logger,
@@ -56,34 +57,10 @@ func ClaimDailyRewardRpc(
 		return "", err
 	}
 
-	lastClaimDateBegin := time.Unix(rewardTracker.DailyRewardsInfo.LastClaimTime, 0).UTC()
-	startOfLastClaimDate := time.Date(
-		lastClaimDateBegin.Year(),
-		lastClaimDateBegin.Month(),
-		lastClaimDateBegin.Day(),
-		0,
-		0,
-		0,
-		0,
-		time.UTC)
-
-	tomorrowAfterLastClaimDate := startOfLastClaimDate.Add(24 * time.Hour)
 	now := time.Now().UTC().Unix()
 
-	result := now >= tomorrowAfterLastClaimDate.Unix()
-	if !result {
-		errMsg := "you have already claimed the daily reward this day"
-		logger.Error(errMsg)
-		return "", errors.New(errMsg)
-	}
-
 	//process logic
-	//if you do not claim the reward for 2 days, the streak will be reset
-	if now > tomorrowAfterLastClaimDate.Add(24*time.Hour).Unix() {
-		rewardTracker.DailyRewardsInfo.Streak = 0
-	} else {
-		rewardTracker.DailyRewardsInfo.Streak++
-	}
+	rewardTracker.DailyRewardsInfo.Streak++
 
 	//update the last claimed time
 	rewardTracker.DailyRewardsInfo.LastClaimTime = now

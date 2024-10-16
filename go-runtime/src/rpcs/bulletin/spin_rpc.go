@@ -115,67 +115,75 @@ func SpinRpc(
 			//take the spin and process the reward
 			switch spin.Type {
 			case collections_spin.TYPE_GOLD:
-				//add golds
-				err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
-					UserId:     userId,
-					GoldAmount: spin.GoldAmount,
-					Metadata: map[string]interface{}{
-						"name": "Spin reward",
-						"time": time.Now().Format(time.RFC850),
-					},
-				})
-				if err != nil {
-					logger.Error(err.Error())
-					return "", err
+				{
+					//add golds
+					err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+						UserId:     userId,
+						GoldAmount: spin.GoldAmount,
+						Metadata: map[string]interface{}{
+							"name": "Spin reward",
+							"time": time.Now().Format(time.RFC850),
+						},
+					})
+					if err != nil {
+						logger.Error(err.Error())
+						return "", err
+					}
+					break
 				}
-				break
 			case collections_spin.TYPE_TOKEN:
-				err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
-					UserId:      userId,
-					TokenAmount: spin.TokenAmount,
-					Metadata: map[string]interface{}{
-						"name": "Spin reward",
-						"time": time.Now().Format(time.RFC850),
-					},
-				})
-				if err != nil {
-					logger.Error(err.Error())
-					return "", err
+				{
+					err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
+						UserId:      userId,
+						TokenAmount: spin.TokenAmount,
+						Metadata: map[string]interface{}{
+							"name": "Spin reward",
+							"time": time.Now().Format(time.RFC850),
+						},
+					})
+					if err != nil {
+						logger.Error(err.Error())
+						return "", err
+					}
+					break
 				}
-				break
 			case collections_spin.TYPE_SUPPLY:
-				//add supplies
-				_inventoryResult, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
-					Inventory: collections_inventories.Inventory{
-						ReferenceKey: spin.Key,
-						Quantity:     spin.Quantity,
-						Type:         collections_inventories.TYPE_SUPPLY,
-						AsTool:       true,
-					},
-					UserId: userId,
-				})
-				if err != nil {
-					logger.Error(err.Error())
-					return "", err
+				{
+					//add supplies
+					_inventoryResult, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
+						Inventory: collections_inventories.Inventory{
+							ReferenceKey: spin.Key,
+							Quantity:     spin.Quantity,
+							Type:         collections_inventories.TYPE_SUPPLY,
+							AsTool:       true,
+						},
+						UserId: userId,
+					})
+					if err != nil {
+						logger.Error(err.Error())
+						return "", err
+					}
+					inventoryResult = *_inventoryResult
+					break
 				}
-				inventoryResult = *_inventoryResult
-				break
 			case collections_spin.TYPE_SEED:
-				//add supplies
-				_inventoryResult, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
-					Inventory: collections_inventories.Inventory{
-						ReferenceKey: spin.Key,
-						Quantity:     spin.Quantity,
-						Type:         collections_inventories.TYPE_SEED,
-					},
-					UserId: userId,
-				})
-				if err != nil {
-					logger.Error(err.Error())
-					return "", err
+				{
+					//add supplies
+					_inventoryResult, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
+						Inventory: collections_inventories.Inventory{
+							ReferenceKey: spin.Key,
+							Quantity:     spin.Quantity,
+							Type:         collections_inventories.TYPE_SEED,
+						},
+						UserId: userId,
+					})
+					if err != nil {
+						logger.Error(err.Error())
+						return "", err
+					}
+					inventoryResult = *_inventoryResult
+					break
 				}
-				inventoryResult = *_inventoryResult
-				break
 			}
 		}
 	}
