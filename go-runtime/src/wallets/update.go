@@ -24,10 +24,10 @@ func UpdateWallet(ctx context.Context,
 	params UpdateWalletParams,
 ) error {
 	var goldUpdate, tokenUpdate int64
-	if params.GoldAmount > 0 {
+	if params.GoldAmount != 0 {
 		goldUpdate = params.GoldAmount
 	}
-	if params.TokenAmount > 0 {
+	if params.TokenAmount != 0 {
 		object, err := collections_system.ReadTokenConfigure(ctx, logger, db, nk)
 		if err != nil {
 			logger.Error(err.Error())

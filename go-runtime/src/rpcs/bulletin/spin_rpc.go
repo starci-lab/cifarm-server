@@ -75,12 +75,14 @@ func SpinRpc(
 		return "", err
 	}
 
-	lastSpinDateBegin := time.Unix(rewardTracker.SpinInfo.LastSpinTime, 0).UTC()
-	nextSpinDate := lastSpinDateBegin.Add(time.Duration(spinConfigure.FreeSpinTime) * time.Second)
+	lastSpinDate := time.Unix(rewardTracker.SpinInfo.LastSpinTime, 0).UTC()
+	nextSpinDate := lastSpinDate.Add(time.Duration(spinConfigure.FreeSpinTime) * time.Second)
+	logger.Info("last spin date: %v - next spin date: %v", lastSpinDate, nextSpinDate)
 	now := time.Now().UTC().Unix()
 
 	result := now >= nextSpinDate.Unix()
 	if !result {
+		logger.Debug("you have already used the free spin today")
 		// you have use free spin today, now pay to spin
 		err = wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
 			UserId:     userId,
@@ -90,6 +92,19 @@ func SpinRpc(
 			logger.Error(err.Error())
 			return "", err
 		}
+	}
+
+	rewardTracker.SpinInfo.LastSpinTime = now
+	rewardTracker.SpinInfo.SpinCount++
+
+	//update the last claimed time
+	err = collections_player.WriteRewardTracker(ctx, logger, db, nk, collections_player.WriteRewardTrackerParams{
+		RewardTracker: *rewardTracker,
+		UserId:        userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
 
 	//spin time!
@@ -106,12 +121,12 @@ func SpinRpc(
 	}
 
 	var inventoryResult collections_inventories.WriteResult
-	var spin collections_spin.Spin
+	var spinResult collections_spin.Spin
 
 	randomValue := rand.Float64()
-	for _, _spin := range spins {
+	for _, spin := range spins {
 		if randomValue < spin.ThresholdMax && randomValue >= spin.ThresholdMin {
-			spin = *_spin
+			spinResult = *spin
 			//take the spin and process the reward
 			switch spin.Type {
 			case collections_spin.TYPE_GOLD:
@@ -119,7 +134,7 @@ func SpinRpc(
 					//add golds
 					err := wallets.UpdateWallet(ctx, logger, db, nk, wallets.UpdateWalletParams{
 						UserId:     userId,
-						GoldAmount: spin.GoldAmount,
+						GoldAmount: -spin.GoldAmount,
 						Metadata: map[string]interface{}{
 							"name": "Spin reward",
 							"time": time.Now().Format(time.RFC850),
@@ -190,7 +205,7 @@ func SpinRpc(
 
 	_value, err := json.Marshal(SpinRpcResponse{
 		InventoryKey: inventoryResult.Key,
-		Spin:         spin,
+		Spin:         spinResult,
 	})
 	if err != nil {
 		logger.Error(err.Error())

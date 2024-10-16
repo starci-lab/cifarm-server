@@ -23,22 +23,30 @@ func SetupSpins(
 			Type:         collections_spin.TYPE_GOLD,
 			GoldAmount:   100,
 			ThresholdMin: 0,
-			ThresholdMax: 0.25,
+			ThresholdMax: 0.2,
 		},
-		//200 golds
+		//250 golds
 		{
 			Key:          "gold2",
 			Type:         collections_spin.TYPE_GOLD,
-			GoldAmount:   200,
-			ThresholdMin: 0.3,
-			ThresholdMax: 0.4,
+			GoldAmount:   250,
+			ThresholdMin: 0.2,
+			ThresholdMax: 0.35,
 		},
-		//1000 golds
+		//500 golds
 		{
 			Key:          "gold3",
 			Type:         collections_spin.TYPE_GOLD,
+			GoldAmount:   500,
+			ThresholdMin: 0.35,
+			ThresholdMax: 0.45,
+		},
+		//1000 golds
+		{
+			Key:          "gold4",
+			Type:         collections_spin.TYPE_GOLD,
 			GoldAmount:   200,
-			ThresholdMin: 0.4,
+			ThresholdMin: 0.45,
 			ThresholdMax: 0.5,
 		},
 		//2 pineapple seeds
