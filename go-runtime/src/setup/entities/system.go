@@ -83,16 +83,8 @@ func SetupSystemActivityExperiences(
 				ExperiencesGain: 3,
 				EnergyCost:      1,
 			},
-			HelpFeedAnimal: collections_system.ActivityInfo{
-				ExperiencesGain: 50,
-				EnergyCost:      1,
-			},
 			ThiefAnimalProduct: collections_system.ActivityInfo{
 				ExperiencesGain: 3,
-				EnergyCost:      1,
-			},
-			HelpUseFertilizer: collections_system.ActivityInfo{
-				ExperiencesGain: 50,
 				EnergyCost:      1,
 			},
 		},
