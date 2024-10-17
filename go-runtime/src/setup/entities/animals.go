@@ -29,6 +29,8 @@ func SetupAnimals(
 			BasicHarvestExperiences:   32,
 			PremiumHarvestExperiences: 96,
 			Type:                      collections_animals.TYPE_POULTRY,
+			//1000s of chance
+			SickChance: 0.001,
 		},
 		{
 			Key:                       collections_animals.KEY_COW,
@@ -42,6 +44,8 @@ func SetupAnimals(
 			BasicHarvestExperiences:   32,
 			PremiumHarvestExperiences: 96,
 			Type:                      collections_animals.TYPE_LIVESTOCK,
+			//1000s of chance
+			SickChance: 0.001,
 		},
 	}
 

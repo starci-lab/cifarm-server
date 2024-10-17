@@ -87,6 +87,14 @@ func SetupSystemActivityExperiences(
 				ExperiencesGain: 3,
 				EnergyCost:      1,
 			},
+			CureAnimal: collections_system.ActivityInfo{
+				ExperiencesGain: 3,
+				EnergyCost:      1,
+			},
+			HelpCureAnimal: collections_system.ActivityInfo{
+				ExperiencesGain: 3,
+				EnergyCost:      1,
+			},
 		},
 	})
 	if err != nil {
