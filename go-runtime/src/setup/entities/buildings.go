@@ -21,17 +21,43 @@ func SetupBuildings(
 			Key:             collections_buildings.KEY_COOP,
 			AvailableInShop: true,
 			Type:            collections_animals.TYPE_POULTRY,
-			MaxUpgrade:      3,
+			MaxUpgrade:      2,
 			Price:           2000,
-			Capacity:        4,
+			Upgrades: map[int]collections_buildings.Upgrade{
+				0: {
+					UpgradePrice: 0,
+					Capacity:     3,
+				},
+				1: {
+					UpgradePrice: 1000,
+					Capacity:     5,
+				},
+				2: {
+					UpgradePrice: 2000,
+					Capacity:     10,
+				},
+			},
 		},
 		{
 			Key:             collections_buildings.KEY_PASTURE,
 			AvailableInShop: true,
-			MaxUpgrade:      3,
+			MaxUpgrade:      2,
 			Type:            collections_animals.TYPE_LIVESTOCK,
 			Price:           3000,
-			Capacity:        4,
+			Upgrades: map[int]collections_buildings.Upgrade{
+				0: {
+					UpgradePrice: 0,
+					Capacity:     3,
+				},
+				1: {
+					UpgradePrice: 1000,
+					Capacity:     5,
+				},
+				2: {
+					UpgradePrice: 2000,
+					Capacity:     10,
+				},
+			},
 		},
 		{
 			Key: collections_buildings.KEY_HOME,

@@ -12,8 +12,9 @@ type Metadata struct {
 }
 
 type VisitState struct {
-	Key    string `json:"key"`
-	UserId string `json:"userId"`
+	Key      string `json:"key"`
+	UserId   string `json:"userId"`
+	IsRandom bool   `json:"isRandom"`
 }
 
 type PlayerStats struct {
