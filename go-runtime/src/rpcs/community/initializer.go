@@ -63,5 +63,10 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
+	err = initializer.RegisterRpc("help_cure_animal", HelpCureAnimalRpc)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

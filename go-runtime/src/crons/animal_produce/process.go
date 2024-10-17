@@ -6,6 +6,7 @@ import (
 	collections_system "cifarm-server/src/collections/system"
 	"context"
 	"database/sql"
+	"math/rand"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -43,10 +44,23 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 	} else {
 		//do adult logic
 		params.PlacedItem.AnimalInfo.CurrentYieldTime += params.TimeInSeconds
+		//sick here, sick happen randomly when animal is adult, and only one time
+		if !params.PlacedItem.AnimalInfo.AlreadySick {
+			randomValue := rand.Float64()
+			if randomValue <= params.PlacedItem.AnimalInfo.Animal.SickChance {
+				params.PlacedItem.AnimalInfo.IsSick = true
+				params.PlacedItem.AnimalInfo.AlreadySick = true
+			}
+		}
+
 		if params.PlacedItem.AnimalInfo.CurrentYieldTime >= params.PlacedItem.AnimalInfo.Animal.YieldTime {
 			params.PlacedItem.AnimalInfo.CurrentYieldTime = 0
 			params.PlacedItem.AnimalInfo.HasYielded = true
-			params.PlacedItem.AnimalInfo.HarvestQuantityRemaining = params.PlacedItem.AnimalInfo.Animal.MaxHarvestQuantity
+			if params.PlacedItem.AnimalInfo.IsSick {
+				params.PlacedItem.AnimalInfo.HarvestQuantityRemaining = params.PlacedItem.AnimalInfo.Animal.MaxHarvestQuantity
+			} else {
+				params.PlacedItem.AnimalInfo.HarvestQuantityRemaining = (params.PlacedItem.AnimalInfo.Animal.MaxHarvestQuantity + params.PlacedItem.AnimalInfo.Animal.MinHarvestQuantity) / 2
+			}
 		}
 	}
 

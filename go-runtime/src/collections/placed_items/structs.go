@@ -34,6 +34,8 @@ type AnimalInfo struct {
 	NeedFed                  bool                       `json:"needFed"`
 	HarvestQuantityRemaining int                        `json:"harvestQuantityRemaining"`
 	ThiefedBy                []string                   `json:"thiefedBy"`
+	AlreadySick              bool                       `json:"alreadySick"`
+	IsSick                   bool                       `json:"isSick"`
 }
 
 type BuildingInfo struct {

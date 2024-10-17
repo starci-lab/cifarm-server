@@ -39,6 +39,8 @@ type Activities struct {
 	HelpWater          ActivityInfo `json:"helpWater"`
 	ThiefCrop          ActivityInfo `json:"thiefCrop"`
 	ThiefAnimalProduct ActivityInfo `json:"thiefAnimalProduct"`
+	CureAnimal         ActivityInfo `json:"cureAnimal"`
+	HelpCureAnimal     ActivityInfo `json:"helpCureAnimal"`
 }
 
 type Rewards struct {

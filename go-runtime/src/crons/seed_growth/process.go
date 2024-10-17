@@ -86,8 +86,9 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 				if params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_IS_WEEDY ||
 					params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_IS_INFESTED {
 					//reduce quantity
-					newQuantity := (params.PlacedItem.SeedGrowthInfo.Crop.MaxHarvestQuantity + params.PlacedItem.SeedGrowthInfo.Crop.MinHarvestQuantity) / 2
-					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = newQuantity
+					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = (params.PlacedItem.SeedGrowthInfo.Crop.MaxHarvestQuantity + params.PlacedItem.SeedGrowthInfo.Crop.MinHarvestQuantity) / 2
+				} else {
+					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = params.PlacedItem.SeedGrowthInfo.Crop.MaxHarvestQuantity
 				}
 				params.PlacedItem.SeedGrowthInfo.FullyMatured = true
 				break
