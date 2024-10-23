@@ -37,6 +37,7 @@ func GetNftsByTokenIds(
 		logger.Error(err.Error())
 		return nil, err
 	}
+
 	client := graphql.NewClient(url, nil)
 
 	query := `query Query($args: GetNftsByTokenIdsArgs!) {
