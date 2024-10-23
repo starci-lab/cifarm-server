@@ -10,10 +10,10 @@ import (
 )
 
 type GetNftsByTokenIdsInput struct {
-	TokenIds []int  `json:"tokenIds"`
-	Network  string `json:"network"`
-	NftKey   string `json:"nftKey"`
-	ChainKey string `json:"chainKey"`
+	TokenIds []string `json:"tokenIds"`
+	Network  string   `json:"network"`
+	NftKey   string   `json:"nftKey"`
+	ChainKey string   `json:"chainKey"`
 }
 
 type GetNftsByTokenIdsArgs struct {
@@ -37,7 +37,6 @@ func GetNftsByTokenIds(
 		logger.Error(err.Error())
 		return nil, err
 	}
-
 	client := graphql.NewClient(url, nil)
 
 	query := `query Query($args: GetNftsByTokenIdsArgs!) {
