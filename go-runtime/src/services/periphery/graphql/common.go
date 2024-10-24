@@ -5,3 +5,8 @@ type NftDataResponse struct {
 	TokenURI     string `json:"tokenURI"`
 	OwnerAddress string `json:"ownerAddress"`
 }
+
+type NftMetadataResponse struct {
+	Image      string `json:"image"`
+	Properties string `json:"properties"`
+}

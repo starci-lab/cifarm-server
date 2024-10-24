@@ -21,5 +21,5 @@ const (
 )
 
 const (
-	NFT_PREMIUM_TILE = "premiumTile"
+	NFT_FERTILE_TILE = "fertileTile"
 )

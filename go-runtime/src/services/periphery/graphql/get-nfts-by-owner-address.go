@@ -10,10 +10,10 @@ import (
 )
 
 type GetNftsByOwnerAddressInput struct {
-	AccountAddress string `json:"accountAddress"`
-	Network        string `json:"network"`
-	NftKey         string `json:"nftKey"`
-	ChainKey       string `json:"chainKey"`
+	AccountAddress   string `json:"accountAddress"`
+	Network          string `json:"network"`
+	ChainKey         string `json:"chainKey"`
+	NftCollectionKey string `json:"nftCollectionKey"`
 }
 
 type GetNftsByOwnerAddressFilter struct {
@@ -50,8 +50,11 @@ func GetNftsByOwnerAddress(
     count,
     records {
       tokenId,
-      tokenURI,
-	  ownerAddress
+	  ownerAddress,
+	  metadata {
+        image,
+        properties
+      }
     }
   }
 }`

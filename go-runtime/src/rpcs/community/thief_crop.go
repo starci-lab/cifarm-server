@@ -183,7 +183,7 @@ func ThiefCropRpc(
 			ReferenceKey: tile.SeedGrowthInfo.Crop.Key,
 			Type:         collections_inventories.TYPE_HARVESTED_CROP,
 			Quantity:     thiefQuantity,
-			Premium:      tile.ReferenceKey == collections_tiles.KEY_NFT,
+			Premium:      tile.ReferenceKey == collections_tiles.KEY_FERTILE_TILE,
 			Deliverable:  true,
 		},
 		UserId: userId,

@@ -10,10 +10,10 @@ import (
 )
 
 type GetNftsByTokenIdsInput struct {
-	TokenIds []string `json:"tokenIds"`
-	Network  string   `json:"network"`
-	NftKey   string   `json:"nftKey"`
-	ChainKey string   `json:"chainKey"`
+	TokenIds         []string `json:"tokenIds"`
+	Network          string   `json:"network"`
+	NftCollectionKey string   `json:"nftCollectionKey"`
+	ChainKey         string   `json:"chainKey"`
 }
 
 type GetNftsByTokenIdsArgs struct {
@@ -43,8 +43,11 @@ func GetNftsByTokenIds(
   nftsByTokenIds(args: $args) {
     records {
       tokenId,
-      tokenURI,
-	  ownerAddress
+	  ownerAddress,
+	  metadata {
+        image,
+        properties
+      }
     }
   }
 }`

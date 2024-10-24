@@ -45,7 +45,7 @@ func SetupTiles(
 			AvailableInShop: true,
 		},
 		{
-			Key:             collections_tiles.KEY_NFT,
+			Key:             collections_tiles.KEY_FERTILE_TILE,
 			AvailableInShop: false,
 			IsNFT:           true,
 		},

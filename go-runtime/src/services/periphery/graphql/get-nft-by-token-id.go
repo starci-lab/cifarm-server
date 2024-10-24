@@ -10,10 +10,10 @@ import (
 )
 
 type GetNftByTokenIdInput struct {
-	TokenId  string `json:"tokenId"`
-	Network  string `json:"network"`
-	NftKey   string `json:"nftKey"`
-	ChainKey string `json:"chainKey"`
+	TokenId          string `json:"tokenId"`
+	Network          string `json:"network"`
+	NftCollectionKey string `json:"nftCollectionKey"`
+	ChainKey         string `json:"chainKey"`
 }
 
 type GetNftByTokenIdArgs struct {
@@ -39,7 +39,10 @@ func GetNftByTokenId(
   nftByTokenId(args: $args) {
     ownerAddress,
     tokenId,
-    tokenURI
+    metadata {
+        image,
+        properties
+    }
   }
 }`
 	variables := map[string]interface{}{

@@ -84,7 +84,7 @@ func HarvestCropRpc(
 	}
 
 	//check if the crop is premium
-	premium := tile.ReferenceKey == collections_tiles.KEY_NFT
+	premium := tile.ReferenceKey == collections_tiles.KEY_FERTILE_TILE
 	//write to inventories the havested items
 	result, err := collections_inventories.Write(ctx, logger, db, nk, collections_inventories.WriteParams{
 		Inventory: collections_inventories.Inventory{
