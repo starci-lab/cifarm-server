@@ -284,7 +284,7 @@ func AfterAuthenticate(
 		var placedItems []collections_placed_items.PlacedItem
 		for _, position := range positions {
 			placedItems = append(placedItems, collections_placed_items.PlacedItem{
-				ReferenceKey: collections_tiles.KEY_STARTER,
+				ReferenceKey: collections_tiles.KEY_STARTER_TILE,
 				Position:     position,
 				Type:         collections_placed_items.TYPE_TILE,
 			})

@@ -79,7 +79,7 @@ func GetTileData(
 	db *sql.DB,
 	nk runtime.NakamaModule,
 ) (*GetTileDataResult, error) {
-	key := collections_tiles.KEY_BASIC_1
+	key := collections_tiles.KEY_BASIC_TILE_1
 	has1, err := HasEnoughTiles(ctx, logger, db, nk, HasEnoughTilesParams{
 		ReferenceKey: key,
 	})
@@ -115,7 +115,7 @@ func GetTileData(
 			Price: price,
 		}, nil
 	}
-	key = collections_tiles.KEY_BASIC_2
+	key = collections_tiles.KEY_BASIC_TILE_2
 	has2, err := HasEnoughTiles(ctx, logger, db, nk, HasEnoughTilesParams{
 		ReferenceKey: key,
 	})
@@ -149,7 +149,7 @@ func GetTileData(
 			Price: price,
 		}, nil
 	}
-	key = collections_tiles.KEY_BASIC_3
+	key = collections_tiles.KEY_BASIC_TILE_3
 	object, err := collections_tiles.ReadByKey(ctx, logger, db, nk, collections_tiles.ReadByKeyParams{
 		Key: key,
 	})

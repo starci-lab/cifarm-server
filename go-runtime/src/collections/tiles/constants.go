@@ -5,9 +5,9 @@ const (
 )
 
 const (
-	KEY_STARTER      = "starterTile"
-	KEY_BASIC_1      = "basicTile1"
-	KEY_BASIC_2      = "basicTile2"
-	KEY_BASIC_3      = "basicTile3"
+	KEY_STARTER_TILE = "starterTile"
+	KEY_BASIC_TILE_1 = "basicTile1"
+	KEY_BASIC_TILE_2 = "basicTile2"
+	KEY_BASIC_TILE_3 = "basicTile3"
 	KEY_FERTILE_TILE = "fertileTile"
 )
