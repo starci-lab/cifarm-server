@@ -134,7 +134,7 @@ type UserCooldownTimers struct {
 
 	//daily rewards
 	NextDailyRewardCooldown int64 `json:"nextDailyRewardCooldown"`
-	ClaimedThisDay          bool  `json:"claimedThisDay"`
+	UnclaimedToday          bool  `json:"unclaimedToday"`
 }
 
 type GlobalCooldownTimers struct {
@@ -221,19 +221,20 @@ func BroadcaseUserCooldownTimers(ctx context.Context, logger runtime.Logger, db 
 		nextFreeSpinCooldown = spinConfigure.FreeSpinTime + rewardTracker.SpinInfo.LastSpinTime - now.Unix()
 	}
 
-	claimedThisDay := rewardTracker.DailyRewardsInfo.LastClaimTime >= utils.StartOfToday(now).Unix()
+	unclaimedToday := rewardTracker.DailyRewardsInfo.LastClaimTime < utils.StartOfToday(now).Unix()
 	var nextDailyRewardCooldown int64
-	if claimedThisDay {
+	if unclaimedToday {
+		nextDailyRewardCooldown = 0
+	} else {
 		// start of next day - now
 		nextDailyRewardCooldown = utils.StartOfTomorow(now).Unix() - now.Unix()
-	} else {
-		nextDailyRewardCooldown = 0
 	}
+
 	userCooldownTimers := UserCooldownTimers{
 		NextFreeSpinCooldown:    nextFreeSpinCooldown,
 		IsSpinFree:              isSpinFree,
 		NextDailyRewardCooldown: nextDailyRewardCooldown,
-		ClaimedThisDay:          claimedThisDay,
+		UnclaimedToday:          unclaimedToday,
 	}
 
 	data, err := json.Marshal(userCooldownTimers)
