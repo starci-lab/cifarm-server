@@ -5,7 +5,15 @@ const (
 )
 
 const (
-	KEY_PESTICIDE    = "pesticide"
-	KEY_FERTILIZER_1 = "fertilizer1"
-	KEY_FERTILIZER_2 = "fertilizer2"
+	KEY_WATERCAN  = "watercan"
+	KEY_SCYTHE    = "scythe"
+	KEY_HERBICIDE = "herbicide"
+	KEY_PESTICIDE = "pesticide"
+	KEY_STEAL     = "steal"
+)
+
+const (
+	AVAILABLE_IN_HOME     = 0
+	AVAILABLE_IN_NEIGHBOR = 1
+	AVAILABLE_IN_BOTH     = 2
 )

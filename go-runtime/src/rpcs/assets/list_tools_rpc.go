@@ -3,6 +3,7 @@ package rpcs_assets
 import (
 	collections_common "cifarm-server/src/collections/common"
 	collections_inventories "cifarm-server/src/collections/inventories"
+	collections_player "cifarm-server/src/collections/player"
 	collections_tools "cifarm-server/src/collections/tools"
 	"context"
 	"database/sql"
@@ -38,6 +39,28 @@ func ListToolsRpc(
 		return "", errors.New(errMsg)
 	}
 
+	//load the visit
+	object, err := collections_player.ReadVisitState(ctx, logger, db, nk, collections_player.ReadVisitStateParams{
+		UserId: userId,
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+	if object == nil {
+		errMsg := "visit state not found"
+		logger.Error(errMsg)
+		return "", errors.New(errMsg)
+	}
+	visitState, err := collections_common.ToValue[collections_player.VisitState](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
+	}
+
+	//visit other
+	visited := visitState.UserId != ""
+
 	// query tools
 	// list all defaut tools
 	defaultToolObjects, err := collections_tools.ReadMany(ctx, logger, db, nk)
@@ -52,10 +75,13 @@ func ListToolsRpc(
 	}
 	var tools []PlayerTool
 	for _, defaultTool := range defaultTools {
-		tools = append(tools, PlayerTool{
-			Key:           defaultTool.Key,
-			FromInventory: false,
-		})
+		if !(defaultTool.AvailableIn == collections_tools.AVAILABLE_IN_NEIGHBOR && !visited ||
+			defaultTool.AvailableIn == collections_tools.AVAILABLE_IN_HOME && visited) {
+			tools = append(tools, PlayerTool{
+				Key:           defaultTool.Key,
+				FromInventory: false,
+			})
+		}
 	}
 
 	//load tools from inventory
