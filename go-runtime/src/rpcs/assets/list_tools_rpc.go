@@ -9,6 +9,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"sort"
 
 	"github.com/heroiclabs/nakama-common/runtime"
 )
@@ -73,6 +74,10 @@ func ListToolsRpc(
 		logger.Error(err.Error())
 		return "", err
 	}
+	sort.Slice(defaultTools, func(i, j int) bool {
+		return defaultTools[i].Index < defaultTools[j].Index
+	})
+
 	var tools []PlayerTool
 	for _, defaultTool := range defaultTools {
 		if !(defaultTool.AvailableIn == collections_tools.AVAILABLE_IN_NEIGHBOR && !visited ||

@@ -19,22 +19,27 @@ func SetupTools(
 		{
 			Key:         collections_tools.KEY_SCYTHE,
 			AvailableIn: collections_tools.AVAILABLE_IN_HOME,
+			Index:       0,
 		},
 		{
 			Key:         collections_tools.KEY_STEAL,
 			AvailableIn: collections_tools.AVAILABLE_IN_NEIGHBOR,
+			Index:       1,
 		},
 		{
 			Key:         collections_tools.KEY_WATERCAN,
 			AvailableIn: collections_tools.AVAILABLE_IN_BOTH,
+			Index:       2,
 		},
 		{
 			Key:         collections_tools.KEY_HERBICIDE,
 			AvailableIn: collections_tools.AVAILABLE_IN_BOTH,
+			Index:       3,
 		},
 		{
 			Key:         collections_tools.KEY_PESTICIDE,
 			AvailableIn: collections_tools.AVAILABLE_IN_BOTH,
+			Index:       4,
 		},
 	}
 
