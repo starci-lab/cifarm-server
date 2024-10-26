@@ -1,12 +1,16 @@
 package matches_timer
 
 import (
+	collections_common "cifarm-server/src/collections/common"
 	collections_placed_items "cifarm-server/src/collections/placed_items"
 	collections_player "cifarm-server/src/collections/player"
+	collections_system "cifarm-server/src/collections/system"
+	"cifarm-server/src/utils"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"math"
 	"time"
 
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -89,8 +93,17 @@ func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB
 	var presences []runtime.Presence
 	for _, presence := range matchState.Presences {
 		presences = append(presences, presence)
+		//for this loop, we only need to broadcast the user's cooldown timers
+		err := BroadcaseUserCooldownTimers(ctx, logger, db, nk, BroadcaseUserCooldownTimersParams{
+			presence:   presence,
+			dispatcher: dispatcher,
+		})
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 	}
-	err := BroadcastNextDeliveryTime(ctx, logger, db, nk, BroadcastNextDeliveryTimeParams{
+	err := BroadcastGlobalCooldownTimers(ctx, logger, db, nk, BroadcastGlobalCooldownTimersParams{
 		presences:  presences,
 		dispatcher: dispatcher,
 	})
@@ -115,30 +128,105 @@ type BroadcastPlacedItemsParams struct {
 	Dispatcher runtime.MatchDispatcher
 }
 
-type NextDeliveryTime struct {
-	Time int64 `json:"time"`
+type UserCooldownTimers struct {
+	NextFreeSpinCooldown    int64 `json:"nextFreeSpinCooldown"`
+	NextDailyRewardCooldown int64 `json:"nextDailyRewardCooldown"`
 }
 
-type BroadcastNextDeliveryTimeParams struct {
+type GlobalCooldownTimers struct {
+	NextDeliveryCooldown int64 `json:"nextDeliveryCooldown"`
+}
+
+type BroadcastGlobalCooldownTimersParams struct {
 	presences  []runtime.Presence
 	dispatcher runtime.MatchDispatcher
 }
 
-func BroadcastNextDeliveryTime(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastNextDeliveryTimeParams) error {
+func BroadcastGlobalCooldownTimers(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastGlobalCooldownTimersParams) error {
 	now := time.Now()
-	nextInterval := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())
+	startOfNextDay := utils.StartOfNextDay(now)
 
-	nextDeliveryTime := NextDeliveryTime{
-		Time: nextInterval.Unix() - now.Unix(),
+	globalCooldownTimers := GlobalCooldownTimers{
+		NextDeliveryCooldown: startOfNextDay.Unix() - now.Unix(),
 	}
 
-	data, err := json.Marshal(nextDeliveryTime)
+	data, err := json.Marshal(globalCooldownTimers)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
 
-	err = params.dispatcher.BroadcastMessage(OP_CODE_NEXT_DELIVERY_TIME, data, params.presences, nil, true)
+	err = params.dispatcher.BroadcastMessage(OP_CODE_GLOBAL_COOLDOWN_TIMERS, data, params.presences, nil, true)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	return nil
+}
+
+type BroadcaseUserCooldownTimersParams struct {
+	presence   runtime.Presence
+	dispatcher runtime.MatchDispatcher
+}
+
+func BroadcaseUserCooldownTimers(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcaseUserCooldownTimersParams) error {
+	//reward tracker
+	object, err := collections_player.ReadRewardTracker(ctx, logger, db, nk, collections_player.ReadRewardTrackerParams{
+		UserId: params.presence.GetUserId(),
+	})
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		errMsg := "reward tracker not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+	rewardTracker, err := collections_common.ToValue[collections_player.RewardTracker](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	//spin configure
+	object, err = collections_system.ReadSpinConfigure(ctx, logger, db, nk)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	if object == nil {
+		errMsg := "spin configure not found"
+		logger.Error(errMsg)
+		return errors.New(errMsg)
+	}
+
+	spinConfigure, err := collections_common.ToValue[collections_system.SpinConfigure](ctx, logger, db, nk, object)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+
+	now := time.Now()
+	userCooldownTimers := UserCooldownTimers{
+		// free time + last time - now
+		NextFreeSpinCooldown: int64(math.Max(0,
+			float64(
+				spinConfigure.FreeSpinTime+
+					rewardTracker.SpinInfo.LastSpinTime-
+					now.Unix(),
+			))),
+		// start of next day - now
+		NextDailyRewardCooldown: utils.StartOfNextDay(now).Unix() - now.Unix(),
+	}
+	data, err := json.Marshal(userCooldownTimers)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	err = params.dispatcher.BroadcastMessage(OP_CODE_USER_COOLDOWN_TIMERS, data, []runtime.Presence{
+		params.presence,
+	}, nil, true)
 	if err != nil {
 		logger.Error(err.Error())
 		return err

@@ -1,4 +1,4 @@
-package rpcs_bulletin
+package rpcs_claim
 
 import (
 	"context"

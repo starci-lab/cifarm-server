@@ -1,4 +1,4 @@
-package rpcs_bulletin
+package rpcs_claim
 
 import (
 	collections_common "cifarm-server/src/collections/common"

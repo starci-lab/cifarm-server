@@ -1,9 +1,10 @@
-package rpcs_bulletin
+package rpcs_claim
 
 import (
 	collections_common "cifarm-server/src/collections/common"
 	collections_daily_rewards "cifarm-server/src/collections/daily_rewards"
 	collections_player "cifarm-server/src/collections/player"
+	"cifarm-server/src/utils"
 	"cifarm-server/src/wallets"
 	"context"
 	"database/sql"
@@ -57,15 +58,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	lastClaimDateBegin := time.Unix(rewardTracker.DailyRewardsInfo.LastClaimTime, 0).UTC()
-	startOfLastClaimDate := time.Date(
-		lastClaimDateBegin.Year(),
-		lastClaimDateBegin.Month(),
-		lastClaimDateBegin.Day(),
-		0,
-		0,
-		0,
-		0,
-		time.UTC)
+	startOfLastClaimDate := utils.StartOfNextDay(lastClaimDateBegin)
 
 	tomorrowAfterLastClaimDate := startOfLastClaimDate.Add(24 * time.Hour)
 	now := time.Now().UTC().Unix()

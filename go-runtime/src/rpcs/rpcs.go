@@ -3,7 +3,7 @@ package rpcs
 import (
 	rpcs_assets "cifarm-server/src/rpcs/assets"
 	rpcs_auth "cifarm-server/src/rpcs/auth"
-	rpcs_bulletin "cifarm-server/src/rpcs/bulletin"
+	rpcs_claim "cifarm-server/src/rpcs/claim"
 	rpcs_community "cifarm-server/src/rpcs/community"
 	rpcs_farming "cifarm-server/src/rpcs/farming"
 	rpcs_miscellaneous "cifarm-server/src/rpcs/miscellaneous"
@@ -42,7 +42,7 @@ func Initialize(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runti
 		return err
 	}
 
-	err = rpcs_bulletin.Initialize(ctx, logger, db, nk, initializer)
+	err = rpcs_claim.Initialize(ctx, logger, db, nk, initializer)
 	if err != nil {
 		logger.Error(err.Error())
 		return err
