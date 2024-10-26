@@ -15,10 +15,10 @@ import (
 
 // player's tools
 type PlayerTool struct {
-	Key           string                            `json:"key"`
-	FromInventory bool                              `json:"fromInventory"`
-	Inventory     collections_inventories.Inventory `json:"inventory"`
-	Type          int                               `json:"type"`
+	Key           string `json:"key"`
+	FromInventory bool   `json:"fromInventory"`
+	InventoryKey  string `json:"inventoryKey"`
+	Type          int    `json:"type"`
 }
 
 type ListToolsRpcResponse struct {
@@ -104,7 +104,7 @@ func ListToolsRpc(
 		tools = append(tools, PlayerTool{
 			Key:           inventory.Key,
 			FromInventory: true,
-			Inventory:     *inventory,
+			InventoryKey:  inventory.Key,
 		})
 	}
 
