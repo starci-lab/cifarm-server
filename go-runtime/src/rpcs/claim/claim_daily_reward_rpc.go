@@ -58,7 +58,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	lastClaimDateBegin := time.Unix(rewardTracker.DailyRewardsInfo.LastClaimTime, 0).UTC()
-	startOfLastClaimDate := utils.StartOfNextDay(lastClaimDateBegin)
+	startOfLastClaimDate := utils.StartOfTomorow(lastClaimDateBegin)
 
 	tomorrowAfterLastClaimDate := startOfLastClaimDate.Add(24 * time.Hour)
 	now := time.Now().UTC().Unix()

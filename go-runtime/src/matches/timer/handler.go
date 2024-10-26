@@ -10,7 +10,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"math"
 	"time"
 
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -129,8 +128,13 @@ type BroadcastPlacedItemsParams struct {
 }
 
 type UserCooldownTimers struct {
-	NextFreeSpinCooldown    int64 `json:"nextFreeSpinCooldown"`
+	//spin
+	NextFreeSpinCooldown int64 `json:"nextFreeSpinCooldown"`
+	IsSpinFree           bool  `json:"isSpinFree"`
+
+	//daily rewards
 	NextDailyRewardCooldown int64 `json:"nextDailyRewardCooldown"`
+	ClaimedThisDay          bool  `json:"claimedThisDay"`
 }
 
 type GlobalCooldownTimers struct {
@@ -144,7 +148,7 @@ type BroadcastGlobalCooldownTimersParams struct {
 
 func BroadcastGlobalCooldownTimers(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params BroadcastGlobalCooldownTimersParams) error {
 	now := time.Now()
-	startOfNextDay := utils.StartOfNextDay(now)
+	startOfNextDay := utils.StartOfTomorow(now)
 
 	globalCooldownTimers := GlobalCooldownTimers{
 		NextDeliveryCooldown: startOfNextDay.Unix() - now.Unix(),
@@ -208,17 +212,30 @@ func BroadcaseUserCooldownTimers(ctx context.Context, logger runtime.Logger, db 
 	}
 
 	now := time.Now()
-	userCooldownTimers := UserCooldownTimers{
+	isSpinFree := spinConfigure.FreeSpinTime+rewardTracker.SpinInfo.LastSpinTime <= now.Unix()
+	var nextFreeSpinCooldown int64
+	if isSpinFree {
+		nextFreeSpinCooldown = 0
+	} else {
 		// free time + last time - now
-		NextFreeSpinCooldown: int64(math.Max(0,
-			float64(
-				spinConfigure.FreeSpinTime+
-					rewardTracker.SpinInfo.LastSpinTime-
-					now.Unix(),
-			))),
-		// start of next day - now
-		NextDailyRewardCooldown: utils.StartOfNextDay(now).Unix() - now.Unix(),
+		nextFreeSpinCooldown = spinConfigure.FreeSpinTime + rewardTracker.SpinInfo.LastSpinTime - now.Unix()
 	}
+
+	claimedThisDay := rewardTracker.DailyRewardsInfo.LastClaimTime >= utils.StartOfToday(now).Unix()
+	var nextDailyRewardCooldown int64
+	if claimedThisDay {
+		// start of next day - now
+		nextDailyRewardCooldown = utils.StartOfTomorow(now).Unix() - now.Unix()
+	} else {
+		nextDailyRewardCooldown = 0
+	}
+	userCooldownTimers := UserCooldownTimers{
+		NextFreeSpinCooldown:    nextFreeSpinCooldown,
+		IsSpinFree:              isSpinFree,
+		NextDailyRewardCooldown: nextDailyRewardCooldown,
+		ClaimedThisDay:          claimedThisDay,
+	}
+
 	data, err := json.Marshal(userCooldownTimers)
 	if err != nil {
 		logger.Error(err.Error())
