@@ -16,14 +16,15 @@ import (
 
 // player's tools
 type PlayerTool struct {
-	Key           string `json:"key"`
-	FromInventory bool   `json:"fromInventory"`
-	InventoryKey  string `json:"inventoryKey"`
-	Type          int    `json:"type"`
+	Key           string `json:"key,omitempty"`
+	FromInventory bool   `json:"fromInventory,omitempty"`
+	InventoryKey  string `json:"inventoryKey,omitempty"`
+	Type          int    `json:"type,omitempty"`
+	Index         int    `json:"index,omitempty"`
 }
 
 type ListToolsRpcResponse struct {
-	Tools []PlayerTool `json:"tools"`
+	Tools []PlayerTool `json:"tools,omitempty"`
 }
 
 func ListToolsRpc(
@@ -78,6 +79,7 @@ func ListToolsRpc(
 		return defaultTools[i].Index < defaultTools[j].Index
 	})
 
+	var index int
 	var tools []PlayerTool
 	for _, defaultTool := range defaultTools {
 		if !(defaultTool.AvailableIn == collections_tools.AVAILABLE_IN_NEIGHBOR && !visited ||
@@ -85,7 +87,9 @@ func ListToolsRpc(
 			tools = append(tools, PlayerTool{
 				Key:           defaultTool.Key,
 				FromInventory: false,
+				Index:         index,
 			})
+			index++
 		}
 	}
 
@@ -110,7 +114,9 @@ func ListToolsRpc(
 			Key:           inventory.Key,
 			FromInventory: true,
 			InventoryKey:  inventory.Key,
+			Index:         index,
 		})
+		index++
 	}
 
 	value, err := json.Marshal(ListToolsRpcResponse{
