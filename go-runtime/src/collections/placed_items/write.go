@@ -10,12 +10,12 @@ import (
 )
 
 type WriteParams struct {
-	PlacedItem PlacedItem `json:"placedItem"`
-	UserId     string     `json:"userId"`
+	PlacedItem PlacedItem `json:"placedItem,omitempty"`
+	UserId     string     `json:"userId,omitempty"`
 }
 
 type WriteResult struct {
-	Key string `json:"key"`
+	Key string `json:"key,omitempty"`
 }
 
 func Write(
@@ -59,8 +59,8 @@ func Write(
 }
 
 type WriteManyParams struct {
-	PlacedItems []PlacedItem `json:"placedItems"`
-	UserId      string       `json:"userId"`
+	PlacedItems []PlacedItem `json:"placedItems,omitempty"`
+	UserId      string       `json:"userId,omitempty"`
 }
 
 func WriteMany(

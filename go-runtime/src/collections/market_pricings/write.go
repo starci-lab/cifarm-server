@@ -9,7 +9,7 @@ import (
 )
 
 type WriteManyParams struct {
-	MarketPricings []MarketPricing `json:"marketPricings"`
+	MarketPricings []MarketPricing `json:"marketPricings,omitempty"`
 }
 
 func WriteMany(

@@ -76,8 +76,8 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 }
 
 type HandleAnimalProcedureParams struct {
-	UserId        string `json:"userId"`
-	TimeInSeconds int64  `json:"timeInSeconds"`
+	UserId        string `json:"userId,omitempty"`
+	TimeInSeconds int64  `json:"timeInSeconds,omitempty"`
 }
 
 func HandleAnimalProcedure(

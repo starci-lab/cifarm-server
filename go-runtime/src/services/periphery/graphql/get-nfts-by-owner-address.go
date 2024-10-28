@@ -10,25 +10,25 @@ import (
 )
 
 type GetNftsByOwnerAddressInput struct {
-	AccountAddress   string `json:"accountAddress"`
-	Network          string `json:"network"`
-	ChainKey         string `json:"chainKey"`
-	NftCollectionKey string `json:"nftCollectionKey"`
+	AccountAddress   string `json:"accountAddress,omitempty"`
+	Network          string `json:"network,omitempty"`
+	ChainKey         string `json:"chainKey,omitempty"`
+	NftCollectionKey string `json:"nftCollectionKey,omitempty"`
 }
 
 type GetNftsByOwnerAddressFilter struct {
-	Skip int `json:"skip"`
-	Take int `json:"take"`
+	Skip int `json:"skip,omitempty"`
+	Take int `json:"take,omitempty"`
 }
 
 type GetNftByOwnerAddressArgs struct {
-	Input  GetNftsByOwnerAddressInput  `json:"input"`
-	Filter GetNftsByOwnerAddressFilter `json:"filter"`
+	Input  GetNftsByOwnerAddressInput  `json:"input,omitempty"`
+	Filter GetNftsByOwnerAddressFilter `json:"filter,omitempty"`
 }
 
 type GetNftsByOwnerAddressResponse struct {
-	Records []NftDataResponse `json:"records"`
-	Count   int               `json:"count"`
+	Records []NftDataResponse `json:"records,omitempty"`
+	Count   int               `json:"count,omitempty"`
 }
 
 func GetNftsByOwnerAddress(
@@ -62,7 +62,7 @@ func GetNftsByOwnerAddress(
 		"args": args,
 	}
 	result := struct {
-		NftsByOwnerAddress GetNftsByOwnerAddressResponse `json:"nftsByOwnerAddress"`
+		NftsByOwnerAddress GetNftsByOwnerAddressResponse `json:"nftsByOwnerAddress,omitempty"`
 	}{}
 
 	err = client.WithDebug(true).Exec(context.Background(),

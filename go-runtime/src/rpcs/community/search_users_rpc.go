@@ -10,12 +10,12 @@ import (
 )
 
 type SearchUsersByValueParams struct {
-	UserId string `json:"userId"`
-	Value  string `json:"value"`
+	UserId string `json:"userId,omitempty"`
+	Value  string `json:"value,omitempty"`
 }
 
 type SearchUsersByValueResult struct {
-	Users []User `json:"users"`
+	Users []User `json:"users,omitempty"`
 }
 
 func SearchUsersByValue(
@@ -48,11 +48,11 @@ func SearchUsersByValue(
 }
 
 type SearchUsersRpcParams struct {
-	Value string `json:"value"`
+	Value string `json:"value,omitempty"`
 }
 
 type SearchUsersRpcResponse struct {
-	Users []User `json:"users"`
+	Users []User `json:"users,omitempty"`
 }
 
 func SearchUserRpc(

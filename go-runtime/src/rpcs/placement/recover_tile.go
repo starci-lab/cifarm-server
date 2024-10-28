@@ -13,12 +13,12 @@ import (
 )
 
 type RecoverTileRpcParams struct {
-	PlacedItemTileKey string                            `json:"inventoryTileKey"`
-	Position          collections_placed_items.Position `json:"position"`
+	PlacedItemTileKey string                            `json:"inventoryTileKey,omitempty"`
+	Position          collections_placed_items.Position `json:"position,omitempty"`
 }
 
 type RecoverTileRpcResponse struct {
-	InventoryTileKey string `json:"inventoryTileKey"`
+	InventoryTileKey string `json:"inventoryTileKey,omitempty"`
 }
 
 func RecoverTileRpc(ctx context.Context,

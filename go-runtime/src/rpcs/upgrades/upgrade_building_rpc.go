@@ -13,7 +13,7 @@ import (
 )
 
 type UpgradeBuildingRpcParams struct {
-	PlacedItemBuildingKey string `json:"placedItemBuildingKey"`
+	PlacedItemBuildingKey string `json:"placedItemBuildingKey,omitempty"`
 }
 
 func UpgradeBuildingRpc(ctx context.Context,

@@ -11,12 +11,12 @@ import (
 )
 
 type WriteParams struct {
-	DeliveringProduct DeliveringProduct `json:"deliveringProduct"`
-	UserId            string            `json:"userId"`
+	DeliveringProduct DeliveringProduct `json:"deliveringProduct,omitempty"`
+	UserId            string            `json:"userId,omitempty"`
 }
 
 type WriteResult struct {
-	Key string `json:"key"`
+	Key string `json:"key,omitempty"`
 }
 
 func Write(

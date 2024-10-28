@@ -15,7 +15,7 @@ import (
 type Match struct{}
 
 type MatchState struct {
-	Presences map[string]runtime.Presence `json:"-"`
+	Presences map[string]runtime.Presence `json:"-,omitempty"`
 }
 
 func (m *Match) MatchInit(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params map[string]interface{}) (interface{}, int, string) {
@@ -74,7 +74,7 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 }
 
 type WrappedPlacedItems struct {
-	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems"`
+	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems,omitempty"`
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {

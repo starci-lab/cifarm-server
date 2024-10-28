@@ -16,8 +16,8 @@ import (
 )
 
 type UseFertilizerRpcParams struct {
-	InventoryFertilizerKey string `json:"inventoryFertilizerKey"`
-	PlacedItemTileKey      string `json:"placedItemTileKey"`
+	InventoryFertilizerKey string `json:"inventoryFertilizerKey,omitempty"`
+	PlacedItemTileKey      string `json:"placedItemTileKey,omitempty"`
 }
 
 func UseFertilizerRpc(

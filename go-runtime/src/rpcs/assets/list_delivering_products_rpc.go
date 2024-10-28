@@ -12,7 +12,7 @@ import (
 )
 
 type ListDeliveringProductsRpcResponse struct {
-	DeliveringProducts []*collections_delivering_products.DeliveringProduct `json:"deliveringProducts"`
+	DeliveringProducts []*collections_delivering_products.DeliveringProduct `json:"deliveringProducts,omitempty"`
 }
 
 func ListDeliveringProductsRpc(

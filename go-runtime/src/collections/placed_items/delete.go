@@ -8,8 +8,8 @@ import (
 )
 
 type DeleteParams struct {
-	Key    string `json:"key"`
-	UserId string `json:"userId"`
+	Key    string `json:"key,omitempty"`
+	UserId string `json:"userId,omitempty"`
 }
 
 func Delete(ctx context.Context,
@@ -33,8 +33,8 @@ func Delete(ctx context.Context,
 }
 
 type DeleteManyParams struct {
-	Keys   []string `json:"keys"`
-	UserId string   `json:"userId"`
+	Keys   []string `json:"keys,omitempty"`
+	UserId string   `json:"userId,omitempty"`
 }
 
 func DeleteMany(ctx context.Context,
@@ -60,8 +60,8 @@ func DeleteMany(ctx context.Context,
 }
 
 type DeleteByInventoryKeyParams struct {
-	InventoryKey string `json:"inventoryKey"`
-	UserId       string `json:"userId"`
+	InventoryKey string `json:"inventoryKey,omitempty"`
+	UserId       string `json:"userId,omitempty"`
 }
 
 func DeleteByInventoryKey(

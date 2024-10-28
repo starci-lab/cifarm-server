@@ -12,8 +12,8 @@ import (
 )
 
 type UpdateTutorialRpcParams struct {
-	TutorialIndex int `json:"tutorialIndex"`
-	StepIndex     int `json:"stepIndex"`
+	TutorialIndex int `json:"tutorialIndex,omitempty"`
+	StepIndex     int `json:"stepIndex,omitempty"`
 }
 
 func UpdateTutorialRpc(ctx context.Context,

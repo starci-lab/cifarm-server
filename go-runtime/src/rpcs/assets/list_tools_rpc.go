@@ -16,15 +16,15 @@ import (
 
 // player's tools
 type PlayerTool struct {
-	Key           string `json:"key"`
-	FromInventory bool   `json:"fromInventory"`
-	InventoryKey  string `json:"inventoryKey"`
-	Type          int    `json:"type"`
-	Index         int    `json:"index"`
+	Key           string `json:"key,omitempty"`
+	FromInventory bool   `json:"fromInventory,omitempty"`
+	InventoryKey  string `json:"inventoryKey,omitempty"`
+	Type          int    `json:"type,omitempty"`
+	Index         int    `json:"index,omitempty"`
 }
 
 type ListToolsRpcResponse struct {
-	Tools []PlayerTool `json:"tools"`
+	Tools []PlayerTool `json:"tools,omitempty"`
 }
 
 func ListToolsRpc(

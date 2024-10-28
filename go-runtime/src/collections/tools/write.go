@@ -9,7 +9,7 @@ import (
 )
 
 type WriteManyParams struct {
-	Tools []Tool `json:"tools"`
+	Tools []Tool `json:"tools,omitempty"`
 }
 
 func WriteMany(

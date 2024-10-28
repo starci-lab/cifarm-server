@@ -10,7 +10,7 @@ import (
 )
 
 type ReadByKeyParams struct {
-	Key string `json:"key"`
+	Key string `json:"key,omitempty"`
 }
 
 func ReadByKey(
@@ -40,7 +40,7 @@ func ReadByKey(
 }
 
 type ReadHighestPossibleDayParams struct {
-	MaxPossibleDay int `json:"maxPossibleDay "`
+	MaxPossibleDay int `json:"maxPossibleDay ,omitempty"`
 }
 
 func ReadHighestPossibleDay(

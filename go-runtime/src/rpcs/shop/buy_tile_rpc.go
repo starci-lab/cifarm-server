@@ -14,7 +14,7 @@ import (
 )
 
 type HasEnoughTilesParams struct {
-	ReferenceKey string `json:"referenceKey"`
+	ReferenceKey string `json:"referenceKey,omitempty"`
 }
 
 func HasEnoughTiles(
@@ -69,8 +69,8 @@ func HasEnoughTiles(
 }
 
 type GetTileDataResult struct {
-	Key   string `json:"key"`
-	Price int64  `json:"price"`
+	Key   string `json:"key,omitempty"`
+	Price int64  `json:"price,omitempty"`
 }
 
 func GetTileData(
@@ -171,11 +171,11 @@ func GetTileData(
 }
 
 type BuyTileRpcParams struct {
-	Position collections_placed_items.Position `json:"position"`
+	Position collections_placed_items.Position `json:"position,omitempty"`
 }
 
 type BuyTileRpcResponse struct {
-	PlacedItemTileKey string `json:"placedItemTileKey"`
+	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
 }
 
 func BuyTileRpc(

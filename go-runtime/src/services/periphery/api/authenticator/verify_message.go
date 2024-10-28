@@ -10,26 +10,26 @@ import (
 )
 
 type VerifyMessageRequestBody struct {
-	Message   string `json:"message"`
-	PublicKey string `json:"publicKey"`
-	Signature string `json:"signature"`
-	ChainKey  string `json:"chainKey"`
-	Network   string `json:"network"`
+	Message   string `json:"message,omitempty"`
+	PublicKey string `json:"publicKey,omitempty"`
+	Signature string `json:"signature,omitempty"`
+	ChainKey  string `json:"chainKey,omitempty"`
+	Network   string `json:"network,omitempty"`
 }
 
 type VerifyMessageResponseData struct {
-	Result           bool   `json:"result"`
-	Address          string `json:"address"`
-	AuthenticationId string `json:"authenticationId"`
+	Result           bool   `json:"result,omitempty"`
+	Address          string `json:"address,omitempty"`
+	AuthenticationId string `json:"authenticationId,omitempty"`
 }
 
 type VerifyMessageParams struct {
-	Body VerifyMessageRequestBody `json:"body"`
+	Body VerifyMessageRequestBody `json:"body,omitempty"`
 }
 
 type VerifyMessageResponse struct {
-	Message string                    `json:"message"`
-	Data    VerifyMessageResponseData `json:"data"`
+	Message string                    `json:"message,omitempty"`
+	Data    VerifyMessageResponseData `json:"data,omitempty"`
 }
 
 func VerifyMessage(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params VerifyMessageParams) (response *VerifyMessageResponseData, err error) {

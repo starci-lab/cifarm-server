@@ -15,8 +15,8 @@ import (
 )
 
 type FeedAnimalRpcParams struct {
-	PlacedItemAnimalKey    string `json:"placedItemAnimalKey"`
-	InventoryAnimalFeedKey string `json:"inventoryAnimalFeedKey"`
+	PlacedItemAnimalKey    string `json:"placedItemAnimalKey,omitempty"`
+	InventoryAnimalFeedKey string `json:"inventoryAnimalFeedKey,omitempty"`
 }
 
 func FeedAnimalRpc(

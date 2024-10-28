@@ -34,7 +34,7 @@ func Run(
 			},
 		),
 	)
-	logger.Info(`Job started: %s"`, job.ID())
+	logger.Info(`Job started: %s,omitempty"`, job.ID())
 	if err != nil {
 		logger.Error(err.Error())
 		return err
