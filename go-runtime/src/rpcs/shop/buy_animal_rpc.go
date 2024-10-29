@@ -15,8 +15,9 @@ import (
 )
 
 type BuyAnimalRpcParams struct {
-	Key                   string `json:"key"`
-	PlacedItemBuildingKey string `json:"placedItemBuildingKey"`
+	Key                   string                            `json:"key"`
+	PlacedItemBuildingKey string                            `json:"placedItemBuildingKey"`
+	Position              collections_placed_items.Position `json:"position"`
 }
 
 type BuyAnimalRpcResponse struct {
@@ -138,7 +139,8 @@ func BuyAnimalRpc(ctx context.Context,
 				AnimalInfo: collections_placed_items.AnimalInfo{
 					Animal: *animal,
 				},
-				Type: collections_inventories.TYPE_ANIMAL,
+				Type:     collections_inventories.TYPE_ANIMAL,
+				Position: params.Position,
 			},
 			UserId: userId,
 		})
