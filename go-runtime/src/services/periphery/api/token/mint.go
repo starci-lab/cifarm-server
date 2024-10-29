@@ -10,21 +10,21 @@ import (
 )
 
 type MintRequestBody struct {
-	TokenAddress     string  `json:"tokenAddress"`
-	ToAddress        string  `json:"toAddress"`
-	MinterPrivateKey string  `json:"minterPrivateKey"`
-	MintAmount       float64 `json:"mintAmount"`
-	ChainKey         string  `json:"chainKey"`
-	Network          string  `json:"network"`
+	TokenAddress     string  `json:"tokenAddress,omitempty"`
+	ToAddress        string  `json:"toAddress,omitempty"`
+	MinterPrivateKey string  `json:"minterPrivateKey,omitempty"`
+	MintAmount       float64 `json:"mintAmount,omitempty"`
+	ChainKey         string  `json:"chainKey,omitempty"`
+	Network          string  `json:"network,omitempty"`
 }
 
 type MintResponseData struct {
-	TransactionHash string `json:"transactionHash"`
+	TransactionHash string `json:"transactionHash,omitempty"`
 }
 
 type MintResponse struct {
-	Message string           `json:"message"`
-	Data    MintResponseData `json:"data"`
+	Message string           `json:"message,omitempty"`
+	Data    MintResponseData `json:"data,omitempty"`
 }
 
 func Mint(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, body *MintRequestBody) (response *MintResponseData, err error) {

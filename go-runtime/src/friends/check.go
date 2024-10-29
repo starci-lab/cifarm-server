@@ -8,8 +8,8 @@ import (
 )
 
 type CheckFriendByUsernameParams struct {
-	UserId         string `json:"thatUserId"`
-	FriendUsername string `json:"friendUsername"`
+	UserId         string `json:"thatUserId,omitempty"`
+	FriendUsername string `json:"friendUsername,omitempty"`
 }
 
 func CheckFriendByUsername(
@@ -47,8 +47,8 @@ func CheckFriendByUsername(
 }
 
 type CheckFriendByUserIdParams struct {
-	UserId       string `json:"thatUserId"`
-	FriendUserId string `json:"friendUserId"`
+	UserId       string `json:"thatUserId,omitempty"`
+	FriendUserId string `json:"friendUserId,omitempty"`
 }
 
 func CheckFriendByUserId(

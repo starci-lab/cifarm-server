@@ -12,10 +12,10 @@ import (
 )
 
 type ReadParams struct {
-	ReferenceKey string `json:"referenceKey"`
-	UserId       string `json:"userId"`
-	Index        int    `json:"index"`
-	Premium      bool   `json:"premium"`
+	ReferenceKey string `json:"referenceKey,omitempty"`
+	UserId       string `json:"userId,omitempty"`
+	Index        int    `json:"index,omitempty"`
+	Premium      bool   `json:"premium,omitempty"`
 }
 
 func Read(
@@ -47,8 +47,8 @@ func Read(
 }
 
 type ReadByKeyParams struct {
-	Key    string `json:"key"`
-	UserId string `json:"userId"`
+	Key    string `json:"key,omitempty"`
+	UserId string `json:"userId,omitempty"`
 }
 
 func ReadByKey(
@@ -79,12 +79,12 @@ func ReadByKey(
 }
 
 type ReadByTokenIdParams struct {
-	TokenId      int    `json:"tokenId"`
-	ReferenceKey string `json:"referenceKey"`
+	TokenId      int    `json:"tokenId,omitempty"`
+	ReferenceKey string `json:"referenceKey,omitempty"`
 }
 
 type ReadManyParams struct {
-	UserId string `json:"userId"`
+	UserId string `json:"userId,omitempty"`
 }
 
 func ReadMany(

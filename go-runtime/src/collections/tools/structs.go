@@ -1,7 +1,7 @@
 package collections_tools
 
 type Tool struct {
-	Key         string `json:"key"`
-	AvailableIn int    `json:"availableIn"`
-	Index       int    `json:"index"`
+	Key         string `json:"key,omitempty"`
+	AvailableIn int    `json:"availableIn,omitempty"`
+	Index       int    `json:"index,omitempty"`
 }

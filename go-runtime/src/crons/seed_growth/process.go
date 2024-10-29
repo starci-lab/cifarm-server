@@ -110,8 +110,8 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 }
 
 type HandleSeedGrowthParams struct {
-	UserId        string `json:"userId"`
-	TimeInSeconds int64  `json:"timeInSeconds"`
+	UserId        string `json:"userId,omitempty"`
+	TimeInSeconds int64  `json:"timeInSeconds,omitempty"`
 }
 
 func HandleSeedGrowth(

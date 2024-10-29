@@ -10,7 +10,7 @@ import (
 )
 
 type WriteUsersParams struct {
-	Users Users `json:"users"`
+	Users Users `json:"users,omitempty"`
 }
 
 func WriteUsers(
@@ -76,7 +76,7 @@ func WriteLastServerUptime(
 }
 
 type WriteMatchInfoParams struct {
-	MatchInfo MatchInfo `json:"matchInfo"`
+	MatchInfo MatchInfo `json:"matchInfo,omitempty"`
 }
 
 func WriteMatchInfo(
@@ -110,7 +110,7 @@ func WriteMatchInfo(
 }
 
 type WriteSpeedUpParams struct {
-	SpeedUp SpeedUp `json:"speedUp"`
+	SpeedUp SpeedUp `json:"speedUp,omitempty"`
 }
 
 func WriteSpeedUp(
@@ -144,7 +144,7 @@ func WriteSpeedUp(
 }
 
 type WriteActivityExperiencesParams struct {
-	Activities Activities `json:"activities"`
+	Activities Activities `json:"activities,omitempty"`
 }
 
 func WriteActivities(
@@ -178,7 +178,7 @@ func WriteActivities(
 }
 
 type WriteRewardsParams struct {
-	Rewards Rewards `json:"rewards"`
+	Rewards Rewards `json:"rewards,omitempty"`
 }
 
 func WriteRewards(
@@ -212,7 +212,7 @@ func WriteRewards(
 }
 
 type WriteCropRandomnessParams struct {
-	CropRandomness CropRandomness `json:"cropRandomness"`
+	CropRandomness CropRandomness `json:"cropRandomness,omitempty"`
 }
 
 func WriteCropRandomness(
@@ -246,7 +246,7 @@ func WriteCropRandomness(
 }
 
 type WriteStarterConfigureParams struct {
-	StarterConfigure StarterConfigure `json:"starterConfigure"`
+	StarterConfigure StarterConfigure `json:"starterConfigure,omitempty"`
 }
 
 func WriteStarterConfigure(
@@ -280,7 +280,7 @@ func WriteStarterConfigure(
 }
 
 type WriteTokenConfigureParams struct {
-	TokenConfigure TokenConfigure `json:"tokenConfigure"`
+	TokenConfigure TokenConfigure `json:"tokenConfigure,omitempty"`
 }
 
 func WriteTokenConfigure(
@@ -314,7 +314,7 @@ func WriteTokenConfigure(
 }
 
 type WriteSpinConfigureParams struct {
-	SpinConfigure SpinConfigure `json:"spinConfigure"`
+	SpinConfigure SpinConfigure `json:"spinConfigure,omitempty"`
 }
 
 func WriteSpinConfigure(

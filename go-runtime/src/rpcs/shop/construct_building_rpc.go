@@ -14,12 +14,12 @@ import (
 )
 
 type ConstructBuildingRpcParams struct {
-	Key      string                            `json:"key"`
-	Position collections_placed_items.Position `json:"position"`
+	Key      string                            `json:"key,omitempty"`
+	Position collections_placed_items.Position `json:"position,omitempty"`
 }
 
 type ConstructBuildingRpcResponse struct {
-	PlacedItemBuildingKey string `json:"placedItemBuildingKey"`
+	PlacedItemBuildingKey string `json:"placedItemBuildingKey,omitempty"`
 }
 
 func ConstructBuildingRpc(ctx context.Context,

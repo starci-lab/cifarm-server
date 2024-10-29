@@ -12,8 +12,8 @@ import (
 )
 
 type MoveRpcParams struct {
-	PlacedItemKey string                            `json:"placedItemKey"`
-	Position      collections_placed_items.Position `json:"position"`
+	PlacedItemKey string                            `json:"placedItemKey,omitempty"`
+	Position      collections_placed_items.Position `json:"position,omitempty"`
 }
 
 func MoveRpc(ctx context.Context,

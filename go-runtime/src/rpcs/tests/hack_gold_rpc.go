@@ -11,7 +11,7 @@ import (
 )
 
 type HackGoldRpcParams struct {
-	Amount int64 `json:"amount"`
+	Amount int64 `json:"amount,omitempty"`
 }
 
 func HackGoldRpc(ctx context.Context,

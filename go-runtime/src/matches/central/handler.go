@@ -74,7 +74,7 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 }
 
 type WrappedPlacedItems struct {
-	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems"`
+	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems,omitempty"`
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {

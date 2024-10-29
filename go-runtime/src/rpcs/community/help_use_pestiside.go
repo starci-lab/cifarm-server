@@ -14,8 +14,8 @@ import (
 )
 
 type HelpUsePestisideRpcParams struct {
-	UserId            string `json:"userId"`
-	PlacedItemTileKey string `json:"placedItemTileKey"`
+	UserId            string `json:"userId,omitempty"`
+	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
 }
 
 func HelpUsePestisideRpc(

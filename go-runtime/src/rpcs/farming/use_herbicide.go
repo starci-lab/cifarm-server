@@ -14,7 +14,7 @@ import (
 )
 
 type UseHerbicideRpcParams struct {
-	PlacedItemTileKey string `json:"placedItemTileKey"`
+	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
 }
 
 func UseHerbicideRpc(

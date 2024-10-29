@@ -10,14 +10,14 @@ import (
 )
 
 type GetNftByTokenIdInput struct {
-	TokenId          string `json:"tokenId"`
-	Network          string `json:"network"`
-	NftCollectionKey string `json:"nftCollectionKey"`
-	ChainKey         string `json:"chainKey"`
+	TokenId          string `json:"tokenId,omitempty"`
+	Network          string `json:"network,omitempty"`
+	NftCollectionKey string `json:"nftCollectionKey,omitempty"`
+	ChainKey         string `json:"chainKey,omitempty"`
 }
 
 type GetNftByTokenIdArgs struct {
-	Input GetNftByTokenIdInput `json:"input"`
+	Input GetNftByTokenIdInput `json:"input,omitempty"`
 }
 
 func GetNftByTokenId(
@@ -49,7 +49,7 @@ func GetNftByTokenId(
 		"args": args,
 	}
 	result := struct {
-		NftByTokenId NftDataResponse `json:"nftByTokenId"`
+		NftByTokenId NftDataResponse `json:"nftByTokenId,omitempty"`
 	}{}
 
 	err = client.WithDebug(true).Exec(context.Background(),
