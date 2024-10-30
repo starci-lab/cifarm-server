@@ -76,13 +76,11 @@ func BeforeAuthenticate(
 	}
 
 	body := services_periphery_api_authenticator.VerifyMessageRequestBody{
-		Message:             message,
-		PublicKey:           publicKey,
-		Signature:           signature,
-		ChainKey:            chainKey,
-		Network:             network,
-		TelegramInitDataRaw: telegramInitDataRaw,
-		BotType:             botType,
+		Message:   message,
+		PublicKey: publicKey,
+		Signature: signature,
+		ChainKey:  chainKey,
+		Network:   network,
 	}
 
 	response, err := services_periphery_api_authenticator.VerifyMessage(ctx, logger, db, nk, services_periphery_api_authenticator.VerifyMessageParams{
@@ -91,10 +89,6 @@ func BeforeAuthenticate(
 	if err != nil {
 		return nil, err
 	}
-
-	data.Account.Id = response.AuthenticationId
-	data.Create.Value = true
-	data.Username = fmt.Sprintf("%s_%s", chainKey, accountAddress)
 
 	authorizeTelegramResponse, err := services_periphery_api_authenticator.AuthorizeTelegram(ctx, logger, db, nk, services_periphery_api_authenticator.AuthorizeTelegramParams{
 		TelegramInitDataRaw: telegramInitDataRaw,
@@ -105,6 +99,10 @@ func BeforeAuthenticate(
 		logger.Error(err.Error())
 		return nil, err
 	}
+
+	data.Account.Id = response.AuthenticationId
+	data.Create.Value = true
+	data.Username = fmt.Sprintf("%s_%s", chainKey, accountAddress)
 
 	_userId := strconv.Itoa(authorizeTelegramResponse.TelegramData.UserId)
 	data.Account.Vars["telegramUserId"] = _userId
