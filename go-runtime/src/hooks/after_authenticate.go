@@ -163,7 +163,7 @@ func AfterAuthenticate(
 	}
 
 	chain := in.Account.Vars["chainKey"]
-	address := in.Account.Vars["accountAddress"]
+	accountAddress := in.Account.Vars["accountAddress"]
 	network := in.Account.Vars["network"]
 	telegramUserId := in.Account.Vars["telegramUserId"]
 	_telegramUserId, err := strconv.Atoi(telegramUserId)
@@ -207,7 +207,7 @@ func AfterAuthenticate(
 		//first time login
 		metadata := collections_player.Metadata{
 			ChainKey:       chain,
-			AccountAddress: address,
+			AccountAddress: accountAddress,
 			Network:        network,
 			TelegramData: collections_player.TelegramData{
 				UserId: _telegramUserId,
