@@ -10,16 +10,17 @@ import (
 )
 
 type VerifyMessageRequestBody struct {
-	Message   string `json:"message,omitempty"`
-	PublicKey string `json:"publicKey,omitempty"`
-	Signature string `json:"signature,omitempty"`
-	ChainKey  string `json:"chainKey,omitempty"`
-	Network   string `json:"network,omitempty"`
+	Message             string `json:"message,omitempty"`
+	PublicKey           string `json:"publicKey,omitempty"`
+	Signature           string `json:"signature,omitempty"`
+	ChainKey            string `json:"chainKey,omitempty"`
+	Network             string `json:"network,omitempty"`
+	TelegramInitDataRaw string `json:"telegramInitDataRaw,omitempty"`
+	BotType             string `json:"botType,omitempty"`
 }
 
 type VerifyMessageResponseData struct {
 	Result           bool   `json:"result,omitempty"`
-	Address          string `json:"address,omitempty"`
 	AuthenticationId string `json:"authenticationId,omitempty"`
 }
 
