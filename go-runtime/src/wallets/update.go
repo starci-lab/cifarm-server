@@ -11,10 +11,10 @@ import (
 )
 
 type UpdateWalletParams struct {
-	UserId      string                 `json:"user_id,omitempty"`
-	GoldAmount  int64                  `json:"goldAmount,omitempty"`
-	TokenAmount float64                `json:"tokenAmount,omitempty"`
-	Metadata    map[string]interface{} `json:"metadata,omitempty"`
+	UserId      string                 `json:"user_id"`
+	GoldAmount  int64                  `json:"goldAmount"`
+	TokenAmount float64                `json:"tokenAmount"`
+	Metadata    map[string]interface{} `json:"metadata"`
 }
 
 func UpdateWallet(ctx context.Context,

@@ -16,13 +16,13 @@ import (
 )
 
 type ThiefAnimalProductRpcParams struct {
-	UserId              string `json:"userId,omitempty"`
-	PlacedItemAnimalKey string `json:"placedItemAnimalKey,omitempty"`
+	UserId              string `json:"userId"`
+	PlacedItemAnimalKey string `json:"placedItemAnimalKey"`
 }
 
 type ThiefAnimalProductRpcResponse struct {
-	InventoryThiefCropKey string `json:"inventoryThiefCropKey,omitempty"`
-	ThiefQuantity         int    `json:"thiefQuantity,omitempty"`
+	InventoryThiefCropKey string `json:"inventoryThiefCropKey"`
+	ThiefQuantity         int    `json:"thiefQuantity"`
 }
 
 func ThiefAnimalProductRpc(

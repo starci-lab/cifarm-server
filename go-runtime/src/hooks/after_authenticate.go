@@ -20,8 +20,8 @@ import (
 
 type HandleRefererParams struct {
 	//your metadata
-	Metadata       collections_player.Metadata `json:"metadata,omitempty"`
-	ReferrerUserId string                      `json:"referrerUserId,omitempty"`
+	Metadata       collections_player.Metadata `json:"metadata"`
+	ReferrerUserId string                      `json:"referrerUserId"`
 }
 
 func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, userId string, params HandleRefererParams) error {
@@ -143,8 +143,8 @@ func HandleReferer(ctx context.Context, logger runtime.Logger, db *sql.DB, nk ru
 }
 
 type Claims struct {
-	Uid      string `json:"uid,omitempty"`
-	Username string `json:"username,omitempty"`
+	Uid      string `json:"uid"`
+	Username string `json:"username"`
 }
 
 func AfterAuthenticate(

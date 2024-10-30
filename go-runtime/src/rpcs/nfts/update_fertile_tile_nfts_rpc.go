@@ -16,8 +16,8 @@ import (
 )
 
 type WriteOrTransferedFromParams struct {
-	UserId string                                       `json:"userId,omitempty"`
-	Nfts   []services_periphery_graphql.NftDataResponse `json:"nfts,omitempty"`
+	UserId string                                       `json:"userId"`
+	Nfts   []services_periphery_graphql.NftDataResponse `json:"nfts"`
 }
 
 func WriteOrTransferedFrom(
@@ -76,10 +76,10 @@ func WriteOrTransferedFrom(
 }
 
 type DeleteOrTransferToParams struct {
-	UserId                 string                                       `json:"userId,omitempty"`
-	Metadata               *collections_player.Metadata                 `json:"metadata,omitempty"`
-	Nfts                   []services_periphery_graphql.NftDataResponse `json:"nfts,omitempty"`
-	PreviousNftInventories []*collections_inventories.Inventory         `json:"previousNftInventories,omitempty"`
+	UserId                 string                                       `json:"userId"`
+	Metadata               *collections_player.Metadata                 `json:"metadata"`
+	Nfts                   []services_periphery_graphql.NftDataResponse `json:"nfts"`
+	PreviousNftInventories []*collections_inventories.Inventory         `json:"previousNftInventories"`
 }
 
 func DeleteOrTransferTo(
@@ -189,7 +189,7 @@ func DeleteOrTransferTo(
 }
 
 type UpdateFertileTileNftsRpcResponse struct {
-	TokenIds []string `json:"tokenIds,omitempty"`
+	TokenIds []string `json:"tokenIds"`
 }
 
 func UpdateFertileTileNftsRpc(

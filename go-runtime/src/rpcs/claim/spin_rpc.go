@@ -18,8 +18,8 @@ import (
 )
 
 type SpinRpcResponse struct {
-	InventoryKey string                `json:"inventoryKey,omitempty"`
-	Spin         collections_spin.Spin `json:"spin,omitempty"`
+	InventoryKey string                `json:"inventoryKey"`
+	Spin         collections_spin.Spin `json:"spin"`
 }
 
 func SpinRpc(

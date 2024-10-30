@@ -15,11 +15,11 @@ import (
 )
 
 type HarvestCropRpcParams struct {
-	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
+	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
 type HarvestCropRpcResponse struct {
-	InventoryHarvestedCropKey string `json:"inventoryHarvestedCropKey,omitempty"`
+	InventoryHarvestedCropKey string `json:"inventoryHarvestedCropKey"`
 }
 
 func HarvestCropRpc(

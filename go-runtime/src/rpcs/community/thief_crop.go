@@ -17,13 +17,13 @@ import (
 )
 
 type ThiefCropRpcParams struct {
-	UserId            string `json:"userId,omitempty"`
-	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
+	UserId            string `json:"userId"`
+	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
 type ThiefCropRpcResponse struct {
-	InventoryThiefCropKey string `json:"inventoryThiefCropKey,omitempty"`
-	ThiefQuantity         int    `json:"thiefQuantity,omitempty"`
+	InventoryThiefCropKey string `json:"inventoryThiefCropKey"`
+	ThiefQuantity         int    `json:"thiefQuantity"`
 }
 
 func ThiefCropRpc(

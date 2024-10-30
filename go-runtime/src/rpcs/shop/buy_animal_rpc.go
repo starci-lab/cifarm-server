@@ -15,13 +15,13 @@ import (
 )
 
 type BuyAnimalRpcParams struct {
-	Key                   string                            `json:"key,omitempty"`
-	PlacedItemBuildingKey string                            `json:"placedItemBuildingKey,omitempty"`
-	Position              collections_placed_items.Position `json:"position,omitempty"`
+	Key                   string                            `json:"key"`
+	PlacedItemBuildingKey string                            `json:"placedItemBuildingKey"`
+	Position              collections_placed_items.Position `json:"position"`
 }
 
 type BuyAnimalRpcResponse struct {
-	PlacedItemAnimalKey string `json:"placedItemAnimalKey,omitempty"`
+	PlacedItemAnimalKey string `json:"placedItemAnimalKey"`
 }
 
 func BuyAnimalRpc(ctx context.Context,

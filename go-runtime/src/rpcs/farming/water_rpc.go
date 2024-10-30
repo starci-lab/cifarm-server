@@ -14,7 +14,7 @@ import (
 )
 
 type WaterRpcParams struct {
-	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
+	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
 func WaterRpc(

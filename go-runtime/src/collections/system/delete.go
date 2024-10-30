@@ -10,7 +10,7 @@ import (
 )
 
 type DeleteUserParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func DeleteUser(

@@ -77,7 +77,7 @@ func (m *Match) MatchLeave(ctx context.Context, logger runtime.Logger, db *sql.D
 }
 
 type WrappedPlacedItems struct {
-	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems,omitempty"`
+	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems"`
 }
 
 func (m *Match) MatchLoop(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{}, messages []runtime.MatchData) interface{} {
@@ -129,16 +129,16 @@ type BroadcastPlacedItemsParams struct {
 
 type UserCooldownTimers struct {
 	//spin
-	NextFreeSpinCooldown int64 `json:"nextFreeSpinCooldown,omitempty"`
-	IsSpinFree           bool  `json:"isSpinFree,omitempty"`
+	NextFreeSpinCooldown int64 `json:"nextFreeSpinCooldown"`
+	IsSpinFree           bool  `json:"isSpinFree"`
 
 	//daily rewards
-	NextDailyRewardCooldown int64 `json:"nextDailyRewardCooldown,omitempty"`
-	UnclaimedToday          bool  `json:"unclaimedToday,omitempty"`
+	NextDailyRewardCooldown int64 `json:"nextDailyRewardCooldown"`
+	UnclaimedToday          bool  `json:"unclaimedToday"`
 }
 
 type GlobalCooldownTimers struct {
-	NextDeliveryCooldown int64 `json:"nextDeliveryCooldown,omitempty"`
+	NextDeliveryCooldown int64 `json:"nextDeliveryCooldown"`
 }
 
 type BroadcastGlobalCooldownTimersParams struct {

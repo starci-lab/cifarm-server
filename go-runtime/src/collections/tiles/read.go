@@ -9,7 +9,7 @@ import (
 )
 
 type ReadByKeyParams struct {
-	Key string `json:"key,omitempty"`
+	Key string `json:"key"`
 }
 
 func ReadByKey(

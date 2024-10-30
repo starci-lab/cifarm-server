@@ -18,7 +18,7 @@ import (
 
 type ClaimDailyRewardRpcResponse struct {
 	//response only neccessary for the lasted date
-	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility,omitempty"`
+	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility"`
 }
 
 func ClaimDailyRewardRpc(

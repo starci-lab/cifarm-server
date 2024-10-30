@@ -14,7 +14,7 @@ import (
 )
 
 type UsePestisideRpcParams struct {
-	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
+	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
 func UsePestisideRpc(

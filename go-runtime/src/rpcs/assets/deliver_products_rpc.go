@@ -14,8 +14,8 @@ import (
 )
 
 type EnsureParams struct {
-	UserId             string             `json:"userId,omitempty"`
-	InventoryWithIndex InventoryWithIndex `json:"inventoryWithIndexes,omitempty"`
+	UserId             string             `json:"userId"`
+	InventoryWithIndex InventoryWithIndex `json:"inventoryWithIndexes"`
 }
 
 func Ensure(
@@ -55,15 +55,15 @@ func Ensure(
 }
 
 type InventoryWithIndex struct {
-	Index     int                               `json:"index,omitempty"`
-	Inventory collections_inventories.Inventory `json:"inventory,omitempty"`
+	Index     int                               `json:"index"`
+	Inventory collections_inventories.Inventory `json:"inventory"`
 }
 type DeliverProductsRpcParams struct {
-	InventoryWithIndex InventoryWithIndex `json:"inventoryWithIndex,omitempty"`
+	InventoryWithIndex InventoryWithIndex `json:"inventoryWithIndex"`
 }
 
 type DeliverProductsRpcResponse struct {
-	DeliveringProductKey string `json:"deliveringProductKey,omitempty"`
+	DeliveringProductKey string `json:"deliveringProductKey"`
 }
 
 func DeliverProductsRpc(

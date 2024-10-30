@@ -15,12 +15,12 @@ import (
 )
 
 type PlantSeedRpcParams struct {
-	InventorySeedKey  string `json:"inventorySeedKey,omitempty"`
-	PlacedItemTileKey string `json:"placedItemTileKey,omitempty"`
+	InventorySeedKey  string `json:"inventorySeedKey"`
+	PlacedItemTileKey string `json:"placedItemTileKey"`
 }
 
 type PlantSeedRpcResponse struct {
-	HarvestIn int64 `json:"harvestIn,omitempty"`
+	HarvestIn int64 `json:"harvestIn"`
 }
 
 func PlantSeedRpc(

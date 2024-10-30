@@ -11,7 +11,7 @@ import (
 )
 
 type ReadManyParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadMany(
@@ -31,8 +31,8 @@ func ReadMany(
 }
 
 type ReadByKeyParams struct {
-	Key    string `json:"key,omitempty"`
-	UserId string `json:"userId,omitempty"`
+	Key    string `json:"key"`
+	UserId string `json:"userId"`
 }
 
 func ReadByKey(
@@ -63,7 +63,7 @@ func ReadByKey(
 }
 
 type ReadByFilters1Params struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadByFilters1(
@@ -88,7 +88,7 @@ func ReadByFilters1(
 }
 
 type ReadByFilters2Params struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadByFilters2(
@@ -114,7 +114,7 @@ func ReadByFilters2(
 }
 
 type ReadByInventoryKeyParams struct {
-	InventoryKey string `json:"inventoryKey,omitempty"`
+	InventoryKey string `json:"inventoryKey"`
 }
 
 func ReadByInventoryKey(
@@ -145,8 +145,8 @@ func ReadByInventoryKey(
 }
 
 type ReadByFilters3Params struct {
-	UserId       string `json:"userId,omitempty"`
-	ReferenceKey string `json:"referenceKey,omitempty"`
+	UserId       string `json:"userId"`
+	ReferenceKey string `json:"referenceKey"`
 }
 
 func ReadByFilters3(

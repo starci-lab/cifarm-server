@@ -11,8 +11,8 @@ import (
 )
 
 type HandleEnergyGainParams struct {
-	UserId        string `json:"userId,omitempty"`
-	TimeInSeconds int64  `json:"timeInSeconds,omitempty"`
+	UserId        string `json:"userId"`
+	TimeInSeconds int64  `json:"timeInSeconds"`
 }
 
 func HandleEnergyGain(

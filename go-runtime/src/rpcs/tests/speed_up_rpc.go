@@ -10,7 +10,7 @@ import (
 )
 
 type SpeedUpRpcParams struct {
-	Time int64 `json:"time,omitempty"`
+	Time int64 `json:"time"`
 }
 
 func SpeedUpRpc(ctx context.Context,

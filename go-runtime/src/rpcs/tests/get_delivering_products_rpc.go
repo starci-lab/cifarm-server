@@ -11,8 +11,8 @@ import (
 )
 
 type GetDeliveringProductsRpcResponse struct {
-	DeliveringProductBasicKey   string `json:"deliveringProductBasicKey,omitempty"`
-	DeliveringProductPremiumKey string `json:"deliveringProductPremiumKey,omitempty"`
+	DeliveringProductBasicKey   string `json:"deliveringProductBasicKey"`
+	DeliveringProductPremiumKey string `json:"deliveringProductPremiumKey"`
 }
 
 func GetDeliveringProductsRpc(ctx context.Context,

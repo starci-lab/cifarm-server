@@ -14,12 +14,12 @@ import (
 )
 
 type BuySeedsRpcParams struct {
-	Key      string `json:"key,omitempty"`
-	Quantity int    `json:"quantity,omitempty"`
+	Key      string `json:"key"`
+	Quantity int    `json:"quantity"`
 }
 
 type BuySeedsRpcResponse struct {
-	InventorySeedKey string `json:"inventorySeedKey,omitempty"`
+	InventorySeedKey string `json:"inventorySeedKey"`
 }
 
 func BuySeedsRpc(ctx context.Context,

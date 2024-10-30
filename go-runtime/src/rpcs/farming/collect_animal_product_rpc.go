@@ -14,11 +14,11 @@ import (
 )
 
 type CollectAnimalProductRpcParams struct {
-	PlacedItemAnimalKey string `json:"placedItemAnimalKey,omitempty"`
+	PlacedItemAnimalKey string `json:"placedItemAnimalKey"`
 }
 
 type CollectAnimalProductRpcResponse struct {
-	InventoryAnimalProductKey string `json:"inventoryAnimalProductKey,omitempty"`
+	InventoryAnimalProductKey string `json:"inventoryAnimalProductKey"`
 }
 
 func CollectAnimalProductRpc(

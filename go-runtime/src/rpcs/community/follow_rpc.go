@@ -12,7 +12,7 @@ import (
 )
 
 type FollowRpcParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func FollowRpc(

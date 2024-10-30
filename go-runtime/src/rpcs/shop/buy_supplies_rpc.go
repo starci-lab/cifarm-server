@@ -14,12 +14,12 @@ import (
 )
 
 type BuySuppliesRpcParams struct {
-	Key      string `json:"key,omitempty"`
-	Quantity int    `json:"quantity,omitempty"`
+	Key      string `json:"key"`
+	Quantity int    `json:"quantity"`
 }
 
 type BuySuppliesRpcResponse struct {
-	InventorySupplyKey string `json:"inventorySupplyKey,omitempty"`
+	InventorySupplyKey string `json:"inventorySupplyKey"`
 }
 
 func BuySuppliesRpc(ctx context.Context,

@@ -13,7 +13,7 @@ import (
 )
 
 type GetRandomUserParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func GetRandomUser(
@@ -62,7 +62,7 @@ ORDER BY RANDOM() LIMIT 1;
 }
 
 type GetRandomUserRpcResponse struct {
-	User User `json:"user,omitempty"`
+	User User `json:"user"`
 }
 
 func GetRandomUserRpc(

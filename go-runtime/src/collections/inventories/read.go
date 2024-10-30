@@ -12,10 +12,10 @@ import (
 )
 
 type ReadParams struct {
-	ReferenceKey string `json:"referenceKey,omitempty"`
-	UserId       string `json:"userId,omitempty"`
-	Type         int    `json:"type,omitempty"`
-	Premium      bool   `json:"premium,omitempty"`
+	ReferenceKey string `json:"referenceKey"`
+	UserId       string `json:"userId"`
+	Type         int    `json:"type"`
+	Premium      bool   `json:"premium"`
 }
 
 func Read(
@@ -46,8 +46,8 @@ func Read(
 }
 
 type ReadByKeyParams struct {
-	Key    string `json:"key,omitempty"`
-	UserId string `json:"userId,omitempty"`
+	Key    string `json:"key"`
+	UserId string `json:"userId"`
 }
 
 func ReadByKey(
@@ -78,8 +78,8 @@ func ReadByKey(
 }
 
 type ReadByTokenIdParams struct {
-	TokenId      string `json:"tokenId,omitempty"`
-	ReferenceKey string `json:"referenceKey,omitempty"`
+	TokenId      string `json:"tokenId"`
+	ReferenceKey string `json:"referenceKey"`
 }
 
 func ReadByTokenId(
@@ -109,8 +109,8 @@ func ReadByTokenId(
 }
 
 type ReadManyUniqueParams struct {
-	UserId       string `json:"userId,omitempty"`
-	ReferenceKey string `json:"referenceKey,omitempty"`
+	UserId       string `json:"userId"`
+	ReferenceKey string `json:"referenceKey"`
 }
 
 func ReadManyUnique(
@@ -134,7 +134,7 @@ func ReadManyUnique(
 }
 
 type ReadManyAvailableParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadManyAvailable(
@@ -158,8 +158,8 @@ func ReadManyAvailable(
 }
 
 type ReadManyParams struct {
-	UserId string   `json:"userId,omitempty"`
-	Keys   []string `json:"keys,omitempty"`
+	UserId string   `json:"userId"`
+	Keys   []string `json:"keys"`
 }
 
 func ReadMany(
@@ -189,5 +189,5 @@ func ReadMany(
 }
 
 type ReadManyDeliveringParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }

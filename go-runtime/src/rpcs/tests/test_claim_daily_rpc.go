@@ -17,12 +17,12 @@ import (
 
 type ClaimDailyRewardRpcParams struct {
 	//response only neccessary for the lasted date
-	Forward int64 `json:"forward,omitempty"`
+	Forward int64 `json:"forward"`
 }
 
 type ClaimDailyRewardRpcResponse struct {
 	//response only neccessary for the lasted date
-	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility,omitempty"`
+	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility"`
 }
 
 // stop the checking phase, make testing conviniences

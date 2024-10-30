@@ -13,12 +13,12 @@ import (
 )
 
 type WriteParams struct {
-	Inventory Inventory `json:"inventory,omitempty"`
-	UserId    string    `json:"userId,omitempty"`
+	Inventory Inventory `json:"inventory"`
+	UserId    string    `json:"userId"`
 }
 
 type WriteResult struct {
-	Key string `json:"key,omitempty"`
+	Key string `json:"key"`
 }
 
 func Write(
@@ -105,12 +105,12 @@ func Write(
 }
 
 type WriteUniqueParams struct {
-	Inventory Inventory `json:"inventory,omitempty"`
-	UserId    string    `json:"userId,omitempty"`
+	Inventory Inventory `json:"inventory"`
+	UserId    string    `json:"userId"`
 }
 
 type WriteUniqueResult struct {
-	Key string `json:"key,omitempty"`
+	Key string `json:"key"`
 }
 
 func WriteUnique(
@@ -151,9 +151,9 @@ func WriteUnique(
 }
 
 type TransferOwnershipParams struct {
-	Key        string `json:"key,omitempty"`
-	FromUserId string `json:"fromUserId,omitempty"`
-	ToUserId   string `json:"toUserId,omitempty"`
+	Key        string `json:"key"`
+	FromUserId string `json:"fromUserId"`
+	ToUserId   string `json:"toUserId"`
 }
 
 func TransferOwnership(
@@ -215,9 +215,9 @@ func TransferOwnership(
 }
 
 type UpdateIsPlacedParams struct {
-	Key      string `json:"key,omitempty"`
-	IsPlaced bool   `json:"isPlaced,omitempty"`
-	UserId   string `json:"userId,omitempty"`
+	Key      string `json:"key"`
+	IsPlaced bool   `json:"isPlaced"`
+	UserId   string `json:"userId"`
 }
 
 func UpdateIsPlaced(

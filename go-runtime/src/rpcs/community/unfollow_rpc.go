@@ -12,7 +12,7 @@ import (
 )
 
 type UnfollowRpcParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func UnfollowRpc(

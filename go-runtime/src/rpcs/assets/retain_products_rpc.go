@@ -13,11 +13,11 @@ import (
 )
 
 type RetainProductsRpcParams struct {
-	DeliveringProduct collections_delivering_products.DeliveringProduct `json:"deliveringProduct,omitempty"`
+	DeliveringProduct collections_delivering_products.DeliveringProduct `json:"deliveringProduct"`
 }
 
 type RetainProductsRpcResponse struct {
-	InventoryKey string `json:"inventoryKey,omitempty"`
+	InventoryKey string `json:"inventoryKey"`
 }
 
 func RetainProductsRpc(

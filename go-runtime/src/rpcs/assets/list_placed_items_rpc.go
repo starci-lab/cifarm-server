@@ -12,7 +12,7 @@ import (
 )
 
 type ListPlacedItemsRpcResponse struct {
-	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems,omitempty"`
+	PlacedItems []*collections_placed_items.PlacedItem `json:"placedItems"`
 }
 
 func ListPlacedItemsRpc(

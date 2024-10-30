@@ -11,7 +11,7 @@ import (
 )
 
 type VisitRpcParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func VisitRpc(

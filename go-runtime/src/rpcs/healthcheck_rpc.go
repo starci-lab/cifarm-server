@@ -9,7 +9,7 @@ import (
 )
 
 type HealthcheckResponse struct {
-	Status string `json:"status,omitempty"`
+	Status string `json:"status"`
 }
 
 func HealthcheckRpc(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, payload string) (string, error) {

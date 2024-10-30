@@ -11,9 +11,9 @@ import (
 )
 
 type DeleteParams struct {
-	Key      string `json:"key,omitempty"`
-	Quantity int    `json:"quantity,omitempty"`
-	UserId   string `json:"userId,omitempty"`
+	Key      string `json:"key"`
+	Quantity int    `json:"quantity"`
+	UserId   string `json:"userId"`
 }
 
 func Delete(ctx context.Context,
@@ -87,8 +87,8 @@ func Delete(ctx context.Context,
 }
 
 type DeleteManyParams struct {
-	Keys   []string `json:"keys,omitempty"`
-	UserId string   `json:"userId,omitempty"`
+	Keys   []string `json:"keys"`
+	UserId string   `json:"userId"`
 }
 
 func DeleteMany(ctx context.Context,

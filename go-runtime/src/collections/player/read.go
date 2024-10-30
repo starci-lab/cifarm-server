@@ -11,7 +11,7 @@ import (
 )
 
 type ReadMetadataParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadMetadata(
@@ -42,7 +42,7 @@ func ReadMetadata(
 }
 
 type GetMetadataParams struct {
-	Metadata Metadata `json:"metadata,omitempty"`
+	Metadata Metadata `json:"metadata"`
 }
 
 func GetMetadata(
@@ -75,7 +75,7 @@ func GetMetadata(
 }
 
 type GetUserIdByMetadataParams struct {
-	Metadata Metadata `json:"metadata,omitempty"`
+	Metadata Metadata `json:"metadata"`
 }
 
 func GetUserIdByMetadata(
@@ -107,7 +107,7 @@ func GetUserIdByMetadata(
 }
 
 type ReadMetadatasParams struct {
-	TelegramUserId string `json:"telegramUserId,omitempty"`
+	TelegramUserId string `json:"telegramUserId"`
 }
 
 func ReadMetadatas(
@@ -133,7 +133,7 @@ func ReadMetadatas(
 }
 
 type ReadVisitStateParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadVisitState(
@@ -164,7 +164,7 @@ func ReadVisitState(
 }
 
 type ReadPlayerStatsParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadPlayerStats(
@@ -195,7 +195,7 @@ func ReadPlayerStats(
 }
 
 type ReadRewardTrackerParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadRewardTracker(
@@ -226,7 +226,7 @@ func ReadRewardTracker(
 }
 
 type ReadFollowingsParams struct {
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 func ReadFollowings(

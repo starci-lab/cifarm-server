@@ -14,7 +14,7 @@ import (
 )
 
 type CureAnimalRpcParams struct {
-	PlacedItemAnimalKey string `json:"placedItemAnimalKey,omitempty"`
+	PlacedItemAnimalKey string `json:"placedItemAnimalKey"`
 }
 
 func CureAnimalRpc(

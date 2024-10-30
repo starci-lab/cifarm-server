@@ -11,21 +11,21 @@ import (
 )
 
 type TelegramData struct {
-	UserId int `json:"userId,omitempty"`
+	UserId int `json:"userId"`
 }
 
 type AuthorizeTelegramResponseData struct {
-	TelegramData TelegramData `json:"telegramData,omitempty"`
+	TelegramData TelegramData `json:"telegramData"`
 }
 
 type AuthorizeTelegramResponse struct {
-	Message string                        `json:"message,omitempty"`
-	Data    AuthorizeTelegramResponseData `json:"data,omitempty"`
+	Message string                        `json:"message"`
+	Data    AuthorizeTelegramResponseData `json:"data"`
 }
 
 type AuthorizeTelegramParams struct {
-	TelegramInitDataRaw string `json:"telegramInitDataRaw,omitempty"`
-	BotType             string `json:"botType,omitempty"`
+	TelegramInitDataRaw string `json:"telegramInitDataRaw"`
+	BotType             string `json:"botType"`
 }
 
 func AuthorizeTelegram(

@@ -11,8 +11,8 @@ import (
 )
 
 type WriteMetadataParams struct {
-	Metadata Metadata `json:"metadata,omitempty"`
-	UserId   string   `json:"userId,omitempty"`
+	Metadata Metadata `json:"metadata"`
+	UserId   string   `json:"userId"`
 }
 
 func WriteMetadata(
@@ -47,8 +47,8 @@ func WriteMetadata(
 }
 
 type WriteVisitStateParams struct {
-	VisitState VisitState `json:"visitState,omitempty"`
-	UserId     string     `json:"userId,omitempty"`
+	VisitState VisitState `json:"visitState"`
+	UserId     string     `json:"userId"`
 }
 
 func WriteVisitState(
@@ -83,8 +83,8 @@ func WriteVisitState(
 }
 
 type WritePlayerStatsParams struct {
-	PlayerStats PlayerStats `json:"playerStats,omitempty"`
-	UserId      string      `json:"userId,omitempty"`
+	PlayerStats PlayerStats `json:"playerStats"`
+	UserId      string      `json:"userId"`
 }
 
 func WritePlayerStats(
@@ -119,8 +119,8 @@ func WritePlayerStats(
 }
 
 type WriteRewardTrackerParams struct {
-	RewardTracker RewardTracker `json:"rewardTracker,omitempty"`
-	UserId        string        `json:"userId,omitempty"`
+	RewardTracker RewardTracker `json:"rewardTracker"`
+	UserId        string        `json:"userId"`
 }
 
 func WriteRewardTracker(
@@ -155,8 +155,8 @@ func WriteRewardTracker(
 }
 
 type WriteFollowingsParams struct {
-	Followings Followings `json:"followings,omitempty"`
-	UserId     string     `json:"userId,omitempty"`
+	Followings Followings `json:"followings"`
+	UserId     string     `json:"userId"`
 }
 
 func WriteFollowings(
@@ -191,8 +191,8 @@ func WriteFollowings(
 }
 
 type IncreaseExperiencesParams struct {
-	Amount int    `json:"amount,omitempty"`
-	UserId string `json:"userId,omitempty"`
+	Amount int    `json:"amount"`
+	UserId string `json:"userId"`
 }
 
 func IncreaseExperiences(ctx context.Context,
@@ -242,8 +242,8 @@ func IncreaseExperiences(ctx context.Context,
 }
 
 type DecreaseEnergyParams struct {
-	Amount int    `json:"amount,omitempty"`
-	UserId string `json:"userId,omitempty"`
+	Amount int    `json:"amount"`
+	UserId string `json:"userId"`
 }
 
 func DecreaseEnergy(ctx context.Context,

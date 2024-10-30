@@ -12,7 +12,7 @@ import (
 )
 
 type ListInventoriesRpcResponse struct {
-	Inventories []*collections_inventories.Inventory `json:"inventories,omitempty"`
+	Inventories []*collections_inventories.Inventory `json:"inventories"`
 }
 
 func ListInventoriesRpc(

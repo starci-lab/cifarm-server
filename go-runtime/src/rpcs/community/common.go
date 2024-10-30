@@ -12,12 +12,12 @@ import (
 )
 
 type User struct {
-	UserId   string `json:"userId,omitempty"`
-	Username string `json:"username,omitempty"`
+	UserId   string `json:"userId"`
+	Username string `json:"username"`
 }
 
 type GetThiefValueParams struct {
-	MaximunTheifQuantity int `json:"maximunTheifQuantity,omitempty"`
+	MaximunTheifQuantity int `json:"maximunTheifQuantity"`
 }
 
 func GetThiefValue(
