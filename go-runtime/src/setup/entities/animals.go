@@ -35,7 +35,7 @@ func SetupAnimals(
 		{
 			Key:                       collections_animals.KEY_COW,
 			IsNFT:                     false,
-			OffspringPrice:            25,
+			OffspringPrice:            2500,
 			GrowthTime:                60 * 60 * 24 * 7, //7 days
 			YieldTime:                 60 * 60 * 24 * 2, //2 days
 			AvailableInShop:           true,

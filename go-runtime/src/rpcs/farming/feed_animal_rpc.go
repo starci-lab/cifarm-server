@@ -80,7 +80,7 @@ func FeedAnimalRpc(
 		return "", errors.New(errMsg)
 	}
 
-	if !animal.AnimalInfo.NeedFed {
+	if animal.AnimalInfo.CurrentState != collections_placed_items.ANIMAL_CURRENT_STATE_HUNGRY {
 		errMsg := "animal does not need to be fed"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
@@ -109,7 +109,7 @@ func FeedAnimalRpc(
 	}
 
 	//update animal status
-	animal.AnimalInfo.NeedFed = false
+	animal.AnimalInfo.CurrentState = collections_placed_items.ANIMAL_CURRENT_STATE_NORMAL
 	animal.AnimalInfo.CurrentHungryTime = 0
 
 	//update the animal

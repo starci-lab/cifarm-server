@@ -25,17 +25,17 @@ type SeedGrowthInfo struct {
 }
 
 type AnimalInfo struct {
-	CurrentGrowthTime        int64                      `json:"currentGrowth"`
-	CurrentHungryTime        int64                      `json:"currentHungryTime"`
-	CurrentYieldTime         int64                      `json:"currentYieldTime"`
-	HasYielded               bool                       `json:"hasYielded"`
-	IsAdult                  bool                       `json:"isAdult"`
-	Animal                   collections_animals.Animal `json:"animal"`
-	NeedFed                  bool                       `json:"needFed"`
-	HarvestQuantityRemaining int                        `json:"harvestQuantityRemaining"`
-	ThiefedBy                []string                   `json:"thiefedBy"`
-	AlreadySick              bool                       `json:"alreadySick"`
-	IsSick                   bool                       `json:"isSick"`
+	CurrentGrowthTime int64                      `json:"currentGrowth"`
+	CurrentHungryTime int64                      `json:"currentHungryTime"`
+	CurrentYieldTime  int64                      `json:"currentYieldTime"`
+	HasYielded        bool                       `json:"hasYielded"`
+	IsAdult           bool                       `json:"isAdult"`
+	Animal            collections_animals.Animal `json:"animal"`
+	//delete needFeed and isSick
+	CurrentState             int      `json:"currentState"`
+	HarvestQuantityRemaining int      `json:"harvestQuantityRemaining"`
+	ThiefedBy                []string `json:"thiefedBy"`
+	AlreadySick              bool     `json:"alreadySick"`
 }
 
 type BuildingInfo struct {

@@ -77,7 +77,7 @@ func UsePestisideRpc(
 		return "", errors.New(errMsg)
 	}
 
-	if tile.SeedGrowthInfo.CurrentState != collections_placed_items.CURRENT_STATE_IS_INFESTED {
+	if tile.SeedGrowthInfo.CurrentState != collections_placed_items.CROP_CURRENT_STATE_IS_INFESTED {
 		errMsg := "crop is not infested"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
@@ -95,7 +95,7 @@ func UsePestisideRpc(
 	}
 
 	//update tile status
-	tile.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_NORMAL
+	tile.SeedGrowthInfo.CurrentState = collections_placed_items.CROP_CURRENT_STATE_NORMAL
 
 	//update the tile
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{

@@ -19,7 +19,8 @@ type ExecuteProcedureLogicParams struct {
 
 func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, nk runtime.NakamaModule, params ExecuteProcedureLogicParams,
 ) error {
-	if params.PlacedItem.AnimalInfo.NeedFed {
+	//hungy, do nothing
+	if params.PlacedItem.AnimalInfo.CurrentState == collections_placed_items.ANIMAL_CURRENT_STATE_HUNGRY {
 		//need fed, do nothing
 		return nil
 	}
@@ -28,27 +29,33 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 		return nil
 	}
 
-	//increase time hungry
-	params.PlacedItem.AnimalInfo.CurrentHungryTime += params.TimeInSeconds
-
-	if params.PlacedItem.AnimalInfo.CurrentHungryTime >= params.PlacedItem.AnimalInfo.Animal.HungerTime {
-		params.PlacedItem.AnimalInfo.NeedFed = true
-	}
-
 	if !params.PlacedItem.AnimalInfo.IsAdult {
 		//do non-aldult logic
+		//since this state need feed to grow
+		//increase time hungry
+		params.PlacedItem.AnimalInfo.CurrentHungryTime += params.TimeInSeconds
 		params.PlacedItem.AnimalInfo.CurrentGrowthTime += params.TimeInSeconds
+
+		turnIntoAlult := false
 		if params.PlacedItem.AnimalInfo.CurrentGrowthTime >= params.PlacedItem.AnimalInfo.Animal.GrowthTime {
+			//turn into adult logic
 			params.PlacedItem.AnimalInfo.IsAdult = true
+			turnIntoAlult = true
+		}
+
+		//if turn into adult or hungry, set state to hungry
+		if turnIntoAlult || params.PlacedItem.AnimalInfo.CurrentHungryTime >= params.PlacedItem.AnimalInfo.Animal.HungerTime {
+			params.PlacedItem.AnimalInfo.CurrentState = collections_placed_items.ANIMAL_CURRENT_STATE_HUNGRY
 		}
 	} else {
 		//do adult logic
+		//since if hungy returned, so that we do no hungry logic here
 		params.PlacedItem.AnimalInfo.CurrentYieldTime += params.TimeInSeconds
 		//sick here, sick happen randomly when animal is adult, and only one time
 		if !params.PlacedItem.AnimalInfo.AlreadySick {
 			randomValue := rand.Float64()
 			if randomValue <= params.PlacedItem.AnimalInfo.Animal.SickChance {
-				params.PlacedItem.AnimalInfo.IsSick = true
+				params.PlacedItem.AnimalInfo.CurrentState = collections_placed_items.ANIMAL_CURRENT_STATE_SICK
 				params.PlacedItem.AnimalInfo.AlreadySick = true
 			}
 		}
@@ -56,7 +63,7 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 		if params.PlacedItem.AnimalInfo.CurrentYieldTime >= params.PlacedItem.AnimalInfo.Animal.YieldTime {
 			params.PlacedItem.AnimalInfo.CurrentYieldTime = 0
 			params.PlacedItem.AnimalInfo.HasYielded = true
-			if params.PlacedItem.AnimalInfo.IsSick {
+			if params.PlacedItem.AnimalInfo.CurrentState == collections_placed_items.ANIMAL_CURRENT_STATE_SICK {
 				params.PlacedItem.AnimalInfo.HarvestQuantityRemaining = params.PlacedItem.AnimalInfo.Animal.MaxHarvestQuantity
 			} else {
 				params.PlacedItem.AnimalInfo.HarvestQuantityRemaining = (params.PlacedItem.AnimalInfo.Animal.MaxHarvestQuantity + params.PlacedItem.AnimalInfo.Animal.MinHarvestQuantity) / 2

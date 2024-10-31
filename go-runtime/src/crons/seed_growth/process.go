@@ -28,7 +28,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 		return nil
 	}
 
-	if params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_NEED_WATER {
+	if params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CROP_CURRENT_STATE_NEED_WATER {
 		//do nothing via being need watering
 		return nil
 	}
@@ -67,7 +67,7 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage <= 3 {
 				//50% chance to be drain,
 				if rand.Float64() < cropRandomness.NeedWater {
-					params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_NEED_WATER
+					params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CROP_CURRENT_STATE_NEED_WATER
 				}
 			}
 
@@ -75,16 +75,16 @@ func ExecuteGrowthLogic(ctx context.Context, logger runtime.Logger, db *sql.DB, 
 				//50% to be infested or weedly, chance maybe difference via better tiles
 				if rand.Float64() <= cropRandomness.IsWeedyOrInfested {
 					if rand.Float64() < 0.5 {
-						params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_IS_WEEDY
+						params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CROP_CURRENT_STATE_IS_WEEDY
 					} else {
-						params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CURRENT_STATE_IS_INFESTED
+						params.PlacedItem.SeedGrowthInfo.CurrentState = collections_placed_items.CROP_CURRENT_STATE_IS_INFESTED
 					}
 				}
 			}
 
 			if params.PlacedItem.SeedGrowthInfo.CurrentStage == params.PlacedItem.SeedGrowthInfo.Crop.GrowthStages {
-				if params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_IS_WEEDY ||
-					params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CURRENT_STATE_IS_INFESTED {
+				if params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CROP_CURRENT_STATE_IS_WEEDY ||
+					params.PlacedItem.SeedGrowthInfo.CurrentState == collections_placed_items.CROP_CURRENT_STATE_IS_INFESTED {
 					//reduce quantity
 					params.PlacedItem.SeedGrowthInfo.HarvestQuantityRemaining = (params.PlacedItem.SeedGrowthInfo.Crop.MaxHarvestQuantity + params.PlacedItem.SeedGrowthInfo.Crop.MinHarvestQuantity) / 2
 				} else {

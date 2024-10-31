@@ -72,7 +72,7 @@ func HelpCureAnimalRpc(
 		return "", err
 	}
 
-	if !animal.AnimalInfo.IsSick {
+	if animal.AnimalInfo.CurrentState != collections_placed_items.ANIMAL_CURRENT_STATE_SICK {
 		errMsg := "animal is not sick"
 		logger.Error(errMsg)
 		return "", errors.New(errMsg)
@@ -90,7 +90,7 @@ func HelpCureAnimalRpc(
 	}
 
 	//update the animal
-	animal.AnimalInfo.IsSick = false
+	animal.AnimalInfo.CurrentState = collections_placed_items.ANIMAL_CURRENT_STATE_NORMAL
 
 	//update the animal
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{

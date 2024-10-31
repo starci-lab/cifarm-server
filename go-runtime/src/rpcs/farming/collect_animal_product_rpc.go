@@ -69,6 +69,9 @@ func CollectAnimalProductRpc(
 
 	//update status
 	animal.AnimalInfo.HasYielded = false
+	//hungy now
+	animal.AnimalInfo.CurrentState = collections_placed_items.ANIMAL_CURRENT_STATE_HUNGRY
+
 	_, err = collections_placed_items.Write(ctx, logger, db, nk, collections_placed_items.WriteParams{
 		PlacedItem: *animal,
 		UserId:     userId,
