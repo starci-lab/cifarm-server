@@ -36,15 +36,15 @@ func ExecuteProcedureLogic(ctx context.Context, logger runtime.Logger, db *sql.D
 		params.PlacedItem.AnimalInfo.CurrentHungryTime += params.TimeInSeconds
 		params.PlacedItem.AnimalInfo.CurrentGrowthTime += params.TimeInSeconds
 
-		turnIntoAlult := false
+		turnIntoAldult := false
 		if params.PlacedItem.AnimalInfo.CurrentGrowthTime >= params.PlacedItem.AnimalInfo.Animal.GrowthTime {
 			//turn into adult logic
 			params.PlacedItem.AnimalInfo.IsAdult = true
-			turnIntoAlult = true
+			turnIntoAldult = true
 		}
 
 		//if turn into adult or hungry, set state to hungry
-		if turnIntoAlult || params.PlacedItem.AnimalInfo.CurrentHungryTime >= params.PlacedItem.AnimalInfo.Animal.HungerTime {
+		if turnIntoAldult || params.PlacedItem.AnimalInfo.CurrentHungryTime >= params.PlacedItem.AnimalInfo.Animal.HungerTime {
 			params.PlacedItem.AnimalInfo.CurrentState = collections_placed_items.ANIMAL_CURRENT_STATE_HUNGRY
 		}
 	} else {
