@@ -18,7 +18,7 @@ import (
 
 type ClaimDailyRewardRpcResponse struct {
 	//response only neccessary for the lasted date
-	LastDailyRewardPossibility collections_daily_rewards.LastDailyRewardPossibility `json:"lastDailyRewardPossibility"`
+	LastDailyRewardPossibilityKey string `json:"lastDailyRewardPossibilityKey"`
 }
 
 func ClaimDailyRewardRpc(
@@ -152,7 +152,7 @@ func ClaimDailyRewardRpc(
 	}
 
 	_value, err := json.Marshal(ClaimDailyRewardRpcResponse{
-		LastDailyRewardPossibility: lastDailyRewardPossibility,
+		LastDailyRewardPossibilityKey: lastDailyRewardPossibility.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())

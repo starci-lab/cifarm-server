@@ -18,8 +18,8 @@ import (
 )
 
 type SpinRpcResponse struct {
-	InventoryKey string                `json:"inventoryKey"`
-	Spin         collections_spin.Spin `json:"spin"`
+	InventoryKey string `json:"inventoryKey"`
+	SpinKey      string `json:"spinKey"`
 }
 
 func SpinRpc(
@@ -204,7 +204,7 @@ func SpinRpc(
 
 	_value, err := json.Marshal(SpinRpcResponse{
 		InventoryKey: inventoryResult.Key,
-		Spin:         spinResult,
+		SpinKey:      spinResult.Key,
 	})
 	if err != nil {
 		logger.Error(err.Error())
