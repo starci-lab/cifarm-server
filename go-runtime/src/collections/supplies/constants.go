@@ -6,7 +6,7 @@ const (
 
 const (
 	KEY_BASIC_FERTILIZER = "basicFertilizer"
-	KEY_CHICKEN_FEED     = "chickenFeed"
+	KEY_ANIMAL_FEED      = "animalFeed"
 )
 
 const (
