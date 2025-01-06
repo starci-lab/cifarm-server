@@ -1,10 +1,8 @@
-### CiFarm Server
-- **Technologies:** Go, Nakama
-
-# Overview
+# CiFarm Server
+## Overview
 CiFarm Server is the backbone of the CiFarm game, designed to handle all client requests seamlessly. Built using Go and the Nakama framework, it provides a robust communication layer leveraging both gRPC and WebSocket protocols to deliver a real-time and responsive gameplay experience.
 
-# Key Features
+## Key Features
 - Multi-Protocol Communication:
 - Supports both gRPC for efficient request handling and WebSocket for real-time updates, ensuring a smooth and immersive gaming experience.
 Scalable Architecture:
@@ -15,6 +13,6 @@ Scalable Architecture:
 + Real-time multiplayer support
 + Social features (friends, leaderboards, etc.)
 
-# Technologies
+## Technologies
 - Go: A powerful, efficient programming language for high-performance server-side development.
 - Nakama: A scalable, open-source game server framework for multiplayer and social games.
